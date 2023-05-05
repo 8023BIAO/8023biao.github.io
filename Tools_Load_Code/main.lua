@@ -106,9 +106,7 @@ local 内容表={
     {name="B站视频详情",func=function()B站视频详情() end},
   };
   {
-    {name="搜索", func=function() 搜索() end};
     {name="设置", func=function() 设置() end};
-    
   } ;
 }
 
