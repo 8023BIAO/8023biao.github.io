@@ -106,7 +106,9 @@ local 内容表={
     {name="B站视频详情",func=function()B站视频详情() end},
   };
   {
+    {name="搜索", func=function() 搜索() end};
     {name="设置", func=function() 设置() end};
+    
   } ;
 }
 
@@ -141,16 +143,5 @@ el.onChildClick=function(l,v,p,i)
         提示(e)
       end
     end
-  end
-end
-
-function onCreateOptionsMenu(menu)
-  menu.add("搜索").setShowAsActionFlags(1)
-end
-
-function onOptionsItemSelected(item)
-  local t=item.getTitle()
-  if t=="搜索" then
-    搜索()
   end
 end
