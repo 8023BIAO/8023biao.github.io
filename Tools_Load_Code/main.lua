@@ -7,8 +7,7 @@ import"res/config/fun_api"--网络api功能
 import "android.widget.ArrayExpandableListAdapter"
 import "android.widget.ExpandableListView"
 import "android.widget.ScrollView"
-
-
+error()
 NameData={} -- 储存函数事件表
 
 local 分类表={"助手","程序","工具","网络","其他"}
