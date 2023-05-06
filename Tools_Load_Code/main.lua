@@ -25,6 +25,7 @@ local 内容表={
           activity.newActivity("res/module/manual/edit",{"运行Lua代码","",true})
         end)
     end};
+    {name="ght_edit_lua", func=function()网络判断(function() 提示("无网络") end,function() activity.newActivity("res/module/ght_edit_lua") end)end};
   } ;
   {
 
