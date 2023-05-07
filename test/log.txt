@@ -1,0 +1,37 @@
+05-07 02:18:32.920  1580  2216 D _V_VivoFreeformGesturesPointerEventListener: onPointerEvent ev:MotionEvent { action=ACTION_MOVE, actionButton=0, id[0]=0, x[0]=244.66667, y[0]=2016.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=72561972, downTime=72561803, deviceId=4, source=0x1002, displayId=0, eventId=136864841 }
+05-07 02:22:50.384  1580  2387 D _V_FreezerManager: freeze com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer
+05-07 02:22:55.407  1580  2271 D _V_FreezerManager: thaw com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer timeout
+05-07 02:26:02.646  1580  2216 D _V_VivoFreeformGesturesPointerEventListener: onPointerEvent ev:MotionEvent { action=ACTION_MOVE, actionButton=0, id[0]=0, x[0]=806.0, y[0]=1832.6667, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=73011700, downTime=73011641, deviceId=4, source=0x1002, displayId=0, eventId=136862343 }
+05-07 02:26:29.210  1580  2387 D _V_FreezerManager: freeze com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer
+05-07 02:26:34.218  1580  2271 D _V_FreezerManager: thaw com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer timeout
+05-07 02:27:23.029  1580  2387 D _V_FreezerManager: freeze com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer
+05-07 02:27:28.039  1580  2271 D _V_FreezerManager: thaw com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer timeout
+05-07 02:27:45.586  1580  2387 D _V_FreezerManager: freeze com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer
+05-07 02:27:50.597  1580  2271 D _V_FreezerManager: thaw com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer timeout
+05-07 02:28:07.815  1580  2216 D _V_VivoFreeformGesturesPointerEventListener: onPointerEvent ev:MotionEvent { action=ACTION_MOVE, actionButton=0, id[0]=0, x[0]=890.6667, y[0]=1792.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=73136868, downTime=73136741, deviceId=4, source=0x1002, displayId=0, eventId=230289750 }
+05-07 02:28:42.698  1580  2387 D _V_FreezerManager: freeze com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer
+05-07 02:28:47.713  1580  2271 D _V_FreezerManager: thaw com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer timeout
+05-07 02:36:51.655  1580  2387 D _V_FreezerManager: freeze com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer
+05-07 02:36:56.679  1580  2271 D _V_FreezerManager: thaw com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer timeout
+05-07 02:37:14.476  1580  2387 D _V_FreezerManager: freeze com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer
+05-07 02:37:19.496  1580  2271 D _V_FreezerManager: thaw com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer timeout
+05-07 02:46:31.944  1580  2387 D _V_FreezerManager: freeze com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer
+05-07 02:46:40.859  1580  2271 D _V_FreezerManager: thaw com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer timeout
+05-07 02:47:59.831  1580  2387 D _V_FreezerManager: freeze com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer
+05-07 02:48:00.834  1580  2387 D _V_FreezerManager: thaw com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer null
+05-07 02:48:21.934  1580  2387 D _V_FreezerManager: freeze com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer
+05-07 02:48:22.928  1580  2387 D _V_FreezerManager: thaw com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer null
+05-07 02:48:33.268  1580  2387 D _V_FreezerManager: freeze com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer
+05-07 02:48:34.274  1580  2387 D _V_FreezerManager: thaw com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer null
+05-07 02:48:36.825  1580  2387 D _V_FreezerManager: freeze com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer
+05-07 02:48:37.826  1580  2387 D _V_FreezerManager: thaw com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer null
+05-07 02:49:01.133  1580  2387 D _V_FreezerManager: freeze com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer
+05-07 02:49:02.121  1580  2387 D _V_FreezerManager: thaw com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer null
+05-07 02:49:37.843  1580  2387 D _V_FreezerManager: freeze com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer
+05-07 02:49:38.851  1580  2387 D _V_FreezerManager: thaw com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer null
+05-07 02:49:47.367  1580  2387 D _V_FreezerManager: freeze com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer
+05-07 02:49:48.374  1580  2387 D _V_FreezerManager: thaw com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer null
+05-07 02:54:12.562  1580  2387 D _V_FreezerManager: freeze com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer
+05-07 02:54:13.561  1580  2387 D _V_FreezerManager: thaw com.netease.cloudmusic(10501) pids:{13205, 13349, 13686, 14029, 14137, 14284} by quick_freezer null
+05-07 07:00:04.628 13686 13700 W oudmusic:viewe: Suspending all threads took: 12.911ms
+05-07 07:10:49.566 13686 13686 W Choreographer: Frame time is 0.070897 ms in the future!  Check that graphics HAL is generating vsync timestamps using the correct timebase.
