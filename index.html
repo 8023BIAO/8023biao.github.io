@@ -1,1 +1,141 @@
-.
+<html>
+<head></head>
+<body>
+<meta id="v2" name="viewport" content="width=device-width, initial-scale=1.0">
+<meta id="v3" charset="UTF-8">
+<title id="v4">Biao 's Blog</title>
+  <style id="v5">
+        /* Day Mode Styles */
+        body {
+            font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #fff;
+        }
+        header {
+            background-color: #fff;
+            color: #333;
+            padding: 20px;
+            text-align: center;
+          //  border-bottom: 1px solid #eee;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin: 0;
+            color: #333;
+        }
+        p {
+            margin: 0;
+            color: #333;
+            line-height: 1.5;
+        }
+        a {
+            color: #fc6183;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav {
+            background-color: #fff;
+            padding: 10px;
+            text-align: center;
+           // border-bottom: 1px solid #eee;
+        }
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        nav li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+        nav li:last-child {
+            margin-right: 0;
+        }
+        section {
+            padding: 20px;
+        }
+        footer {
+            background-color: #fff;
+            color: #333;
+            padding: 20px;
+            text-align: center;
+            //border-top: 1px solid #eee;
+        }
+        /* Night Mode Styles */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #333;
+                color: #fff;
+            }
+            header {
+                background-color: #333;
+                color: #fff;
+            }
+            nav {
+                background-color: #333;
+                color: #fff;
+            }
+            a {
+                color: #fc6183;
+            }
+            footer {
+                background-color: #333;
+                color: #fff;
+            }
+        }
+        /* Media Queries for Desktop */
+        @media only screen and (min-width: 768px) {
+            body {
+                max-width: 960px;
+                margin: 0 auto;
+            }
+            nav {
+                text-align: right;
+            }
+            nav li {
+                margin-right: 0;
+                margin-left: 20px;
+            }
+            nav li:first-child {
+                margin-left: 0;
+            }
+            section {
+                display: flex;
+                flex-wrap: wrap;
+            }
+            article {
+                flex: 1;
+                margin-right: 20px;
+            }
+            aside {
+                flex: 0 0 30%;
+            }
+            footer {
+                text-align: left;
+            }
+        }
+    </style>
+  <footer id="v19"><a id="v24" href="html/collect.html">collect</a> <br id="v26"> <a id="v24" href="html/Tools.html">Tools apk</a>
+  <br><br> <h6 id="span" style="margin-bottom:26px">Elapsed time: 357D 12H 2M 55S</h6>
+  </footer>
+  <script>//运行了多久
+function runtime() {
+    // 初始时间，日/月/年 时:分:秒
+    X = new Date("5/08/2022 21:00:00");
+    Y = new Date();
+    T = (Y.getTime() - X.getTime());
+    M = 24 * 60 * 60 * 1000;
+    a = T / M;
+    A = Math.floor(a);
+    b = (a - A) * 24;
+    B = Math.floor(b);
+    c = (b - B) * 60;
+    C = Math.floor((b - B) * 60);
+    D = Math.floor((c - C) * 60);
+    //信息写入到DIV中
+    span.innerHTML = "Elapsed time: " + A + "D " + B + "H " + C + "M " + D + "S"
+}
+setInterval(runtime, 1000);</script>
+ </body>
+</html>
