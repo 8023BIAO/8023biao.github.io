@@ -1,9 +1,9 @@
 <html>
-<head></head>
-<body>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta charset="UTF-8">
-<title>Biao 's Blog</title>
+ <head></head>
+ <body>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>Biao 's Blog</title>
   <style>
         /* Day Mode Styles */
         body {
@@ -116,27 +116,8 @@
             }
         }
     </style>
-  <footer><a href="html/Favorites.html">Favorites</a> <br> <a href="html/Tools.html">Tools apk</a>
-   <br> <a href="html/LifeRecord.html">LifeRecord</a>
-  <br><br> <span><h6 style="margin-bottom:26px">Elapsed time: 357D 12H 2M 55S</h6></span>
+  <footer>
+   <a href="html/Favorites.html">Favorites</a> <br> <a href="html/Tools.html">Tools apk</a> <br> <a href="html/LifeRecord.html">LifeRecord</a>
   </footer>
-  <script>//运行了多久
-function runtime() {
-    // 初始时间，日/月/年 时:分:秒
-    X = new Date("5/08/2022 21:00:00");
-    Y = new Date();
-    T = (Y.getTime() - X.getTime());
-    M = 24 * 60 * 60 * 1000;
-    a = T / M;
-    A = Math.floor(a);
-    b = (a - A) * 24;
-    B = Math.floor(b);
-    c = (b - B) * 60;
-    C = Math.floor((b - B) * 60);
-    D = Math.floor((c - C) * 60);
-    //信息写入到DIV中
-    span.innerHTML = "Elapsed time: " + A + "D " + B + "H " + C + "M " + D + "S"
-}
-setInterval(runtime, 1000);</script>
  </body>
 </html>
