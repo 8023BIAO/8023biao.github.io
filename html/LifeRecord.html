@@ -1,168 +1,170 @@
-<html>
-<head></head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeRecord</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        .timeline {
+            position: relative;
+            margin: 0 auto;
+            width: 80%;
+            padding: 20px;
+        }
+
+        .timeline:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 4px;
+            background-color: #333;
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 60px 0;
+        }
+
+        .timeline-item:before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 12px;
+            height: 12px;
+            background-color: #333;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .timeline-content {
+            position: absolute;
+            top: 50%;
+            width: 50%;
+            padding: 10px;
+            box-sizing: border-box;
+            transform: translateY(-50%);
+        }
+
+        .timeline-content h3 {
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+
+        .timeline-content p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            left: 0;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            right: 0;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #222;
+                color: #fff;
+            }
+
+            .timeline:before,
+            .timeline-item:before {
+                background-color: #fff;
+            }
+        }
+    </style>
+</head>
 <body>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LifeRecord</title>
-<style>
-body {
-  font-family: Arial, sans-serif;
-  transition: background-color 0.5s ease, color 0.5s ease;
-}
-
-.timeline {
-  position: relative;
-  margin: 0 auto;
-  width: 80%;
-  padding: 20px;
-}
-
-.timeline:before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 4px;
-  background-color: #333;
-  transform: translateX(-50%);
-}
-
-.timeline-item {
-  position: relative;
-  padding: 60px 0;
-}
-
-.timeline-item:before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 12px;
-  height: 12px;
-  background-color: #333;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.timeline-content {
-  position: absolute;
-  top: 50%;
-  width: 50%;
-  padding: 10px;
-  box-sizing: border-box;
-  transform: translateY(-50%);
-}
-
-.timeline-content h3 {
-  margin-top: 0;
-  margin-bottom: 5px;
-}
-
-.timeline-content p {
-  margin: 0;
-  font-size: 14px;
-}
-
-.timeline-item:nth-child(odd) .timeline-content {
-  left: 0;
-}
-
-.timeline-item:nth-child(even) .timeline-content {
-  right: 0;
-}
-
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: #222;
-    color: #fff;
-  }
-
-  .timeline:before,
-  .timeline-item:before {
-    background-color: #fff;
-  }
-}
-</style>
-<div class="timeline">
-<div class="timeline-item">
-<div class="timeline-content">
-<h3>出生日期</h3>
-<p>2002年12月 加入这个世界。</p>
-</div>
-</div>
-<div class="timeline-item">
-<div class="timeline-content">
-<h3>教育经历</h3>
-<p>2008至2017年 接受(九年)义务教育，没读一,三年级，初一上册提前毕业。</p>
-</div>
-</div>
-<div class="timeline-item">
-<div class="timeline-content">
-<h3>踏入社会</h3>
-<p>2017年5月 踏入社会，开始底层打工生存。</p>
-</div>
-</div>
-<div class="timeline-item">
-<div class="timeline-content">
-<h3>打磨两年</h3>
-<p>2017年5月到19年4月 在家具厂打磨，平均月薪2800。</p>
-</div>
-</div>
-<div class="timeline-item">
-<div class="timeline-content">
-<h3>手机自学</h3>
-<p>2018年 买了部手机，自学拼音。</p>
-</div>
-</div>
-<div class="timeline-item">
-<div class="timeline-content">
-<h3>学徒一年</h3>
-<p>2019年4月 cnc数控机床学徒，刚学3k，学到年末4k月薪。</p>
-</div>
-</div>
-<div class="timeline-item">
-<div class="timeline-content">
-<h3>电脑自学</h3>
-<p>2019年10月 买笔记本。学习电脑基础和软件基础(还有玩游戏)</p>
-</div>
-</div>
-<div class="timeline-item">
-<div class="timeline-content">
-<h3>因传花销</h3>
-<p>2021年5月14-26号 传销被骗12天，期间花销约2w。回家郁闷一年啥都没干。</p>
-</div>
-</div>
-<div class="timeline-item">
-<div class="timeline-content">
-<h3>工作一年</h3>
-<p>2021年4月至2021年12月 回19年学习cnc地方工作，平均月薪5k(比同行低2k以上)。还款传销期间欠的2w。后面因工作内容与薪资不符合，提前两个月辞职回家。</p>
-</div>
-</div>
-<div class="timeline-item">
-<div class="timeline-content">
-<h3>工作学习</h3>
-<p>2021年 工作边学习了开叉车，开推台锯。</p>
-</div>
-</div>
-<div class="timeline-item">
-<div class="timeline-content">
-<h3>瞎搞一年</h3>
-<p>2022年2月8号至2023年1月6号 上半年花销4w，下半年只挣1w，回家都没车费。原因太多，不想写了，心最累的一年。</p>
-</div>
-</div>
-<div class="timeline-item">
-<div class="timeline-content">
-<h3>未知今年</h3>
-<p>2023年4月 出来太晚，没有找到啥工作。先活着，进了大厂，平均月薪3k。</p>
-</div>
-</div>
-<div class="timeline-item">
-<div class="timeline-content">
-<h3>关于</h3>
-<p>不出意外的情况下就不会有意外。一个无知底层打工人的记录。</p>
-</div>
-</div>
-</div>
+    <div class="timeline">
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <h3>关于</h3>
+                <p>不出意外的情况下就不会有意外。一个无知底层打工人的记录。</p>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <h3>未知今年</h3>
+                <p>2023年4月 出来太晚，没有找到啥工作。先活着，进了大厂，平均月薪3k。</p>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <h3>瞎搞一年</h3>
+                <p>2022年2月8号至2023年1月6号 上半年花销4w，下半年只挣1w，回家都没车费。原因太多，不想写了，心最累的一年。</p>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <h3>工作学习</h3>
+                <p>2021年 工作边学习了开叉车，开推台锯。</p>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <h3>工作一年</h3>
+                <p>2021年4月至2021年12月 回19年学习cnc地方工作，平均月薪5k(比同行低2k以上)。还款传销期间欠的2w。后面因工作内容与薪资不符合，提前两个月辞职回家。</p>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <h3>因传花销</h3>
+                <p>2021年5月14-26号 传销被骗12天，期间花销约2w。回家郁闷一年啥都没干。</p>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <h3>电脑自学</h3>
+                <p>2019年10月 买笔记本。学习电脑基础和软件基础(还有玩游戏)</p>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <h3>学徒一年</h3>
+                <p>2019年4月 cnc数控机床学徒，刚学3k，学到年末4k月薪。</p>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <h3>手机自学</h3>
+                <p>2018年 买了部手机，自学拼音。</p>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <h3>打磨两年</h3>
+                <p>2017年5月到19年4月 在家具厂打磨，平均月薪2800。</p>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <h3>踏入社会</h3>
+                <p>2017年5月 踏入社会，开始底层打工生存。</p>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <h3>教育经历</h3>
+                <p>2008至2017年 接受(九年)义务教育，没读一,三年级，初一上册提前毕业。</p>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <h3>出生日期</h3>
+                <p>2002年12月 加入这个世界。</p>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
