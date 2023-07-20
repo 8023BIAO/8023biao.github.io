@@ -1403,8 +1403,6 @@ function Mod(path)
         local new_code=main_code:gsub("(require \"import\")(.-)", "%1\n".. path .."%2", 1)
         写入文件(main_path,new_code)
         提示("已下载mod.lua到工程路径下\n导入使用即可")
-        os.exists()
-        activity.newActivity("main")
       end
     end
   end
