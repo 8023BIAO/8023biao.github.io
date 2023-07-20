@@ -1,3 +1,6 @@
+pcall(function()
+  require "import"
+end)
 import "android.app.AlertDialog"
 import "android.net.Uri"
 import "android.os.*"
@@ -1383,28 +1386,27 @@ function 系统下载监听(链接,目录名,文件名,下载完成事件)
 end
 
 function 自动更新下载mod文件(path)
-  ui多线程(function()
-    local url="https://8023biao.github.io/lua/mod.lua"
-    local 储存路径=tostring(activity.getLuaDir().. tostring(path))--工程路径下的/mod.lua
-    网络判断(function()end,function()
-      Http.get(url,function(a,code)
-        if a==200 and code then
-          if 检测代码(function()return loadstring(code)end) then
-            if 路径是否存在(储存路径) then
-              if 读取文件(储存路径)~=code then
-                写入文件(储存路径,code)
-                提示("已更新mod.lua")
-              end
-             else
-              写入文件(储存路径,code)
-              写入文件(activity.getLuaDir().."main.lua",读取文件(activity.getLuaDir().."main.lua"):gsub("^%w+(\n+)%w+","import ".. path .."--mod"))
-              提示("已下载mod.lua到工程路径下\n导入使用即可")
-            end
-          end
+
+  local url="https://8023biao.github.io/lua/mod.lua"
+  local 储存路径=tostring(activity.getLuaDir().. tostring(path))--工程路径下的/mod.lua
+
+  local code=getHtml(url)
+  if code then
+    if 检测代码(function()return loadstring(code)end) then
+      if 路径是否存在(储存路径) then
+        if 读取文件(储存路径)~=code then
+          写入文件(储存路径,code)
+          提示("已更新mod.lua")
         end
-      end)
-    end)
-  end)
+       else
+        写入文件(储存路径,code)
+        --写入文件(activity.getLuaDir().."main.lua",读取文件(activity.getLuaDir().."main.lua"):gsub("^%w+(\n+)%w+","import ".. path .."--mod"))
+        提示("已下载mod.lua到工程路径下\n导入使用即可")
+      end
+    end
+  end
+
+
+
 end
 
-自动更新下载mod文件("BMod.lua")
