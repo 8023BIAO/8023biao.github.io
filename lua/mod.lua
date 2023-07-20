@@ -32,8 +32,6 @@ import "android.graphics.Bitmap"
 百度,chatgpt,cnds,各大QQ群(友)
 Alua手册重制版(烧风),muk手册,夜色未央lua手册
 
-
-感谢开源 开源万岁 2023.7.20
 https://8023biao.github.io/lua/mod.lua
 ]]
 
