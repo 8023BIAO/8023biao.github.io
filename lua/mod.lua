@@ -1,6 +1,7 @@
 pcall(function()
   require "import"
 end)
+
 import "android.app.AlertDialog"
 import "android.net.Uri"
 import "android.os.*"
@@ -26,13 +27,14 @@ import "android.graphics.Bitmap"
 
 
 --[[
- biao 个人(辣鸡)快捷封装函数库
 
 代码来源:
 百度,chatgpt,cnds,各大QQ群(友)
 Alua手册重制版(烧风),muk手册,夜色未央lua手册
 
 https://8023biao.github.io/lua/mod.lua
+
+ biao 个人(智障中英混合辣鸡)快捷封装函数库
 ]]
 
 
@@ -1383,9 +1385,9 @@ function 系统下载监听(链接,目录名,文件名,下载完成事件)
   downloadManager.enqueue(request)
 end
 
-function 自动更新下载mod文件(path)
+function Mod(path)
   local url="https://8023biao.github.io/lua/mod.lua"
-  local 储存路径=tostring(activity.getLuaDir().. tostring(path))--工程路径下的/mod.lua
+  local 储存路径=tostring(activity.getLuaDir().. tostring(path))
   local code=getHtml(url)
   if code then
     if 检测代码(function()return loadstring(code)end) then
