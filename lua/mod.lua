@@ -1398,7 +1398,13 @@ function Mod(path)
         end
        else
         写入文件(储存路径,code)
+        local main_path=activity.getLuaDir().. path
+        local main_code=读取文件(main_path)
+        local new_code=main_code:gsub("(require \"import\")(.-)", "%1\n".. path .."%2", 1)
+        写入文件(main_path,new_code)
         提示("已下载mod.lua到工程路径下\n导入使用即可")
+        activity.finish()
+        activity.newActivity("main")
       end
     end
   end
