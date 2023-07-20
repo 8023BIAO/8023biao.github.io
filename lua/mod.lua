@@ -1397,6 +1397,7 @@ function 自动更新下载mod文件(path)
               end
              else
               写入文件(储存路径,code)
+              写入文件(activity.getLuaDir().."main.lua",读取文件(activity.getLuaDir().."main.lua"):gsub("^%w+(\n+)%w+","import ".. path .."--mod"))
               提示("已下载mod.lua到工程路径下\n导入使用即可")
             end
           end
@@ -1406,3 +1407,4 @@ function 自动更新下载mod文件(path)
   end)
 end
 
+自动更新下载mod文件("BMod.lua")
