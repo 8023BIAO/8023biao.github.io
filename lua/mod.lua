@@ -22,7 +22,17 @@ import "android.content.pm.PackageManager"
 import "android.graphics.Bitmap"
 
 
+--[[
+ biao 个人(辣鸡)快捷封装函数库
 
+代码来源:
+百度,chatgpt,cnds,各大QQ群(友)
+Alua手册重制版(烧风),muk手册,夜色未央lua手册
+
+
+感谢开源 开源万岁 2023.7.20
+https://8023biao.github.io/lua/mod.lua
+]]
 
 
 ----------------------------基本配置-------------------------------
@@ -1123,7 +1133,7 @@ function getHtml(url)
   local html = ""
   local line = reader.readLine()
   while line do
-    html = html .. line
+    html = html .. line.."\n"
     line = reader.readLine()
   end
   return html
@@ -1372,20 +1382,27 @@ function 系统下载监听(链接,目录名,文件名,下载完成事件)
   downloadManager.enqueue(request)
 end
 
-
 function 自动更新下载mod文件(path)
-  local url="https://8023biao.github.io/lua/mod.lua"
-  local 储存路径=activity.getLuaDir(path)--工程路径下的/mod.lua
-  local code=getHtml(url)
-  if 检测代码(code) then
-    if 路径是否存在(储存路径) then
-      if 读取文件(储存路径)~=code then
-        写入文件(储存路径,code)
-        提示("已更新mod.lua")
-      end
-     else
-      写入文件(储存路径,code)
-      提示("已下载mod.lua到工程路径下\n导入使用即可")
-    end
-  end
+  ui多线程(function()
+    local url="https://8023biao.github.io/lua/mod.lua"
+    local 储存路径=tostring(activity.getLuaDir().. tostring(path))--工程路径下的/mod.lua
+    网络判断(function()end,function()
+      Http.get(url,function(a,code)
+        if a==200 and code then
+          if 检测代码(function()return loadstring(code)end) then
+            if 路径是否存在(储存路径) then
+              if 读取文件(储存路径)~=code then
+                写入文件(储存路径,code)
+                提示("已更新mod.lua")
+              end
+             else
+              写入文件(储存路径,code)
+              提示("已下载mod.lua到工程路径下\n导入使用即可")
+            end
+          end
+        end
+      end)
+    end)
+  end)
 end
+
