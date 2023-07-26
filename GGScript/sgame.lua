@@ -185,8 +185,8 @@ gg.clearResults()
 --显示按钮
 gg.showUiButton()
 
-local Vaddr--视角地址储存
-local Menu --储存现在菜单
+Vaddr=false--视角地址储存
+Menu=false --储存现在菜单
 
 --现在菜单
 function M(str)
