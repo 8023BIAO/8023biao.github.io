@@ -1,6 +1,6 @@
 
 --简写类型
-local TYPE={
+ TYPE={
   A=gg.TYPE_AUTO,
   F=gg.TYPE_FLOAT,
   D=gg.TYPE_DWORD,
@@ -11,7 +11,7 @@ local TYPE={
 }
 
 --简写内存
-local REGION={
+ REGION={
   A=gg.REGION_ANONYMOUS,
   CA=gg.REGION_C_ALLOC,
   B=gg.REGION_BAD,
@@ -26,38 +26,38 @@ local REGION={
 }
 
 --提示
-local function Toast(str)
+ function Toast(str)
   gg.toast(str)
 end
 
 --16进制转10进制
-local function hex_to_dec(hex_str)
+ function hex_to_dec(hex_str)
   return tonumber(hex_str, 16)
 end
 
 --10进制转16进制
-local function dec_to_hex(decimal_num)
+ function dec_to_hex(decimal_num)
   return string.format("%X", decimal_num)
 end
 
 --获取地址头
-local function SoAddr(str)
+ function SoAddr(str)
   return gg.getRangesList(str)[1].start
 end
 
 --地址跳跃
-local function addrjump(a, b)
+ function addrjump(a, b)
   local address = gg.getValues({ [1] = { address = a + b, flags = 32 } })[1].value
   return address--返回跳转的地址
 end
 
 --设置搜索内存
-local function setRanges(type)
+ function setRanges(type)
   gg.setRanges(type)
 end
 
 --修改写入
-local function modify(address,type,value,freeze)
+ function modify(address,type,value,freeze)
   local tg={}
   tg[1]={}
   tg[1].address = address--地址
@@ -73,7 +73,7 @@ local function modify(address,type,value,freeze)
 end
 
 --搜索数值
-local function searchNumber(value,type)
+ function searchNumber(value,type)
   --搜索数值
   gg.searchNumber(value,type)
   --获取搜索结果数量
@@ -90,7 +90,7 @@ local function searchNumber(value,type)
 end
 
 --地址搜索
-local function searchAddr(addr,type)
+ function searchAddr(addr,type)
   gg.searchAddress(addr,-1,type, gg.SIGN_EQUAL, 0, -1)
   --获取搜索结果数量
   local n=gg.getResultsCount()
@@ -106,7 +106,7 @@ local function searchAddr(addr,type)
 end
 
 --动态基址(搬运
-local function S_Pointer(t_So, t_Offset, _bit)
+ function S_Pointer(t_So, t_Offset, _bit)
   local function getRanges()
     local ranges = {}
     local tt = {}
@@ -185,8 +185,8 @@ gg.clearResults()
 --显示按钮
 gg.showUiButton()
 
-Vaddr=false--视角地址储存
-Menu=false --储存现在菜单
+local Vaddr--视角地址储存
+local Menu --储存现在菜单
 
 --现在菜单
 function M(str)
