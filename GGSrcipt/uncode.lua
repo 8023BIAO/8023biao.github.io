@@ -16,10 +16,10 @@ end
 
 --选择文件
 function Select_file()
-  local path = gg.getFile()
+  local path = gg.getFile() or "/sdcard/"
   local menu = gg.prompt({"请选择脚本"}, {path}, {"file"})
   if menu then
-    return menu[1]--返回路径
+    return menu[1]--返回路径 
   end
 end
 
@@ -325,7 +325,7 @@ function obscure()
 end
 
 function encode()
-  local path=Select_file()
+  local path=Select_file() 
   if path then
     local code=Reader(path)
 
