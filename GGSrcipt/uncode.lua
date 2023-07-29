@@ -431,6 +431,8 @@ function Automatic_encryption()
      else
       Alert("这个文件无法运行")
     end
+   else
+    M("main")
   end
 end
 
@@ -466,6 +468,8 @@ function encryption()
     if test then
       local code="\n"..Reader(path)--读取文件内容
       local NewFilePath=PathMatch(path,"encryption")
+      local new_code=code
+      local fail=""
 
       if list[5] then
         --gg函数混淆
@@ -477,34 +481,70 @@ function encryption()
         end
       end
 
+      if load(code) then
+        new_code=code
+       else
+        new_code=new_code
+        code=new_code
+        fail="gg函数转字符失败\n"
+      end
+
       if list[4] then
         --函数改env
-        code=uncode.env(code,true)
+        new_code=uncode.env(new_code,true)
+        if load(new_code) then
+          new_code=new_code
+          code=new_code
+         else
+          new_code=code
+          fail=fail.."ENV函数失败\n"
+        end
        else
-        code=uncode.env(code)
+        new_code=uncode.env(new_code)
+        if load(new_code) then
+          new_code=new_code
+          code=new_code
+         else
+          new_code=code
+          fail=fail.."ENV表失败\n"
+        end
       end
 
       if list[3] then
         --字符串改char
-        code=uncode.ASCLL(code)
+        new_code=uncode.ASCLL(new_code)
+        if load(new_code) then
+          new_code=new_code
+          code=new_code
+         else
+          new_code=code
+          fail=fail.."字符转数字失败\n"
+        end
       end
 
       if list[2] then
         --混淆变量
-        local rcode=Tabgsub(code,inf,from)
-        code=Hxgsub(code,getInt(rcode))
+        local rcode=Tabgsub(new_code,inf,from)
+        new_code=Hxgsub(new_code,getInt(rcode))
+        if load(new_code) then
+          new_code=new_code
+          code=new_code
+         else
+          new_code=code
+          fail=fail.."混淆变量失败\n"
+        end
       end
 
       if list[6] then
-        Writer(NewFilePath,code)
+        Writer(NewFilePath,new_code)
         xpcall(function()
           local str=loadfile(NewFilePath)
           if str then
             local uncode=string.dump(str)
             Writer(NewFilePath,uncode)
-            Toast("编译完成")
+            Toast("编译完成\n"..fail)
            else
-            Alert("文件无法运行，编译失败")
+            Alert("文件无法运行，编译失败\n".. fail)
           end
           end,function(e)
           os.remove(NewFilePath)
@@ -514,13 +554,13 @@ function encryption()
           end
         end)
        else
-        Writer(NewFilePath,code)
+        Writer(NewFilePath,new_code)
       end
 
       local examine=loadfile(NewFilePath)
 
       if examine then
-        Toast("完成")
+        Alert("完成\n".. fail)
        else
         local m=Alert("文件无法运行，是否重新选择参数\n文件没有删除，您可以到路径下查看\n按 “确定” 删除错误文件并重新选择参数","确定","取消")
         if m and m==1 then
