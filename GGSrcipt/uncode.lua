@@ -19,7 +19,7 @@ function Select_file()
   local path = gg.getFile() or "/sdcard/"
   local menu = gg.prompt({"请选择脚本"}, {path}, {"file"})
   if menu then
-    return menu[1]--返回路径 
+    return menu[1]--返回路径
   end
 end
 
@@ -158,13 +158,15 @@ One_time_encryption.compile_encode=function(password,code)
 end
 
 One_time_encryption.Menu=function(mod)
-  local path = gg.getFile()
+  local path = "/sdcard/"
   local menu = gg.prompt({"请选择脚本","密码"}, {path,"这里输入密码"}, {"file","text"})
   if menu and menu[1] and menu[2]~="" then
     path=menu[1]
-    local password=menu[2]
-    local code=Reader(path)
-    mod(path,password,code)
+    if loadfile(path) then
+      local password=menu[2]
+      local code=Reader(path)
+      mod(path,password,code)
+    end
   end
 end
 
@@ -176,11 +178,9 @@ end
 --print(c)
 --load(c)()
 
-
-
 local uncode={}
 
-function uncode.env(code)
+function uncode.env(code,cok)
   for k,v in pairs(_ENV) do
     local t=type(v)
     if t == "table" then
@@ -188,8 +188,10 @@ function uncode.env(code)
         code=code:gsub(k .."%s+%.%s+" .. kk, "_ENV['"..k .."']['" .. kk .."']")
       end
      elseif t == "function" then
-      --这一行有错误
-      code=code:gsub(k .."%s*%(", "_ENV['" ..k .."'](")
+      if cok then
+        --这一行有错误
+        code=code:gsub(k .."%s*%(", "_ENV['" ..k .."'](")
+      end
     end
   end
   return code
@@ -299,75 +301,6 @@ function Hxgsub(code,tab)
   return code:gsub("^<",""):gsub(">$","")
 end
 
-function obscure()
-  local path=Select_file()
-  if path then
-    local code=Reader(path)
-    --gg函数混淆
-    local new_code=""
-    for l in string.gmatch(code,".-\n") do
-      if string.find(l,"gg%.[%w_]+") then
-        local f=(l:match("(gg%.[%w_]+)%s?%p?"))
-        code=code:gsub(f,"_ENV".."[\"gg\"]".."[\""..f:match("^.*%.(.*)$").."\"]")
-      end
-    end
-    --函数改env
-    code=uncode.env(code)--这里有问题
-    --字符串改char
-    code=uncode.ASCLL(code)
-    --混淆变量
-    local rcode=Tabgsub(code,inf,from)
-    code=Hxgsub(code,getInt(rcode))
-    local NewFilePath=PathMatch(path,"obscure")
-    Writer(NewFilePath,code)
-    Alert("混淆已完成")
-  end
-end
-
-function encode()
-  local path=Select_file() 
-  if path then
-    local code=Reader(path)
-
-    --gg函数混淆
-    local new_code=""
-    for l in string.gmatch(code,".-\n") do
-      if string.find(l,"gg%.[%w_]+") then
-        local f=(l:match("(gg%.[%w_]+)%s?%p?"))
-        code=code:gsub(f,"_ENV".."[\"gg\"]".."[\""..f:match("^.*%.(.*)$").."\"]")
-      end
-    end
-
-    --函数改env
-    code=uncode.env(code)--这里有问题
-    --字符串改char
-    code=uncode.ASCLL(code)
-
-    --混淆变量
-    local rcode=Tabgsub(code,inf,from)
-    code=Hxgsub(code,getInt(rcode))
-
-    local NewFilePath=PathMatch(path,"obscure_compile")
-    Writer(NewFilePath,code)
-    xpcall(function()
-      local str=loadfile(NewFilePath)
-      if str then
-        local uncode=string.dump(str)
-        Writer(NewFilePath,uncode)
-        Alert("混淆+编译已完成")
-       else
-        os.remove(NewFilePath)
-        Alert("失败了，换一个文件试试？\n(未适配，目前bug和漏洞多)")
-      end
-      end,function(e)
-      os.remove(NewFilePath)
-      local t=Alert("出错了:\n"..e,"复制","确定")
-      if t==1 then
-        copyText(e)
-      end
-    end)
-  end
-end
 
 --显示按钮
 gg.showUiButton()
@@ -388,25 +321,110 @@ end
 
 function main()
   local list= gg.choice({
-    "编译",
-    "混淆",
-    "混淆+编译",
+    "测试",
     "临时加密",
     "退出",
   });
 
   if list==1 then
-    if compile_file(Select_file())then
-      Alert("编译已完成")
-    end
+    M("encryption")
    elseif list==2 then
-    obscure()
-   elseif list==3 then
-    encode()
-   elseif list==4 then
     M("One_time_encryption_view")
-   elseif list==5 then
+   elseif list==3 then
     os.exit()
+  end
+
+end
+
+function encryption()
+  local list = gg.prompt(
+  {
+    [1]="请选择文件",
+    [2]="替换变量",
+    [3]="字符转数字",
+    [4]="函数转数字",
+    [5]="gg函数转数字",
+    [6]="编译"},
+  {
+    [1]="/sdcard/",
+    [2]=true,
+    [3]=true,
+    [4]=true,
+    [5]=true,
+    [6]=true,
+  },
+  {
+    "file",
+    "checkbox",
+    "checkbox",
+    "checkbox",
+    "checkbox",
+    "checkbox",
+  })
+
+  if list and list[1] then--确定了
+    local path=list[1]--获取路径
+    local test=loadfile(path)--检测是否没问题
+    if test then
+      local code="\n"..Reader(path)--读取文件内容
+      local NewFilePath=PathMatch(path,"encryption")
+
+      if list[5] then
+        --gg函数混淆
+        for l in string.gmatch(code,".-\n") do
+          if string.find(l,"gg%.[%w_]+") then
+            local ff=(l:match("(gg%.[%w_]+)%s?%p?"))
+            code=code:gsub(ff,"_ENV".."[\"gg\"]".."[\""..ff:match("^.*%.(.*)$").."\"]")
+          end
+        end
+      end
+
+      if list[4] then
+        --函数改env
+        code=uncode.env(code,true)
+       else
+        code=uncode.env(code)
+      end
+
+      if list[3] then
+        --字符串改char
+        code=uncode.ASCLL(code)
+      end
+
+      if list[2] then
+        --混淆变量
+        local rcode=Tabgsub(code,inf,from)
+        code=Hxgsub(code,getInt(rcode))
+      end
+
+      if list[6] then
+        Writer(NewFilePath,code)
+        xpcall(function()
+          local str=loadfile(NewFilePath)
+          if str then
+            local uncode=string.dump(str)
+            Writer(NewFilePath,uncode)
+            Toast("编译完成")
+           else
+            os.remove(NewFilePath)
+            Alert("失败了\n(未适配，目前bug和漏洞多)")
+          end
+          end,function(e)
+          os.remove(NewFilePath)
+          local t=Alert("出错了:\n"..e,"复制","确定")
+          if t==1 then
+            copyText(e)
+          end
+        end)
+       else
+        Writer(NewFilePath,code)
+      end
+      Toast("已完成")
+     else
+      Toast("这是一个不能执行的文件")
+    end
+   else
+    M("main")
   end
 
 end
