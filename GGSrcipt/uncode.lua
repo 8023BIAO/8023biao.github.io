@@ -67,6 +67,43 @@ function compile_file(path)
   end
 end
 
+--显示按钮
+gg.showUiButton()
+local Menu --储存现在菜单
+
+--现在菜单
+function M(str)
+  if not Menu and not str then
+    Menu=_G["main"]
+    Menu()
+   elseif Menu and not str then
+    Menu()
+   elseif str then
+    Menu=_G[str]
+    Menu()
+  end
+end
+
+function main()
+  local list= gg.choice({
+    "自动",
+    "自定义",
+    "临时加密",
+    "退出",
+  });
+
+  if list==1 then
+    M("Automatic_encryption")
+   elseif list==2 then
+    M("encryption")
+   elseif list==3 then
+    M("One_time_encryption_view")
+   elseif list==4 then
+    os.exit()
+  end
+
+end
+
 --一次性简易加密
 local One_time_encryption={}
 
@@ -299,44 +336,6 @@ function Hxgsub(code,tab)
     end)
   end
   return code:gsub("^<",""):gsub(">$","")
-end
-
-
---显示按钮
-gg.showUiButton()
-local Menu --储存现在菜单
-
---现在菜单
-function M(str)
-  if not Menu and not str then
-    Menu=_G["main"]
-    Menu()
-   elseif Menu and not str then
-    Menu()
-   elseif str then
-    Menu=_G[str]
-    Menu()
-  end
-end
-
-function main()
-  local list= gg.choice({
-    "自动",
-    "自定义",
-    "临时加密",
-    "退出",
-  });
-
-  if list==1 then
-    M("Automatic_encryption")
-   elseif list==2 then
-    M("encryption")
-   elseif list==3 then
-    M("One_time_encryption_view")
-   elseif list==4 then
-    os.exit()
-  end
-
 end
 
 function Automatic_encryption()
