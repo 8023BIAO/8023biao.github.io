@@ -321,19 +321,118 @@ end
 
 function main()
   local list= gg.choice({
-    "测试",
+    "自动",
+    "自定义",
     "临时加密",
     "退出",
   });
 
   if list==1 then
-    M("encryption")
+    M("Automatic_encryption")
    elseif list==2 then
-    M("One_time_encryption_view")
+    M("encryption")
    elseif list==3 then
+    M("One_time_encryption_view")
+   elseif list==4 then
     os.exit()
   end
 
+end
+
+function Automatic_encryption()
+  local list=gg.prompt({"请选择文件"},{"/sdcard/"},{"file"})
+  if list and list[1] then
+    local path=list[1]
+    if loadfile(path) then
+      local code="\n"..Reader(path)--读取文件内容
+      local NewFilePath=PathMatch(path,"encryption")
+      local new_code=code
+      local fail=""
+
+      --gg函数混淆
+      for l in string.gmatch(code,".-\n") do
+        if string.find(l,"gg%.[%w_]+") then
+          local ff=(l:match("(gg%.[%w_]+)%s?%p?"))
+          code=code:gsub(ff,"_ENV".."[\"gg\"]".."[\""..ff:match("^.*%.(.*)$").."\"]")
+        end
+      end
+
+      if load(code) then
+        new_code=code
+       else
+        new_code=new_code
+        code=new_code
+        fail="gg函数转字符失败\n"
+      end
+
+      --函数改env
+      new_code=uncode.env(new_code,true)
+
+      if load(new_code) then
+        new_code=new_code
+        code=new_code
+       else
+        new_code=code
+        fail=fail.."ENV函数失败\n"
+      end
+
+      --函数改env(table)
+      new_code=uncode.env(new_code)
+
+      if load(new_code) then
+        new_code=new_code
+        code=new_code
+       else
+        new_code=code
+        fail=fail.."ENV表失败\n"
+      end
+
+      --字符串改char
+      new_code=uncode.ASCLL(new_code)
+
+      if load(new_code) then
+        new_code=new_code
+        code=new_code
+       else
+        new_code=code
+        fail=fail.."字符转数字失败\n"
+      end
+
+      --混淆变量
+      local rcode=Tabgsub(new_code,inf,from)
+      new_code=Hxgsub(new_code,getInt(rcode))
+
+      if load(new_code) then
+        new_code=new_code
+        code=new_code
+       else
+        new_code=code
+        fail=fail.."混淆变量失败\n"
+      end
+
+      --编译
+      Writer(NewFilePath,new_code)
+      xpcall(function()
+        local str=loadfile(NewFilePath)
+        if str then
+          local uncode=string.dump(str)
+          Writer(NewFilePath,uncode)
+          Alert("编译完成\n"..fail)
+         else
+          Alert("文件无法运行，编译失败\n"..fail)
+        end
+        end,function(e)
+        os.remove(NewFilePath)
+        local t=Alert("出错了:\n"..e,"复制","确定")
+        if t==1 then
+          copyText(e)
+        end
+      end)
+
+     else
+      Alert("这个文件无法运行")
+    end
+  end
 end
 
 function encryption()
@@ -406,8 +505,7 @@ function encryption()
             Writer(NewFilePath,uncode)
             Toast("编译完成")
            else
-            os.remove(NewFilePath)
-            Alert("失败了\n(未适配，目前bug和漏洞多)")
+            Alert("文件无法运行，编译失败")
           end
           end,function(e)
           os.remove(NewFilePath)
@@ -419,7 +517,19 @@ function encryption()
        else
         Writer(NewFilePath,code)
       end
-      Toast("已完成")
+
+      local examine=loadfile(NewFilePath)
+
+      if examine then
+        Toast("完成")
+       else
+        local m=Alert("文件无法运行，是否重新选择参数\n文件没有删除，您可以到路径下查看\n按 “确定” 删除错误文件并重新选择参数","确定","取消")
+        if m and m==1 then
+          os.remove(NewFilePath)
+          M("encryption")
+        end
+      end
+
      else
       Toast("这是一个不能执行的文件")
     end
