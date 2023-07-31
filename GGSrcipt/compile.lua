@@ -70,22 +70,42 @@ function ASCLL(code)
   return code
 end
 
---混淆代码(Lua手册用户上传 没留名)
-function Tabgsub(str,tab_in,tab_from)
-  str = tostring(str)
-  for k,v in ipairs(tab_in) do
-    v = tostring(v)
-    if type(tab_from)=="table" then
-      str = str:gsub(v,tab_from[k])
-     else
-      str = str:gsub(v,tab_from)
+--ChatGPT 4 提供代码
+local reserved = {
+  ["and"]=true, ["break"]=true,["do"]=true,["else"]=true,
+  ["elseif"]=true,["end"]=true,["false"]=true, ["for"]=true,
+  ["function"]=true, ["if"]=true,["in"]=true,["local"]=true,
+  ["nil"]=true,["not"]=true, ["or"]=true,["repeat"]=true,
+  ["return"]=true, ["then"]=true, ["true"]=true, ["until"]=true,
+  ["while"]=true, --其他关键字
+
+  ["_G"]=true, ["type"]=true, ["pairs"]=true, ["ipairs"]=true,
+  ["tostring"]=true, ["tonumber"]=true, ["print"]=true, --系统全局变量
+
+}
+
+--不需要的匹配结果
+local exclude={
+  "^(%d+)$"
+}
+
+function getInt(code)
+  local varList = {}
+  for k in code:gmatch("([%w_]+)%s*[,=]") do
+    if not reserved[k] then
+      for c,v in pairs(exclude) do
+        if not k:find(v) then
+          varList[#varList+1] = k
+        end
+      end
     end
   end
-  return str
+  return varList
 end
 
 math.randomseed(os.time())
 math.random(1)
+
 function Rand(num)--生成混淆码
   local tab={"O","o","0"}
   local str=tab[math.random(1,#tab-1)]
@@ -95,152 +115,110 @@ function Rand(num)--生成混淆码
   return str
 end
 
-local inf={
-  "=","= +=",
-  " +",
-  "%. +"," +%.",
-  "%[ +"," +]","%] +%["
+function obfuscateCode(code)
+  local variables = getInt(code)
+  local replacements = {}
 
-}
+  for _, variable in ipairs(variables) do
+    local newVar
+    repeat
+      newVar = Rand(math.random(3,8))
+    until not replacements[newVar] -- Ensure unique replacement names
 
-local from={
-  " = ","==",
-  " ",
-  ".",".",
-  "[","]","]["
-
-}
-
-function getInt(code)--获得变量
-  local str=""
-  local tab={}
-  for k in code:gmatch("(%S+) = ") do
-    if not str:find(k) and not k:find("%[") and not k:find("%.")and not k:find("%-%-") then
-      tab[#tab+1]=k
-      str = str..k.." "
-    end
+    replacements[variable] = newVar
   end
-  return tab
-end
 
-function table_find(t, value)
-  for k, v in pairs(t) do
-    if v == value then
-      return k
-    end
+  -- Create a pattern for each variable and replace it with the new name
+  for variable, newVar in pairs(replacements) do
+    local pattern = "([^%w_])(" .. variable .. ")([^%w_])"
+    code = code:gsub(pattern, "%1" .. newVar .. "%3")
   end
-  return nil
-end
 
-local Man={}
-function IntForm(code)--调用此函数用于更新混淆
-  if Man[code]==nil then
-    local hx
-    while true do
-      hx=Rand(8)
-      if not table_find(Man,hx) then
-        break
-      end
-    end
-    Man[code]=hx
-  end
-  return Man[code]
-end
-
-function Hxgsub(code,tab)
-  code = "<"..code..">"--此处负责执行替换动作
-  for k,v in ipairs(tab) do
-    code = code:gsub("(.)("..v..")(.)",function(r1,r2,r3)
-      -- r1,r2,r3=tostring(r1),tostring(r2),tostring(r3)
-      if r1:find("[%w_]") or r3:find("[%w_]") and not r1:find("=") then
-        return r1..r2..r3
-       else
-        return r1..IntForm(r2)..r3
-      end
-    end)
-  end
-  return code:gsub("^<",""):gsub(">$","")
+  return code
 end
 
 function Automatic_encryption()
-  local list=gg.prompt({"请选择文件"},{"/sdcard/"},{"file"})
+  local list=gg.prompt({"请选择要编译的源文件"},{"/sdcard/"},{"file"})
   if list and list[1] then
     local path=list[1]
     if loadfile(path) then
-      local code="\n"..Reader(path)
-      local NewFilePath=PathMatch(path,"encryption")
-      local new_code=code
-      local fail=""
-
-      for l in string.gmatch(code,".-\n") do
-        if string.find(l,"gg%.[%w_]+") then
-          local ff=(l:match("(gg%.[%w_]+)%s?%p?"))
-          code=code:gsub(ff,"_ENV".."[\"gg\"]".."[\""..ff:match("^.*%.(.*)$").."\"]")
-        end
-      end
-
+      local code="\n"..Reader(path).." "
       if load(code) then
-        new_code=code
+        local NewFilePath=PathMatch(path,"encryption")
+        local new_code=code
+        local fail=""
+
+        for l in string.gmatch(code,".-\n") do
+          if string.find(l,"gg%.[%w_]+") then
+            local ff=(l:match("(gg%.[%w_]+)%s?%p?"))
+            code=code:gsub(ff,"_ENV".."[\"gg\"]".."[\""..ff:match("^.*%.(.*)$").."\"]")
+          end
+        end
+
+        if load(code) then
+          new_code=code
+         else
+          new_code=new_code
+          code=new_code
+          fail="ENV[gg函数]失败\n"
+        end
+
+        new_code=func_env(new_code,true)
+
+        if load(new_code) then
+          new_code=new_code
+          code=new_code
+         else
+          new_code=code
+          fail=fail.."ENV[函数]失败\n"
+        end
+
+        new_code=func_env(new_code)
+
+        if load(new_code) then
+          new_code=new_code
+          code=new_code
+         else
+          new_code=code
+          fail=fail.."ENV[表]失败\n"
+        end
+
+        new_code=ASCLL(new_code)
+
+        if load(new_code) then
+          new_code=new_code
+          code=new_code
+         else
+          new_code=code
+          fail=fail.."字符转ASCLL失败\n"
+        end
+
+        new_code=obfuscateCode(new_code)
+
+        if load(new_code) then
+          new_code=new_code
+          code=new_code
+         else
+          new_code=code
+          fail=fail.."混淆变量失败\n"
+        end
+
+        Writer(NewFilePath,new_code)
+
+        local str=loadfile(NewFilePath)
+        if str then
+          local uncode=string.dump(str)
+          Writer(NewFilePath,uncode)
+          Alert("完成\n"..fail)
+         else
+          Alert("文件无法运行，编译失败\n"..fail)
+        end
+
        else
-        new_code=new_code
-        code=new_code
-        fail="ENV[gg_function]失败\n"
+        Alert("不支持已编译文件")
       end
-
-      new_code=func_env(new_code,true)
-
-      if load(new_code) then
-        new_code=new_code
-        code=new_code
-       else
-        new_code=code
-        fail=fail.."ENV[function]失败\n"
-      end
-
-      new_code=func_env(new_code)
-
-      if load(new_code) then
-        new_code=new_code
-        code=new_code
-       else
-        new_code=code
-        fail=fail.."ENV[table]失败\n"
-      end
-
-      new_code=ASCLL(new_code)
-
-      if load(new_code) then
-        new_code=new_code
-        code=new_code
-       else
-        new_code=code
-        fail=fail.."字符转数字失败\n"
-      end
-
-      local rcode=Tabgsub(new_code,inf,from)
-      new_code=Hxgsub(new_code,getInt(rcode))
-
-      if load(new_code) then
-        new_code=new_code
-        code=new_code
-       else
-        new_code=code
-        fail=fail.."混淆变量失败\n"
-      end
-
-      Writer(NewFilePath,new_code)
-
-      local str=loadfile(NewFilePath)
-      if str then
-        local uncode=string.dump(str)
-        Writer(NewFilePath,uncode)
-        Alert("完成\n"..fail)
-       else
-        Alert("文件无法运行，编译失败\n"..fail)
-      end
-
      else
-      Toast("这个文件无法运行")
+      Toast("路径错误或文件无法运行")
     end
   end
 end
