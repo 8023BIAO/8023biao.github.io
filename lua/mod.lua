@@ -203,10 +203,15 @@ function 创建文件(路径)
   io.open(路径,'w')
 end
 
-function 读取文件(路径)
-  local 文件内容=io.open(路径):read("*a")
-  return 文件内容
+--读取文件
+function 读取文件(path)
+  local file = io.open(path, "r")
+  io.input(file)
+  local data = io.read("*a")
+  io.close(file)
+  return data
 end
+
 
 --注意是重新写入
 function 写入文件(路径,内容)
