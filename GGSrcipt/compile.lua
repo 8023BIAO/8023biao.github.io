@@ -224,7 +224,7 @@ One_time_encryption.Direct_encryption=function(password,code)
 end
 
 function Automatic_encryption()
-  local list=gg.prompt({"要编译的源文件","套壳层数[0;10]","密码(不设置就点 确定 )"},{"/sdcard/","3","这里输入密码"},{"file","number","text"})
+  local list=gg.prompt({"源文件:","套壳层数:[0;10]","密码:"},{"/sdcard/","3","这里输入密码"},{"file","number","text"})
   if list and list[1] then
     local path=tostring(list[1])
     if loadfile(path) then
@@ -297,7 +297,7 @@ function Automatic_encryption()
           Writer(NewFilePath,uncode)
 
           --重复刷16进制代码并执行
-          if list[2] and tonumber(list[2])>=1 then
+          if tonumber(list[2])>=1 then
             for i=0,tonumber(list[2]) do
               local unc=Reader(NewFilePath)
               local xuncode="--防纯小白,其他啥都不防\n local Biao=\"".. to_hex(unc) .."\"\nfunction from_hex(hex)\nreturn (string.gsub(hex,'..', function(cc)\nreturn string.char(tonumber(cc, 16))\nend))\nend\nreturn pcall(load(from_hex(Biao))())"
@@ -305,7 +305,7 @@ function Automatic_encryption()
             end
           end
 
-          if list[3] and tostring(list[3])~="这里输入密码" then--not (tostring(list[3]):match("^%s*$")) then
+          if not (tostring(list[3]):match("^%s*$")) then
             local xuncode=One_time_encryption.Direct_encryption(tostring(list[3]),Reader(NewFilePath))
             Writer(NewFilePath,xuncode)
           end
