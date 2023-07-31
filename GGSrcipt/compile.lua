@@ -207,7 +207,7 @@ function Automatic_encryption()
 
         local str=loadfile(NewFilePath)
         if str then
-          local uncode=string.dump(str)
+          local uncode=string.dump(str,false)
           Writer(NewFilePath,uncode)
           Alert("完成\n"..fail)
          else
