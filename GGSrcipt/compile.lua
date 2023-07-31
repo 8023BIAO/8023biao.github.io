@@ -16,7 +16,7 @@ end
 
 --路径改后缀
 function PathMatch(path,l)
-  return path:match("(.*)%.lua").."_"..l..".lua"
+  return path:match("(.*)%.?l?u?a?").."_"..l..".lua"
 end
 
 --写出文件
