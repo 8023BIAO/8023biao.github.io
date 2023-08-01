@@ -1,9 +1,4 @@
 
---提示
-local function Toast(str)
-  gg.toast(str)
-end
-
 --弹窗
 local function Alert(...)
   return gg.alert(...)
@@ -317,7 +312,7 @@ local function Automatic_encryption()
         Alert("不支持已编译文件")
       end
      else
-      Toast("路径错误或文件无法运行")
+      Alert("路径错误或文件无法运行")
     end
   end
 end
