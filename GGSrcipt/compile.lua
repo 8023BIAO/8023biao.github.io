@@ -1,26 +1,26 @@
 
 --提示
-function Toast(str)
+local function Toast(str)
   gg.toast(str)
 end
 
 --弹窗
-function Alert(...)
+local function Alert(...)
   return gg.alert(...)
 end
 
 --复制
-function copyText(str)
+local function copyText(str)
   gg.copyText(str)
 end
 
 --路径改后缀
-function PathMatch(path,l)
+local function PathMatch(path,l)
   return path:match("(.*)%.?l?u?a?").."_"..l..".lua"
 end
 
 --写出文件
-function Writer(path,data)
+local function Writer(path,data)
   if path and data then
     local file = io.open(path,"w+b")
     io.output(file)
@@ -30,7 +30,7 @@ function Writer(path,data)
 end
 
 --读取文件
-function Reader(path)
+local function Reader(path)
   if path then
     local file = io.open(path, "r")
     io.input(file)
@@ -41,39 +41,34 @@ function Reader(path)
 end
 
 --字符替换(bilibili小鳄鱼)
-function func_env(code,cok)
-  for k,v in pairs(_ENV) do
-    local t=type(v)
+local func_env = function(code, cok)
+  local new_code = code
+  local env = _ENV
+
+  for k,v in pairs(env) do
+    local t = type(v)
     if t == "table" then
       for kk,vv in pairs(v) do
-        code=code:gsub(k .."%s+%.%s+" .. kk, "_ENV['"..k .."']['" .. kk .."']")
+        new_code = string.gsub(new_code, k.."(%s+%.%s+"..kk, "_ENV['"..k.."']['"..kk.."]")
       end
-     elseif t == "function" then
-      if cok then
-        --这一行有错误
-        code=code:gsub(k .."%s*%(", "_ENV['" ..k .."'](")
-      end
+     elseif t == "function" and cok then
+      new_code = string.gsub(new_code, k.."%s*%(", "_ENV['"..k.."'](")
     end
   end
-  return code
+
+  return new_code
 end
 
-function stringToChars(inputString)
+local function stringToChars(inputString)
   local data=table.concat({string.byte(inputString,1,-1)},',')
   data= "string.char("..data..")"
   return data
 end
 
-function ASCLL(code)
+local function ASCLL(code)
   code=string.gsub(code,"\39(.-)\39",stringToChars)
   code=string.gsub(code,"\34(.-)\34",stringToChars)
   return code
-end
-
-function to_hex(str)
-  return (string.gsub(str,'.', function(c)
-    return (string.format('%2X', string.byte(c)))
-  end))
 end
 
 --ChatGPT 4 优化代码 lua手册用户上传代码 名字忘了
@@ -92,11 +87,13 @@ local reserved = {
 
 --不需要的匹配结果
 local exclude={
-  "^(%d+)$"
+  "^(%d+)$",
 }
 
-function getInt(code)
+local function getInt(code)
   local varList = {}
+
+  --变量
   for k in code:gmatch("([%w_]+)%s*[,=]") do
     if not reserved[k] then
       for c,v in pairs(exclude) do
@@ -106,13 +103,36 @@ function getInt(code)
       end
     end
   end
+
+  --goto 标签
+  for k in code:gmatch("::%s*([%w_]+)%s*::") do
+    if not reserved[k] then
+      for c,v in pairs(exclude) do
+        if not k:find(v) then
+          varList[#varList+1] = k
+        end
+      end
+    end
+  end
+
+  --函数
+  for k in code:gmatch("function%s+([%w_]+)%s*%(.-%)") do
+    if not reserved[k] then
+      for c,v in pairs(exclude) do
+        if not k:find(v) then
+          varList[#varList+1] = k
+        end
+      end
+    end
+  end
+
   return varList
 end
 
 math.randomseed(os.time())
 math.random(1)
 
-function Rand(num)--生成混淆码
+local function Rand(num)--生成混淆码
   local tab={"O","o","0"}
   local str=tab[math.random(1,#tab-1)]
   for i=1,num-1 do
@@ -121,7 +141,7 @@ function Rand(num)--生成混淆码
   return str
 end
 
-function obfuscateCode(code)
+local function obfuscateCode(code)
   local variables = getInt(code)
   local replacements = {}
 
@@ -165,35 +185,6 @@ One_time_encryption.encode=function(password, code)
   return hex_code
 end
 
-One_time_encryption.readme=[=[--[[
-
-适用版本：适用于 Lua 5.1 及以上版本。
-
-通用性：这段代码实现了一个简单的加密和解密算法，可以在多种场景下使用。它通过混合字符串和密码来实现加密，并使用十六进制表示加密后的字符串。解密时，使用相同的密码进行反向操作。这使得该算法具有一定程度的通用性。
-
-优点：
-实现简单：这个算法的实现非常简单，不需要引入复杂的第三方库。
-易于理解：代码结构清晰，容易理解其工作原理。
-
-缺点：
-安全性较低：由于算法本身较为简单，其安全性相对较低，可能容易被破解。
-依赖 Lua 的 string 库：这段代码依赖于 Lua 的 string 库，因此在不支持该库的环境中无法使用。
-
-意义：这段代码为 Lua 提供了一个简单的加密和解密方法，可以帮助开发者在不引入复杂第三方库的情况下实现基本的加密功能。这对于学习和实践 Lua 编程是有益的。
-
-其他：虽然这个算法具有一定的通用性和易用性，但在实际生产环境中，建议使用更为成熟和安全的加密算法，如 AES、RSA 等。这些算法在安全性方面有更好的保障，且已经有成熟的第三方库可供使用。
-
-用途:
-这段代码的主要用途是在 Lua 程序中实现简单的字符串加密和解密功能。具体应用场景可能包括：
-保护数据：对存储或传输的敏感数据进行加密，以防止未经授权的访问和篡改。例如，在文件存储、网络通信等场景中，可以使用此加密方法来保护文本数据。
-验证信息：通过加密和解密过程，验证发送方和接收方是否拥有相同的密码。这可以用于简单的身份验证或授权操作。
-学习和教学：这段代码可以作为学习和教学 Lua 编程的实例，帮助初学者了解字符串操作、函数定义和调用等基本概念。
-
-注意:虽然这段代码具有一定的实用性，但由于其安全性较低，不建议在生产环境中用于处理高度敏感和安全性要求较高的数据。
-]]
-
-]=]
-
 --要写入解密函数
 One_time_encryption.code_config=[=[local function from_hex(hex)
   return (string.gsub(hex,'..', function(cc)
@@ -219,11 +210,11 @@ end]=]
 --直接加密
 One_time_encryption.Direct_encryption=function(password,code)
   local encode=(One_time_encryption.encode(password,code))
-  local uncode=One_time_encryption.readme..One_time_encryption.code_config.."\n"..[[local xcode="]].. encode .. [[" return pcall(load(decode(xcode,"这里输入密码"))) ]]
+  local uncode=One_time_encryption.code_config.."\n"..[[local xcode="]].. encode .. [[" return pcall(load(decode(xcode,"这里输入密码"))) ]]
   return uncode--返回加密后的字符串
 end
 
-function Automatic_encryption()
+local function Automatic_encryption()
   local list=gg.prompt({"源文件:","套壳层数:[0;10]","密码:"},{"/sdcard/","3","这里输入密码"},{"file","number","text"})
   if list and list[1] then
     local path=tostring(list[1])
@@ -246,7 +237,7 @@ function Automatic_encryption()
          else
           new_code=new_code
           code=new_code
-          fail="ENV[gg函数]失败\n"
+          fail="_ENV[gg函数]失败\n"
         end
 
         new_code=func_env(new_code,true)
@@ -256,7 +247,7 @@ function Automatic_encryption()
           code=new_code
          else
           new_code=code
-          fail=fail.."ENV[函数]失败\n"
+          fail=fail.."_ENV[函数]失败\n"
         end
 
         new_code=func_env(new_code)
@@ -266,7 +257,7 @@ function Automatic_encryption()
           code=new_code
          else
           new_code=code
-          fail=fail.."ENV[表]失败\n"
+          fail=fail.."_ENV[表]失败\n"
         end
 
         new_code=ASCLL(new_code)
@@ -276,7 +267,7 @@ function Automatic_encryption()
           code=new_code
          else
           new_code=code
-          fail=fail.."字符转ASCLL失败\n"
+          fail=fail.."字符转Ascll失败\n"
         end
 
         new_code=obfuscateCode(new_code)
@@ -286,7 +277,7 @@ function Automatic_encryption()
           code=new_code
          else
           new_code=code
-          fail=fail.."混淆变量失败\n"
+          fail=fail.."变量混淆失败\n"
         end
 
         Writer(NewFilePath,new_code)
@@ -300,7 +291,7 @@ function Automatic_encryption()
           if tonumber(list[2])>=1 then
             for i=0,tonumber(list[2]) do
               local unc=Reader(NewFilePath)
-              local xuncode="--防纯小白,其他啥都不防\n local Biao=\"".. to_hex(unc) .."\"\nfunction from_hex(hex)\nreturn (string.gsub(hex,'..', function(cc)\nreturn string.char(tonumber(cc, 16))\nend))\nend\nreturn pcall(load(from_hex(Biao))())"
+              local xuncode="local Biao=\"".. One_time_encryption.to_hex(unc) .."\"\nfunction from_hex(hex)\nreturn (string.gsub(hex,'..', function(cc)\nreturn string.char(tonumber(cc, 16))\nend))\nend\nreturn pcall(load(from_hex(Biao))())"
               Writer(NewFilePath,xuncode)
             end
           end
