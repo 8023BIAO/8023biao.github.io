@@ -4,11 +4,6 @@ local function Alert(...)
   return gg.alert(...)
 end
 
---复制
-local function copyText(str)
-  gg.copyText(str)
-end
-
 --路径改后缀
 local function PathMatch(path,l)
   return path:match("(.*)%.?l?u?a?").."_"..l..".lua"
@@ -35,7 +30,7 @@ local function Reader(path)
   end
 end
 
---字符替换(bilibili小鳄鱼)
+--字符替换
 local func_env = function(code, cok)
   local new_code = code
   local env = _ENV
@@ -66,7 +61,6 @@ local function ASCLL(code)
   return code
 end
 
---ChatGPT 4 优化代码 lua手册用户上传代码 名字忘了
 local reserved = {
   ["and"]=true, ["break"]=true,["do"]=true,["else"]=true,
   ["elseif"]=true,["end"]=true,["false"]=true, ["for"]=true,
@@ -307,7 +301,6 @@ local function Automatic_encryption()
           Alert("文件无法运行，编译失败\n"..fail)
         end
 
-
        else
         Alert("不支持已编译文件")
       end
@@ -318,47 +311,9 @@ local function Automatic_encryption()
 end
 
 gg.showUiButton()
+
 while true do
   if gg.isClickedUiButton() then
     Automatic_encryption()
   end
 end
-
---[[
-biao(智障)学习之作(cv大法之作)，就是一个普通(辣鸡)的编译(都不能说加密，有辱这两个字)
-防纯小白 其他啥都不防 代码上面自己看 
-
-肯定会有人说“抄袭，不要脸!就是泛滥东西。学基础要去圈？辣鸡东西难道需要加密吗？”这类等等。
-第一:我已注明来源或作者，尊重作者。
-第二:我就不能学习了吗？虽然我很智障。
-第三:没想过圈，倒是被圈不少于1000，我进厂不比这个来的快？还不费脑子，真看不上这个....
-第四:开源(虽然是辣鸡，但是...没啥想说了，你说的对)
-第五:有没有一种可能，就是说 我是说如果啊 我这样的小白写这个加密(就是一个编译)(或者说使用这个加密后的文件)想分享给使用gg修改器的朋友面前装个逼？就是不想让他看见源代码(朋友同小白)
-第六:你说的都对，我已经表明所有想法和开源代码。你还要我怎么样？
-第七:我这个盾已经套满了，如果你还想攻击我的话我也没辙了。
-
-学习结果如下:
-16进制储存数据:多层套壳就是浪费储存空间，内存，性能,感觉除了储存数据，没啥用。
-字符串转ascll:加密基础，隐藏编译后显示。也就仅此了
-变量混淆:加密基础,隐藏编译后显示，感觉还可以再加大混淆的学习
-一次性(临时简易)加密:和名字一样，可以被破解强度不够，只能作为临时简易一次性的东西，穷举法跑出密码时间问题。
-
-已知bug:
-混淆代码和char没有匹配lua正则导致替换错误，脚本无法运行
-与加密函数相同的函数可能会加密失败(原因未知
-如果套壳太多就会内存加载过曝
-密码加密可以被穷举法跑出来只是时间问题
-
-日后想学习:
-防止反编译，防log,防hook,防拆卸,防拦截...其他还不知道
-
-防反:添加(刷)辣鸡代码(死代码)可以防止一键反，但是不能防清理辣鸡代码然后再反(防进阶小白)
-防log:只能防单线程，循环刷gg.searchAddress()(其他识路不晓得)
-防hook，检测debug类函数what是否为lua，是就是被重写自定义了 或者find(@)开头
-防拆卸:没点子，也在网上没找到任何教程
-防拦截:同上
-
-以上知道的都是大家已知的基础了。不过目前需要的是防止反编译然后才是其他的
-
-
-]]
