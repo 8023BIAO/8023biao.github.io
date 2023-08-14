@@ -1391,7 +1391,7 @@ function 系统下载监听(链接,目录名,文件名,下载完成事件)
 end
 
 function Mod(path)
-  local url="https://8023biao.github.io/lua/mod.lua"
+  local url="https://8023biao.github.io/lua/Androlua_mod.lua"
   local 储存路径=tostring(activity.getLuaDir().. tostring(path))
   local code=getHtml(url)
   if code then
