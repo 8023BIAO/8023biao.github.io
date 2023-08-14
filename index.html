@@ -1,112 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Github Pages File Browser</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Github Pages File Browser</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
 
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
 
-        .file-browser {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+.file-browser {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-        .folder, .file {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 10px;
-        }
+.folder, .file {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
 
-        .name {
-            font-size: 18px;
-            margin-bottom: 5px;
-        }
+.name {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
 
-        .folder .name:before {
-            content: '📁';
-        }
+.folder .name:before {
+  content: '📁';
+}
 
-        .file .name:before {
-            content: '📄';
-        }
-    </style>
+.file .name:before {
+  content: '📄';
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div id="file-browser"></div>
-    </div>
+<div class="container">
+<div id="file-browser"></div>
+</div>
 
-    <script>
-        const rootDirectory = '/';
+<script>
+const rootDirectory = '../';
 
-        function getDirectoriesAndFiles(path) {
-            fetch(`***/${encodeURIComponent(process.env.GITHUB_REPOSITORY)}/main${path}`)
-                .then((response) => response.json())
-                .then((data) => {
-                    const directoryElement = document.createElement('div');
-                    directoryElement.className = 'directory';
+function getDirectoriesAndFiles(path) {
+  fetch(`***/${encodeURIComponent(process.env.GITHUB_REPOSITORY)}/main${path}`)
+  .then((response) => response.json())
+  .then((data) => {
+    const directoryElement = document.createElement('div');
+    directoryElement.className = 'directory';
 
-                    const nameElement = document.createElement('span');
-                    nameElement.className = 'name';
-                    nameElement.textContent = path.endsWith('/') ? path : path.substring(path.lastIndexOf('/') + 1);
-                    directoryElement.appendChild(nameElement);
+    const nameElement = document.createElement('span');
+    nameElement.className = 'name';
+    nameElement.textContent = path.endsWith('/') ? path : path.substring(path.lastIndexOf('/') + 1);
+    directoryElement.appendChild(nameElement);
 
-                    data.forEach((item) => {
-                        if (item.type === 'file') {
-                            const fileElement = createFileElement(item);
-                            directoryElement.appendChild(fileElement);
-                        } else if (item.type === 'dir') {
-                            const subDirectoryElement = createSubDirectoryElement(item, path);
-                            directoryElement.appendChild(subDirectoryElement);
-                        }
-                    });
+    data.forEach((item) => {
+      if (item.type === 'file') {
+        const fileElement = createFileElement(item);
+        directoryElement.appendChild(fileElement);
+        } else if (item.type === 'dir') {
+        const subDirectoryElement = createSubDirectoryElement(item, path);
+        directoryElement.appendChild(subDirectoryElement);
+      }
+    });
 
-                    document.getElementById('file-browser').appendChild(directoryElement);
-                });
-        }
+    document.getElementById('file-browser').appendChild(directoryElement);
+  });
+}
 
-        function createFileElement(item) {
-            const fileElement = document.createElement('div');
-            fileElement.className = 'file';
+function createFileElement(item) {
+  const fileElement = document.createElement('div');
+  fileElement.className = 'file';
 
-            const nameElement = document.createElement('span');
-            nameElement.className = 'name';
-            nameElement.textContent = item.name;
-            fileElement.appendChild(nameElement);
+  const nameElement = document.createElement('span');
+  nameElement.className = 'name';
+  nameElement.textContent = item.name;
+  fileElement.appendChild(nameElement);
 
-            return fileElement;
-        }
+  return fileElement;
+}
 
-        function createSubDirectoryElement(item, path) {
-            const subDirectoryElement = document.createElement('div');
-            subDirectoryElement.className = 'directory';
+function createSubDirectoryElement(item, path) {
+  const subDirectoryElement = document.createElement('div');
+  subDirectoryElement.className = 'directory';
 
-            const nameElement = document.createElement('span');
-            nameElement.className = 'name';
-            nameElement.textContent = item.name;
-            subDirectoryElement.appendChild(nameElement);
+  const nameElement = document.createElement('span');
+  nameElement.className = 'name';
+  nameElement.textContent = item.name;
+  subDirectoryElement.appendChild(nameElement);
 
-            getDirectoriesAndFiles(`${path}/${item.name}`);
+  getDirectoriesAndFiles(`${path}/${item.name}`);
 
-            return subDirectoryElement;
-        }
+  return subDirectoryElement;
+}
 
-        getDirectoriesAndFiles(rootDirectory);
-    </script>
+getDirectoriesAndFiles(rootDirectory);
+</script>
 </body>
 </html>
