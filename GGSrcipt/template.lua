@@ -52,8 +52,13 @@ local function Toast(str)
 end
 
 --复制
-function copyText(str)
+local function copyText(str)
   gg.copyText(str)
+end
+
+--编辑所有搜索的数据
+local function editAll(...)
+  return gg.editAll(...)
 end
 
 --16进制转10进制
@@ -78,8 +83,8 @@ local function addrjump(a, b)
 end
 
 --设置搜索内存
-local function setRanges(type)
-  gg.setRanges(type)
+local function setRanges(...)
+  gg.setRanges(...)
 end
 
 --修改写入
@@ -91,17 +96,34 @@ local function modify(address,type,value,freeze)
   tg[1].value = value --值
   tg[1].freeze = freeze --冻结
   --添加到保存数据
-  gg.addListItems(tg)
+  --gg.addListItems(tg)
   --设置列表
   gg.setValues(tg)
   --清除搜索数据
-  gg.clearResults()
+  --gg.clearResults()
 end
 
 --搜索数值
-local function searchNumber(value,type)
+local function searchNumber(...)
   --搜索数值
-  gg.searchNumber(value,type)
+  gg.searchNumber(...)
+  --获取搜索结果数量
+  local n=gg.getResultsCount()
+  if n >0 then
+    --获取全部搜索结果
+    local table=gg.getResults(tonumber(n))
+    --转成获取值(table)
+    table=gg.getValues(table)
+    return table
+   else
+    return false
+  end
+end
+
+--改善数值
+local function refineAddress(...)
+  --搜索数值
+  gg.refineAddress(...)
   --获取搜索结果数量
   local n=gg.getResultsCount()
   if n >0 then
@@ -132,7 +154,7 @@ local function searchAddr(addr,type)
 end
 
 --多级偏移获取地址
-function offset(so,...)
+local function offset(so,...)
   local addr=SoAddr(so)
   local t={...}
   for i=1,#t do
@@ -203,6 +225,3 @@ while true do
     end
   end
 end
-
---此模板由Biao编写
---都是基础的东西没啥好说的(勿喷
