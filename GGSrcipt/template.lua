@@ -121,9 +121,9 @@ local function searchNumber(...)
 end
 
 --改善数值
-local function refineAddress(...)
+local function refineNumber(...)
   --搜索数值
-  gg.refineAddress(...)
+  gg.refineNumber(...)
   --获取搜索结果数量
   local n=gg.getResultsCount()
   if n >0 then
