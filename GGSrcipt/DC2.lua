@@ -66,7 +66,7 @@ local function modify(address,type,value,freeze,name)
     tg[1].name = name --自定义名称
   end
   --添加到保存数据
-  gg.addListItems(tg)
+  --gg.addListItems(tg)
   --设置列表
   gg.setValues(tg)
 end
