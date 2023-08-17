@@ -55,13 +55,18 @@ local function setRanges(...)
 end
 
 --修改写入
-local function modify(address,type,value,freeze)
+local function modify(address,type,value,freeze,name)
   local tg={}
   tg[1]={}
   tg[1].address = address--地址
   tg[1].flags = type --类型
   tg[1].value = value --值
   tg[1].freeze = freeze --冻结
+  if name then
+    tg[1].name = name --自定义名称
+  end
+  --添加到保存数据
+  gg.addListItems(tg)
   --设置列表
   gg.setValues(tg)
 end
@@ -352,6 +357,8 @@ local function init()
   {-xnum(1), xoffset(8), 4},
   {-xnum(1), xoffset(12), 4})
 
+  Alert(tostring(address_list))
+
   if address_list and #address_list >=1 then
     for i=1,#_data_name do
       table.insert(_name, _data_name[i])
@@ -363,15 +370,21 @@ local function init()
               _l[1]=_l[1]*2
             end
             for ii=1,#address_list do
-              gg.setValues({[1]={
-                  address = tonumber("0x"..address_list[ii])+tonumber(getOffsetTabl()[i]),
-                  flags = TYPE.D,
-                  value = _l[1],
-                  freeze = _l[2],
-              }})
+              if type(address_list[ii])~="table" then
+                local _t={[1]={
+                    address = tonumber("0x"..address_list[ii])+tonumber(getOffsetTabl()[i]),
+                    flags = TYPE.D,
+                    value = _l[1],
+                    freeze = _l[2],
+                    --name=_data_name[i]
+                }}
+                gg.setValues(_t)
+                --gg.addListItems(_t)
+              end
             end
             end,function(e)
             Alert(e)
+            --copyText(e)         
           end)
         end
       end)
@@ -411,25 +424,20 @@ function Modify_list()
 end
 
 function main()
-  choice("61项修改",function()
+  choice("选项修改",function()
     M("Modify_list")
     end,"关于/帮助",function()
     Alert([[
-    免费,开源,安全,
+       
+    兼容:32位&64位(建议使用64位)
     
-    兼容:虚拟机|框架|root|32位|64位|全渠道服
+    感谢(不分先后顺序):
     
-    更新地址:https://8023biao.github.io/GGScript/DC2.lua
-    
-    感谢以下帮助(不分先后顺序):
-    
-    坤坤 2992113240 (提供特征码和功能偏移量)
+    坤坤:2992113240 (提供特征码和功能偏移量)
    
-    67:2115906232(提供交流群以及信息帮助)
+    67:2115906232 (提供交流群以及信息帮助)
     
      ]])
-    end,"结束脚本",function()
-    os.exit()
   end)
 end
 
@@ -445,14 +453,11 @@ end
 
 
 --[[
-感谢以下帮助:
-
-坤坤:2992113240(提供特征码和功能偏移量)
-67:2115906232(提供交流群以及信息帮助)
-
 已知问题:
 XAGA函数感觉太拉胯，又不会其他写法
 为什么64位游戏获取特征码基址有两个？没办法两个一起改了。。。。
+转32位修改国库闪退了。。。。
+
 
 其他:我就是一个啥都不会的小白，大佬见笑了
 ]]
