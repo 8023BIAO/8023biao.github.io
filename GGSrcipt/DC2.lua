@@ -357,8 +357,6 @@ local function init()
   {-xnum(1), xoffset(8), 4},
   {-xnum(1), xoffset(12), 4})
 
-  Alert(tostring(address_list))
-
   if address_list and #address_list >=1 then
     for i=1,#_data_name do
       table.insert(_name, _data_name[i])
