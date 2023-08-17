@@ -1,6 +1,4 @@
 
-local gg=_G["gg"]
-
 --简写类型
 local TYPE={
   --字母赋值 gg类型 数字对应
