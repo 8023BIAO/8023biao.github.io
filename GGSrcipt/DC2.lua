@@ -369,20 +369,28 @@ local function init()
             end
             for ii=1,#address_list do
               if type(address_list[ii])~="table" then
+
+                local ty
+
+                if i==11 then
+                  ty=TYPE.F
+                 else
+                  ty=TYPE.D
+                end
+
                 local _t={[1]={
                     address = tonumber("0x"..address_list[ii])+tonumber(getOffsetTabl()[i]),
-                    flags = TYPE.D,
+                    flags = ty,
                     value = _l[1],
                     freeze = _l[2],
-                    --name=_data_name[i]
                 }}
+
                 gg.setValues(_t)
-                --gg.addListItems(_t)
               end
             end
             end,function(e)
             Alert(e)
-            --copyText(e)         
+            --copyText(e)    
           end)
         end
       end)
