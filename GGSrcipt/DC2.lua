@@ -1,5 +1,14 @@
 
-local gg=_G["gg"]
+-----------------------------------------
+--全局变量
+-----------------------------------------
+
+local gg=_G["gg"]--个人习惯
+local _fun={}----61项列表事件存放
+local _name={}--61项列表名字存放
+local config--特征码地址表存放
+local Menu --储存现在菜单
+local Xmod--存放x32&64位变量
 
 --简写类型
 local TYPE={
@@ -33,6 +42,10 @@ local REGION={
   XA=gg.REGION_CODE_APP, --Xa内存 16384
   XS=gg.REGION_CODE_SYS, --Xs内存 32768
 }
+
+-----------------------------------------
+--函数封装与自定义
+-----------------------------------------
 
 --弹窗
 local function Alert(...)
@@ -97,6 +110,11 @@ local function refineNumber(...)
   end
 end
 
+--个人习惯
+local function prompt(...)
+  return gg.prompt(...)
+end
+
 -- 自定义函数
 local function func(expression, table)
   for k, v in pairs(table) do
@@ -106,8 +124,6 @@ local function func(expression, table)
   end
   return nil
 end
-
-local Menu --储存现在菜单
 
 --菜单导航
 function M(str)
@@ -139,6 +155,7 @@ local function choice(...)
   if result then
     result()
   end
+  return _m
 end
 
 --xs写法获取特征码地址 v1版后续待改进
@@ -183,7 +200,9 @@ local function XSGA(...)
   end
 end
 
-local Xmod
+-----------------------------------------
+--x32&x64函数封装
+-----------------------------------------
 
 --32&64数字偏移量自动转换
 local function xoffset(num)--输入32位数字
@@ -203,8 +222,49 @@ local function xnum(num)--输入64位默认值
   end
 end
 
+--32&64修改(修改输,类型,冻结,偏移量,特征码基址表 用XAGA函数获取)
+local function xmodfiy(num,types,freeze,offset,table)
+  if not Xmod then
+    num=num*2
+  end
+  xpcall(function()
+    for i=1,#table do
+      if type(table[i])~="table" then
+        local _t={[1]={
+            address = tonumber("0x"..table[i])+tonumber(xoffset(offset)),
+            flags = types,
+            value = num,
+            freeze = freeze
+        }}
+        gg.setValues(_t)
+      end
+    end
+  end,Alert)
+end
+
+--初始获取特征码表地址
+local function IFCA()
+  setRanges(REGION.A)
+  gg.clearResults()
+  local address_list=XSGA(
+  {-xnum(2), 4, 32},
+  {-xnum(1), -xoffset(36), 4},
+  {-xnum(1), -xoffset(32), 4},
+  {-xnum(1), -xoffset(28), 4},
+  {-xnum(1), -xoffset(24), 4},
+  {-xnum(1), -xoffset(20), 4},
+  {-xnum(1), xoffset(4), 4},
+  {-xnum(1), xoffset(8), 4},
+  {-xnum(1), xoffset(12), 4})
+  if address_list then
+    return address_list
+   else
+    return nil
+  end
+end
+
 -----------------------------------------
---函数封装结束
+--修改功能封装
 -----------------------------------------
 
 --坤坤提供代码
@@ -341,22 +401,8 @@ local function getOffsetTabl()
   return addr_offset
 end
 
-local _fun={}
-local _name={}
-
-local function init()
-  setRanges(REGION.A)
-  local address_list=XSGA(
-  {-xnum(2), 4, 32},
-  {-xnum(1), -xoffset(36), 4},
-  {-xnum(1), -xoffset(32), 4},
-  {-xnum(1), -xoffset(28), 4},
-  {-xnum(1), -xoffset(24), 4},
-  {-xnum(1), -xoffset(20), 4},
-  {-xnum(1), xoffset(4), 4},
-  {-xnum(1), xoffset(8), 4},
-  {-xnum(1), xoffset(12), 4})
-
+local function list_modfiy()
+  local address_list=config
   if address_list and #address_list >=1 then
     for i=1,#_data_name do
       table.insert(_name, _data_name[i])
@@ -369,33 +415,28 @@ local function init()
             end
             for ii=1,#address_list do
               if type(address_list[ii])~="table" then
-
                 local ty
-
-                if i==11 then
+                if i==11 then--国库改为f类
                   ty=TYPE.F
                  else
                   ty=TYPE.D
                 end
-
                 local _t={[1]={
                     address = tonumber("0x"..address_list[ii])+tonumber(getOffsetTabl()[i]),
                     flags = ty,
                     value = _l[1],
                     freeze = _l[2],
                 }}
-
                 gg.setValues(_t)
               end
             end
             end,function(e)
             Alert(e)
-            --copyText(e)    
+            --copyText(e)
           end)
         end
       end)
     end
-
     return true
    else
     return false
@@ -403,36 +444,59 @@ local function init()
 end
 
 local function Option_modification()
-  local _m = gg.choice(_name)
-  if not _m then
-    M("main")
-  end
-  local result = func(_m, _fun)
-  if result then
-    result()
+  if #_fun>0 and #_name>0 then
+    local _m = gg.choice(_name)
+    if not _m then
+      M("main")
+    end
+    local result = func(_m, _fun)
+    if result then
+      result()
+    end
+   else
+    list_modfiy()
+    Option_modification()
   end
 end
 
 -----------------------------------------
---自定义功能结束
+--菜单
 -----------------------------------------
-
-gg.clearResults()
-gg.showUiButton()
-
-Xmod=gg.getTargetInfo()["x64"]
-local config=init()
-
 function Modify_list()
-  if config then
-    Option_modification()
+  Option_modification()
+end
+
+function TimeModify()
+  local _m=choice("年",function()
+    local _p=prompt({"年份:","冻结"},{"",false},{"number","checkbox"})
+    if _p and _p[1] then
+      xmodfiy(_p[1],TYPE.D,_p[2],-528,config)
+    end
+  end,
+  "月",function()
+    local _p=prompt({"月:[0;12]","冻结"},{"5",false},{"number","checkbox"})
+    if _p and _p[1] then
+      xmodfiy(_p[1],TYPE.D,_p[2],-520,config)
+    end
+  end,
+  "时辰",function()
+    local _p=prompt({"时辰(0早,1晌,2晚,3夜):[0;3]","冻结"},{"",false},{"number","checkbox"})
+    if _p and _p[1] then
+      xmodfiy(_p[1],TYPE.D,_p[2],-516,config)
+    end
+  end)
+  if not _m then
+    M("main")
   end
 end
 
 function main()
   choice("选项修改",function()
     M("Modify_list")
-    end,"关于/帮助",function()
+    end,"时间修改",function()
+    M("TimeModify")
+  end,
+  "关于/帮助",function()
     Alert([[
        
     兼容:32位&64位(建议使用64位)
@@ -447,7 +511,16 @@ function main()
   end)
 end
 
+-----------------------------------------
+--启动
+-----------------------------------------
+
+Xmod=gg.getTargetInfo()["x64"]
+config=IFCA()
+
 if config then
+  gg.showUiButton()
+  M()
   while true do
     if gg.isClickedUiButton() then
       M()
@@ -455,13 +528,16 @@ if config then
   end
  else
   Alert("没有选择游戏进程或其他错误，试试先选择进程再启动脚本？如果还不行请等待更新")
+  os.exit()
 end
 
+-----------------------------------------
+-----------------------------------------
 
 --[[
 已知问题:
 XAGA函数感觉太拉胯，又不会其他写法
-为什么64位游戏获取特征码基址有两个？没办法两个一起改了。。。。
+为什么64位游戏获取特征码基址有多个？没办法一起改了。。。。可能导致闪退，目前没办法解决
 转32位修改国库闪退了。。。。
 
 
