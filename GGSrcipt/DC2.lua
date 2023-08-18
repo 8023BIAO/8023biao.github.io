@@ -405,7 +405,7 @@ local function list_modfiy()
     for i=1,#_data_name do
       table.insert(_name, _data_name[i])
       table.insert(_fun,function()
-        local _l=gg.prompt({_data_name[i]..":","冻结"},{"",false},{"number","checkbox"})
+        local _l=gg.prompt({_data_name[i]..":"},{""},{"number"})
         if _l and not tostring(_l[1]):match("^%s*$") then
           xpcall(function()
             _l[1]=x64(_l[1])
@@ -421,7 +421,7 @@ local function list_modfiy()
                     address = tonumber("0x"..address_list[ii])+tonumber(getOffsetTabl()[i]),
                     flags = ty,
                     value = _l[1],
-                    freeze = _l[2],
+                    --  freeze = _l[2],
                 }}
                 gg.setValues(_t)
               end
@@ -470,50 +470,32 @@ local function Name_Modfiy()
   end
 end
 
-local function Childbirth()--下一回合生孩子
-  setRanges(REGION.A)
-  local _s=searchNumber(x64(97024),TYPE.D)--值bili UID:1831131893
-  if _s then
-    gg.editAll(x64(2),TYPE.D)
-    gg.clearResults()
-    Alert("和ta花前月下然后回去睡一觉就行了")
-  end
-end
-
 -----------------------------------------
 --菜单
 -----------------------------------------
+
 function Modify_list()
   Option_modification()
 end
 
 function TimeModify()
   local _m=choice("年",function()
-    local _p=prompt({"年份:","冻结"},{"",false},{"number","checkbox"})
+    local _p=prompt({"年份:"},{""},{"number"})
     if _p and _p[1] then
       xmodfiy(x64(_p[1]),TYPE.D,_p[2],x32(-528),config)
     end
   end,
   "月",function()
-    local _p=prompt({"月:[0;12]","冻结"},{"5",false},{"number","checkbox"})
+    local _p=prompt({"月:[0;12]"},{"6"},{"number"})
     if _p and _p[1] then
       xmodfiy(x64(_p[1]),TYPE.D,_p[2],x32(-520),config)
     end
   end,
   "时辰",function()
-    local _p=prompt({"时辰(0早,1昼,2晚,3夜):[0;3]","冻结"},{"",false},{"number","checkbox"})
+    local _p=prompt({"时辰(0早,1昼,2晚,3夜):[0;3]"},{""},{"number"})
     if _p and _p[1] then
       xmodfiy(x64(_p[1]),TYPE.D,_p[2],x32(-516),config)
     end
-  end)
-  if not _m then
-    M("main")
-  end
-end
-
-function other_modfiy()
-  local _m=choice("生猴子",function()
-    Childbirth()
   end)
   if not _m then
     M("main")
@@ -529,9 +511,6 @@ function main()
   "文本修改",function()
     Name_Modfiy()
   end,
-  "其他修改",function()
-    M("other_modfiy")
-  end,
   "关于脚本",function()
     Alert([[
        
@@ -542,8 +521,6 @@ function main()
     坤坤:2992113240 (提供特征码和功能偏移量)
    
     67:2115906232 (提供交流群以及信息帮助)
-    
-    bili_UID1831131893:(部分代码)
     
      ]])
   end,
@@ -575,42 +552,3 @@ end
 -----------------------------------------
 --结束
 -----------------------------------------
-
---[[
-请来源注明
-复制时请留下67,坤坤来源，你可以不留我的，
-但是请注明他们，感谢他们无私奉献。不然你玩个屁，我们都没得玩。
-
---这个逼游戏我抓特征码抓了一天没抓到，无动态基址可言。无奈最后用了 坤坤 的偏移量和特征码(你肯定说我菜，我承认，我就是一个啥都不会的小白
---67帝成1群。在里面查看了许多修改教程和资料和67帮助
-
-再注明一次:
-坤坤:2992113240 (提供特征码和功能偏移量)
-67:2115906232 (提供交流群以及信息帮助)
-bili_UID1831131893:(部分代码)
-
-其他问题:
-有些八股取士的万能代码明明有好多教程和代码公开你为什么没有添加(copy)?
-因为我没有钱(18)激活，所以在摸索(偷懒,摸鱼)其他方法
-
-为什么冻结失败？
-不知道，可能获取特征码为多个的原因?
-
-你啥都不会就会抄袭?
-对
-
-不想建个群讨论啥的？
-不想，你想讨论添加67帝成1群就行，我现在在里面，以后可能不在。不想引流啥的麻烦没兴趣，只想搞好脚本。
-
-没有反馈方式?我怎么反馈问题？
-不用，等我自己慢慢发现。我想不想听你反馈。
-
-我想提供帮助
-不了，谢谢，我不需要任何形式的帮助提(对本脚本有益除外，我采用会注明来源。当然无偿
-
-
-
---酒入辅助网已复制，不留来源还改成自己的信息，麻了。(没想到这么狗
---
-
-]]
