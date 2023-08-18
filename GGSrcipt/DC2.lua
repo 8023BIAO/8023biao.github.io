@@ -204,8 +204,8 @@ end
 --x32&x64函数封装
 -----------------------------------------
 
---32&64数字偏移量自动转换
-local function xoffset(num)--输入32位数字
+--32&64数字自动转换
+local function x32(num)
   if Xmod==true then
     return num*2
    else
@@ -214,7 +214,7 @@ local function xoffset(num)--输入32位数字
 end
 
 --32&64数字自动转换
-local function xnum(num)--输入64位默认值
+local function x64(num)
   if Xmod==true then
     return num
    else
@@ -223,18 +223,15 @@ local function xnum(num)--输入64位默认值
 end
 
 --32&64修改(修改输,类型,冻结,偏移量,特征码基址表 用XAGA函数获取)
-local function xmodfiy(num,types,freeze,offset,table)
-  if not Xmod then
-    num=num*2
-  end
+local function xmodfiy(num,types,freezes,offset,table)
   xpcall(function()
     for i=1,#table do
       if type(table[i])~="table" then
         local _t={[1]={
-            address = tonumber("0x"..table[i])+tonumber(xoffset(offset)),
+            address = tonumber("0x"..table[i])+tonumber(offset),
             flags = types,
             value = num,
-            freeze = freeze
+            freeze = freezes
         }}
         gg.setValues(_t)
       end
@@ -242,30 +239,30 @@ local function xmodfiy(num,types,freeze,offset,table)
   end,Alert)
 end
 
+-----------------------------------------
+--修改功能封装
+-----------------------------------------
+
 --初始获取特征码表地址
 local function IFCA()
   setRanges(REGION.A)
   gg.clearResults()
   local address_list=XSGA(
-  {-xnum(2), 4, 32},
-  {-xnum(1), -xoffset(36), 4},
-  {-xnum(1), -xoffset(32), 4},
-  {-xnum(1), -xoffset(28), 4},
-  {-xnum(1), -xoffset(24), 4},
-  {-xnum(1), -xoffset(20), 4},
-  {-xnum(1), xoffset(4), 4},
-  {-xnum(1), xoffset(8), 4},
-  {-xnum(1), xoffset(12), 4})
+  {-x64(2), 4, 32},
+  {-x64(1), -x32(36), 4},
+  {-x64(1), -x32(32), 4},
+  {-x64(1), -x32(28), 4},
+  {-x64(1), -x32(24), 4},
+  {-x64(1), -x32(20), 4},
+  {-x64(1), x32(4), 4},
+  {-x64(1), x32(8), 4},
+  {-x64(1), x32(12), 4})
   if address_list then
     return address_list
    else
     return nil
   end
 end
-
------------------------------------------
---修改功能封装
------------------------------------------
 
 --坤坤提供代码
 local _data_name = {
@@ -330,73 +327,72 @@ local _data_name = {
   "密探经费",
   "调查经费",
   "炼药经费",
-  -- "训练度",
 }
 
 local function getOffsetTabl()
   local addr_offset = {
-    xoffset(-596),
-    xoffset(-608),
-    xoffset(-600),
-    xoffset(-604),
-    xoffset(-536),
-    xoffset(-592),
-    xoffset(-544),
-    xoffset(-540),
-    xoffset(-556),
-    xoffset(-560),
-    xoffset(-532),
-    xoffset(-584),
-    xoffset(268),
-    xoffset(-552),
-    xoffset(-464),
-    xoffset(-460),
-    xoffset(-472),
-    xoffset(-436),
-    xoffset(-432),
-    xoffset(-428),
-    xoffset(-424),
-    xoffset(-448),
-    xoffset(-444),
-    xoffset(-440),
-    xoffset(-420),
-    xoffset(-416),
-    xoffset(-412),
-    xoffset(-408),
-    xoffset(-404),
-    xoffset(-400),
-    xoffset(-396),
-    xoffset(-392),
-    xoffset(-388),
-    xoffset(-384),
-    xoffset(-380),
-    xoffset(-376),
-    xoffset(-372),
-    xoffset(-368),
-    xoffset(-364),
-    xoffset(-360),
-    xoffset(-356),
-    xoffset(-352),
-    xoffset(-348),
-    xoffset(-344),
-    xoffset(-340),
-    xoffset(-336),
-    xoffset(-332),
-    xoffset(-328),
-    xoffset(-324),
-    xoffset(-320),
-    xoffset(-316),
-    xoffset(-312),
-    xoffset(-308),
-    xoffset(-304),
-    xoffset(-300),
-    xoffset(-296),
-    xoffset(-292),
-    xoffset(-288),
-    xoffset(336),
-    xoffset(-280),
-    xoffset(-236),
-    xoffset(-284),
+    x32(-596),
+    x32(-608),
+    x32(-600),
+    x32(-604),
+    x32(-536),
+    x32(-592),
+    x32(-544),
+    x32(-540),
+    x32(-556),
+    x32(-560),
+    x32(-532),
+    x32(-584),
+    x32(268),
+    x32(-552),
+    x32(-464),
+    x32(-460),
+    x32(-472),
+    x32(-436),
+    x32(-432),
+    x32(-428),
+    x32(-424),
+    x32(-448),
+    x32(-444),
+    x32(-440),
+    x32(-420),
+    x32(-416),
+    x32(-412),
+    x32(-408),
+    x32(-404),
+    x32(-400),
+    x32(-396),
+    x32(-392),
+    x32(-388),
+    x32(-384),
+    x32(-380),
+    x32(-376),
+    x32(-372),
+    x32(-368),
+    x32(-364),
+    x32(-360),
+    x32(-356),
+    x32(-352),
+    x32(-348),
+    x32(-344),
+    x32(-340),
+    x32(-336),
+    x32(-332),
+    x32(-328),
+    x32(-324),
+    x32(-320),
+    x32(-316),
+    x32(-312),
+    x32(-308),
+    x32(-304),
+    x32(-300),
+    x32(-296),
+    x32(-292),
+    x32(-288),
+    x32(336),
+    x32(-280),
+    x32(-236),
+    x32(-284),
   }
   return addr_offset
 end
@@ -410,9 +406,7 @@ local function list_modfiy()
         local _l=gg.prompt({_data_name[i]..":","冻结"},{"",false},{"number","checkbox"})
         if _l and not tostring(_l[1]):match("^%s*$") then
           xpcall(function()
-            if not Xmod then
-              _l[1]=_l[1]*2
-            end
+            _l[1]=x64(_l[1])
             for ii=1,#address_list do
               if type(address_list[ii])~="table" then
                 local ty
@@ -470,19 +464,19 @@ function TimeModify()
   local _m=choice("年",function()
     local _p=prompt({"年份:","冻结"},{"",false},{"number","checkbox"})
     if _p and _p[1] then
-      xmodfiy(_p[1],TYPE.D,_p[2],-528,config)
+      xmodfiy(x64(_p[1]),TYPE.D,_p[2],x32(-528),config)
     end
   end,
   "月",function()
     local _p=prompt({"月:[0;12]","冻结"},{"5",false},{"number","checkbox"})
     if _p and _p[1] then
-      xmodfiy(_p[1],TYPE.D,_p[2],-520,config)
+      xmodfiy(x64(_p[1]),TYPE.D,_p[2],x32(-520),config)
     end
   end,
   "时辰",function()
-    local _p=prompt({"时辰(0早,1晌,2晚,3夜):[0;3]","冻结"},{"",false},{"number","checkbox"})
+    local _p=prompt({"时辰(0早,1昼,2晚,3夜):[0;3]","冻结"},{"",false},{"number","checkbox"})
     if _p and _p[1] then
-      xmodfiy(_p[1],TYPE.D,_p[2],-516,config)
+      xmodfiy(x64(_p[1]),TYPE.D,_p[2],x32(-516),config)
     end
   end)
   if not _m then
@@ -515,8 +509,8 @@ end
 --启动
 -----------------------------------------
 
-Xmod=gg.getTargetInfo()["x64"]
-config=IFCA()
+Xmod=gg.getTargetInfo()["x64"]--判断位数
+config=IFCA()--初始化获取特征码地址
 
 if config then
   gg.showUiButton()
@@ -532,12 +526,13 @@ if config then
 end
 
 -----------------------------------------
+--结束
 -----------------------------------------
 
 --[[
 已知问题:
 XAGA函数感觉太拉胯，又不会其他写法
-为什么64位游戏获取特征码基址有多个？没办法一起改了。。。。可能导致闪退，目前没办法解决
+为什么64位游戏获取特征码基址有多个？没办法一起改了。。。。可能导致闪退
 转32位修改国库闪退了。。。。
 
 
