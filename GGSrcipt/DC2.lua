@@ -453,6 +453,21 @@ local function Option_modification()
   end
 end
 
+--修改文本
+local function Name_Modfiy()
+  setRanges(REGION.A)
+  local _p=prompt({"文本:","修改为:"},{"",""},{"text","text"})
+  if _p and not _p[1]:match("^%s*$") and not _p[2]:match("^%s*$") then
+    local _s=searchNumber(";".._p[1],TYPE.W)
+    if _s then
+      gg.editAll(";".._p[2],TYPE.W)
+      gg.clearResults()
+    end
+   elseif not _p then
+    M("main")
+  end
+end
+
 -----------------------------------------
 --菜单
 -----------------------------------------
@@ -485,12 +500,15 @@ function TimeModify()
 end
 
 function main()
-  choice("选项修改",function()
+  choice("单项修改",function()
     M("Modify_list")
     end,"时间修改",function()
     M("TimeModify")
   end,
-  "关于/帮助",function()
+  "文本修改",function()
+    Name_Modfiy()
+  end,
+  "关于脚本",function()
     Alert([[
        
     兼容:32位&64位(建议使用64位)
@@ -502,6 +520,9 @@ function main()
     67:2115906232 (提供交流群以及信息帮助)
     
      ]])
+  end,
+  "结束脚本",function()
+    os.exit()
   end)
 end
 
@@ -534,6 +555,7 @@ end
 XAGA函数感觉太拉胯，又不会其他写法
 为什么64位游戏获取特征码基址有多个？没办法一起改了。。。。可能导致闪退
 转32位修改国库闪退了。。。。
+为毛冻结不了？
 
 
 其他:我就是一个啥都不会的小白，大佬见笑了
