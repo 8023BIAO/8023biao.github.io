@@ -327,6 +327,7 @@ local _data_name = {
   "密探经费",
   "调查经费",
   "炼药经费",
+  "回合",
 }
 
 local function getOffsetTabl()
@@ -393,6 +394,7 @@ local function getOffsetTabl()
     x32(-280),
     x32(-236),
     x32(-284),
+    x32(-476),
   }
   return addr_offset
 end
@@ -468,6 +470,16 @@ local function Name_Modfiy()
   end
 end
 
+local function Childbirth()--下一回合生孩子
+  setRanges(REGION.A)
+  local _s=searchNumber(x64(97024),TYPE.D)--值bili UID:1831131893
+  if _s then
+    gg.editAll(x64(2),TYPE.D)
+    gg.clearResults()
+    Alert("和ta花前月下然后回去睡一觉就行了")
+  end
+end
+
 -----------------------------------------
 --菜单
 -----------------------------------------
@@ -499,6 +511,15 @@ function TimeModify()
   end
 end
 
+function other_modfiy()
+  local _m=choice("生猴子",function()
+    Childbirth()
+  end)
+  if not _m then
+    M("main")
+  end
+end
+
 function main()
   choice("单项修改",function()
     M("Modify_list")
@@ -507,6 +528,9 @@ function main()
   end,
   "文本修改",function()
     Name_Modfiy()
+  end,
+  "其他修改",function()
+    M("other_modfiy")
   end,
   "关于脚本",function()
     Alert([[
@@ -549,3 +573,21 @@ end
 -----------------------------------------
 --结束
 -----------------------------------------
+
+
+--[[
+请来源注明
+复制时请留下67,坤坤来源，你可以不留我的，
+但是请注明他们，感谢他们无私奉献。不然你玩个屁，我们都没得玩。
+
+--这个逼游戏我抓特征码抓了一天没抓到，无动态基址可言。无奈最后用了 坤坤 的偏移量和特征码(你肯定说我菜，我承认，我就是一个啥都不会的小白
+--67帝成1群。在里面查看了许多修改教程和资料和67帮助
+
+再注明一次:
+坤坤:2992113240 (提供特征码和功能偏移量)
+67:2115906232 (提供交流群以及信息帮助)
+
+--酒入辅助网已复制，不留来源还改成自己的信息，麻了。(没想到这么狗
+--
+
+]]
