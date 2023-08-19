@@ -12,7 +12,6 @@ local Xmod--存放x32&64位变量
 
 --简写类型
 local TYPE={
-  --字母赋值 gg类型 数字对应
   B=gg.TYPE_BYTE,--1
   W=gg.TYPE_WORD,--2
   D=gg.TYPE_DWORD,--4
@@ -25,7 +24,6 @@ local TYPE={
 
 --简写内存
 local REGION={
-  --字母赋值 gg内存类型 数字对应
   JH=gg.REGION_JAVA_HEAP, --Jh内存 2
   CH=gg.REGION_C_HEAP, --Ch内存 1
   CA=gg.REGION_C_ALLOC, --Ca内存 4
@@ -52,16 +50,6 @@ local function dec_to_hex(decimal_num)
   return string.format("%X", decimal_num)
 end
 
--- 自定义函数
-local function func(expression, table)
-  for k, v in pairs(table) do
-    if expression == k then
-      return v
-    end
-  end
-  return nil
-end
-
 --菜单导航
 function M(str)
   if not Menu and not str then
@@ -75,11 +63,21 @@ function M(str)
   end
 end
 
--- 自定义 choice
+--自定义函数
+local function func(expression, table)
+  for k, v in pairs(table) do
+    if expression == k then
+      return v
+    end
+  end
+  return nil
+end
+
+-- 自定义choice
 local function choice(...)
-  local _n = {...} -- 参数
-  local _name = {} -- 名称
-  local _fun = {} -- 函数
+  local _n = {...} 
+  local _name = {} 
+  local _fun = {} 
   for i = 1, #_n, 2 do
     table.insert(_name, _n[i])
     table.insert(_fun, _n[i + 1])
@@ -92,7 +90,7 @@ local function choice(...)
   return _m
 end
 
-local function XSGA(...) -- 特征码获取地址 v2版(优化搜索速度)
+local function XSGA(...) --特征码获取地址 v2版(优化搜索速度)
   local _tt = {}
   local _t = {...}
   gg.clearResults()
@@ -370,7 +368,6 @@ local function list_modfiy()
             end
             end,function(e)
             gg.alert(e)
-            --gg.copyText(e)
           end)
         end
       end)
@@ -571,7 +568,3 @@ if config then
   gg.alert("没有选择游戏进程或其他错误，试试先选择进程再启动脚本？如果还不行请等待更新")
   os.exit()
 end
-
------------------------------------------
---结束
------------------------------------------
