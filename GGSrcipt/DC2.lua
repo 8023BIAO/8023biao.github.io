@@ -47,67 +47,9 @@ local REGION={
 --自定义函数封装
 -----------------------------------------
 
---弹窗
-local function Alert(...)
-  return gg.alert(...)
-end
-
---复制
-local function copyText(str)
-  gg.copyText(str)
-end
-
 --10进制转16进制
 local function dec_to_hex(decimal_num)
   return string.format("%X", decimal_num)
-end
-
---修改写入
-local function modify(address,type,value,freeze,name)
-  local tg={}
-  tg[1]={}
-  tg[1].address = address--地址
-  tg[1].flags = type --类型
-  tg[1].value = value --值
-  tg[1].freeze = freeze --冻结
-  if name then
-    tg[1].name = name --自定义名称
-  end
-  --添加到保存数据
-  --gg.addListItems(tg)
-  --设置列表
-  gg.setValues(tg)
-end
-
---搜索数值
-local function searchNumber(...)
-  gg.searchNumber(...)
-  local n=gg.getResultsCount()
-  if n >0 then
-    local table=gg.getResults(tonumber(n))
-    table=gg.getValues(table)
-    return table
-   else
-    return false
-  end
-end
-
---改善数值
-local function refineNumber(...)
-  gg.refineNumber(...)
-  local n=gg.getResultsCount()
-  if n >0 then
-    local table=gg.getResults(tonumber(n))
-    table=gg.getValues(table)
-    return table
-   else
-    return false
-  end
-end
-
---个人习惯
-local function prompt(...)
-  return gg.prompt(...)
 end
 
 -- 自定义函数
@@ -246,7 +188,9 @@ local function xmodfiy(num,types,freezes,offset,table)
         gg.setValues(_t)
       end
     end
-  end,Alert)
+    end,function(e)
+    gg.alert(tostring(e))
+  end)
 end
 
 -----------------------------------------
@@ -428,8 +372,8 @@ local function list_modfiy()
               end
             end
             end,function(e)
-            Alert(e)
-            --copyText(e)
+            gg.alert(e)
+            --gg.copyText(e)
           end)
         end
       end)
@@ -515,7 +459,7 @@ end
 --修改文本
 local function Name_Modfiy()
   gg.setRanges(REGION.A)
-  local _p=prompt({"文本:","修改为:"},{"",""},{"text","text"})
+  local _p=gg.prompt({"文本:","修改为:"},{"",""},{"text","text"})
   if _p and not _p[1]:match("^%s*$") and not _p[2]:match("^%s*$") then
     local _s=searchNumber(";".._p[1],TYPE.W)
     if _s then
@@ -552,19 +496,19 @@ end
 
 function TimeModify()
   local _m=choice("年",function()
-    local _p=prompt({"年份:"},{""},{"number"})
+    local _p=gg.prompt({"年份:"},{""},{"number"})
     if _p and _p[1] then
       xmodfiy(x64(_p[1]),TYPE.D,false,x32(-528),config)
     end
   end,
   "月",function()
-    local _p=prompt({"月:[0;12]"},{"6"},{"number"})
+    local _p=gg.prompt({"月:[0;12]"},{"6"},{"number"})
     if _p and _p[1] then
       xmodfiy(x64(_p[1]),TYPE.D,false,x32(-520),config)
     end
   end,
   "时辰",function()
-    local _p=prompt({"时辰(0早,1昼,2晚,3夜):[0;3]"},{""},{"number"})
+    local _p=gg.prompt({"时辰(0早,1昼,2晚,3夜):[0;3]"},{""},{"number"})
     if _p and _p[1] then
       xmodfiy(x64(_p[1]),TYPE.D,false,x32(-516),config)
     end
@@ -594,7 +538,7 @@ function main()
     end)
   end,
   "关于脚本",function()
-    Alert([[
+    gg.alert([[
        
     兼容:32位&64位(建议使用64位)
     
@@ -627,7 +571,7 @@ if config then
     end
   end
  else
-  Alert("没有选择游戏进程或其他错误，试试先选择进程再启动脚本？如果还不行请等待更新")
+  gg.alert("没有选择游戏进程或其他错误，试试先选择进程再启动脚本？如果还不行请等待更新")
   os.exit()
 end
 
