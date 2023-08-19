@@ -166,8 +166,6 @@ local function XSGA(...)
   searchNumber(_t[1][1],_t[1][2])
   if gg.getResultCount() ~= 0 then
     refineNumber(_t[1][1],_t[1][2])
-    refineNumber(_t[1][1],_t[1][2])
-    refineNumber(_t[1][1],_t[1][2])
     local _n=gg.getResultCount()
     local _r=gg.getResults(_n)
     gg.clearResults()
@@ -217,7 +215,6 @@ local function bate_getAddress()--调试函数 获取特征码地址
         local t={[1]={
             address = tostring("0x"..v),
             flags = TYPE.D,
-            --value = x64(-2),
         }}
         gg.addListItems(t)
        else
