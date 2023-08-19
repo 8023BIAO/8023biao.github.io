@@ -4,8 +4,8 @@
 -----------------------------------------
 
 local gg=_G["gg"]--个人习惯
-local _fun={}----61项列表事件存放
-local _name={}--61项列表名字存放
+local _fun={}----修改项列表事件存放
+local _name={}--修改项列表名字存放
 local config--特征码地址表存放
 local Menu --储存现在菜单
 local Xmod--存放x32&64位变量
@@ -435,15 +435,9 @@ local function list_modfiy()
             _l[1]=x64(_l[1])
             for ii=1,#address_list do
               if type(address_list[ii])~="table" then
-                local ty
-                if i==11 then--国库改为f类
-                  ty=TYPE.F
-                 else
-                  ty=TYPE.D
-                end
                 local _t={[1]={
                     address = tonumber("0x"..address_list[ii])+tonumber(getOffsetTabl()[i]),
-                    flags = ty,
+                    flags = TYPE.D,
                     value = _l[1],
                 }}
                 gg.setValues(_t)
@@ -510,37 +504,29 @@ local function one_key_modfiy_panel()
       for ii=1,#config do
         if type(config[ii])~="table" then
 
-          local ty,num
+          local num
 
           if i == 6 then -- 年龄16
-            ty = TYPE.D
             num = x64(18)
            elseif i == 7 then --体力
-            ty = TYPE.D
             num = x64(100)
            elseif i == 8 then --体力上限
-            ty = TYPE.D
             num = x64(100)
            elseif i == 9 then --健康
-            ty = TYPE.D
             num = x64(100)
            elseif i == 10 then --快乐
-            ty = TYPE.D
             num = x64(100)
            elseif i == 11 then -- 国库
-            ty = TYPE.D
             num = x64(999999999)
            elseif i == 12 then -- 皇威
-            ty = TYPE.D
             num = x64(1000)
            else
-            ty = TYPE.D
             num = x64(100)
           end
 
           local _t={[1]={
               address = tonumber("0x"..config[ii])+tonumber(getOffsetTabl()[i]),
-              flags = ty,
+              flags = TYPE.D,
               value = num,
           }}
           gg.setValues(_t)
