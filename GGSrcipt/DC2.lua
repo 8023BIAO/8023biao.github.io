@@ -562,7 +562,7 @@ end
 function main()
   choice(
   "面板修改",function()
-    Pane_list()
+    M("Pane_list")
   end,
   "时间修改",function()
     M("TimeModify")
@@ -595,13 +595,10 @@ end
 --启动
 -----------------------------------------
 
-vis()
-
 Xmod=gg.getTargetInfo()["x64"]--判断位数
 config=IFCA()--初始化获取特征码地址
 
 if config then
-  vis()
   gg.showUiButton()
   M()
   while true do
@@ -610,7 +607,6 @@ if config then
     end
   end
  else
-  vis()
   Alert("没有选择游戏进程或其他错误，试试先选择进程再启动脚本？如果还不行请等待更新")
   os.exit()
 end
