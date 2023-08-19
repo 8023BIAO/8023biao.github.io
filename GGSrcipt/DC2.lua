@@ -57,7 +57,7 @@ local function copyText(str)
   gg.copyText(str)
 end
 
---10进制转16进制(gg支持10进制但是我想转16，好记)
+--10进制转16进制
 local function dec_to_hex(decimal_num)
   return string.format("%X", decimal_num)
 end
@@ -161,6 +161,7 @@ end
 local function XSGA(...) -- 特征码获取地址 v2版(优化搜索速度)
   local _tt = {}
   local _t = {...}
+  gg.clearResults()
   gg.setRanges(_t[1][3])
   gg.searchNumber(_t[1][1], _t[1][2])
   if gg.getResultCount() ~= 0 then
@@ -267,8 +268,6 @@ end
 
 --初始获取特征码表地址
 local function IFCA()
-  setRanges(REGION.A)
-  gg.clearResults()
   local address_list=XSGA(
   {-x64(2), 4, 32},
   {-x64(1), -x32(36), 4},
