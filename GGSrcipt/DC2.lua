@@ -136,7 +136,7 @@ local function XSGA(...) -- 特征码获取地址 v2版(优化搜索速度)
   end
 end
 
-local function bate_getAddress()--调试函数 获取特征码地址
+local function bate_getAddress()--调试函数 添加主特征码地址
   if config then
     for k,v in pairs(config)do
       if type(v)~="table" then
@@ -174,7 +174,7 @@ local function x64(num)
   end
 end
 
---32&64修改(修改数值,类型,冻结,偏移量,特征码基址表 用XAGA函数获取)
+--32&64修改(修改数值,类型,冻结,偏移量,特征码表 用XAGA函数获取)
 local function xmodfiy(num,types,freezes,offset,table)
   xpcall(function()
     for i=1,#table do
