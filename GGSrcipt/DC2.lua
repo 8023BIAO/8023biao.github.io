@@ -545,7 +545,6 @@ local function one_key_modfiy_panel()
               address = tonumber("0x"..config[ii])+tonumber(getOffsetTabl()[i]),
               flags = ty,
               value = num,
-              --freeze = true
           }}
           gg.setValues(_t)
         end
@@ -599,19 +598,19 @@ function TimeModify()
   local _m=choice("年",function()
     local _p=prompt({"年份:"},{""},{"number"})
     if _p and _p[1] then
-      xmodfiy(x64(_p[1]),TYPE.D,_p[2],x32(-528),config)
+      xmodfiy(x64(_p[1]),TYPE.D,false,x32(-528),config)
     end
   end,
   "月",function()
     local _p=prompt({"月:[0;12]"},{"6"},{"number"})
     if _p and _p[1] then
-      xmodfiy(x64(_p[1]),TYPE.D,_p[2],x32(-520),config)
+      xmodfiy(x64(_p[1]),TYPE.D,false,x32(-520),config)
     end
   end,
   "时辰",function()
     local _p=prompt({"时辰(0早,1昼,2晚,3夜):[0;3]"},{""},{"number"})
     if _p and _p[1] then
-      xmodfiy(x64(_p[1]),TYPE.D,_p[2],x32(-516),config)
+      xmodfiy(x64(_p[1]),TYPE.D,false,x32(-516),config)
     end
   end)
   if not _m then
