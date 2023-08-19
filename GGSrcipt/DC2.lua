@@ -166,6 +166,8 @@ local function XSGA(...)
   searchNumber(_t[1][1],_t[1][2])
   if gg.getResultCount() ~= 0 then
     refineNumber(_t[1][1],_t[1][2])
+    refineNumber(_t[1][1],_t[1][2])
+    refineNumber(_t[1][1],_t[1][2])
     local _n=gg.getResultCount()
     local _r=gg.getResults(_n)
     gg.clearResults()
@@ -197,6 +199,31 @@ local function XSGA(...)
       return nil
     end
 
+  end
+end
+
+local function vis()
+  if gg.isVisible(true) then
+    gg.setVisible(false)
+   else
+    gg.setVisible(true)
+  end
+end
+
+local function bate_getAddress()--调试函数 获取特征码地址
+  if config then
+    for k,v in pairs(config)do
+      if type(v)~="table" then
+        local t={[1]={
+            address = tostring("0x"..v),
+            flags = TYPE.D,
+            value = x64(-2),
+        }}
+        gg.addListItems(t)
+       else
+        gg.addListItems({v})
+      end
+    end
   end
 end
 
@@ -441,17 +468,43 @@ end
 
 local function Option_modification()
   if #_fun>0 and #_name>0 then
-    local _m = gg.choice(_name)
+    local _name2={}
+    for i=15,#_name do
+      table.insert(_name2, _data_name[i])
+    end
+    local _m = gg.choice(_name2)
     if not _m then
       M("main")
-    end
-    local result = func(_m, _fun)
-    if result then
-      result()
+     else
+      local result = func(tonumber(_m)+14, _fun)
+      if result then
+        result()
+      end
     end
    else
     list_modfiy()
     Option_modification()
+  end
+end
+
+local function panel_modification()
+  if #_fun>0 and #_name>0 then
+    local _name2={}
+    for i=1,14 do
+      table.insert(_name2, _data_name[i])
+    end
+    local _m = gg.choice(_name2)
+    if not _m then
+      M("main")
+     else
+      local result = func(tonumber(_m), _fun)
+      if result then
+        result()
+      end
+    end
+   else
+    list_modfiy()
+    panel_modification()
   end
 end
 
@@ -476,6 +529,10 @@ end
 
 function Modify_list()
   Option_modification()
+end
+
+function Pane_list()
+  panel_modification()
 end
 
 function TimeModify()
@@ -503,10 +560,15 @@ function TimeModify()
 end
 
 function main()
-  choice("单项修改",function()
-    M("Modify_list")
-    end,"时间修改",function()
+  choice(
+  "面板修改",function()
+    Pane_list()
+  end,
+  "时间修改",function()
     M("TimeModify")
+  end,
+  "其他修改",function()
+    M("Modify_list")
   end,
   "文本修改",function()
     Name_Modfiy()
@@ -533,10 +595,13 @@ end
 --启动
 -----------------------------------------
 
+vis()
+
 Xmod=gg.getTargetInfo()["x64"]--判断位数
 config=IFCA()--初始化获取特征码地址
 
 if config then
+  vis()
   gg.showUiButton()
   M()
   while true do
@@ -545,6 +610,7 @@ if config then
     end
   end
  else
+  vis()
   Alert("没有选择游戏进程或其他错误，试试先选择进程再启动脚本？如果还不行请等待更新")
   os.exit()
 end
