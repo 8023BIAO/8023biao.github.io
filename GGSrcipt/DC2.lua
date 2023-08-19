@@ -246,7 +246,7 @@ local function x64(num)
   end
 end
 
---32&64修改(修改输,类型,冻结,偏移量,特征码基址表 用XAGA函数获取)
+--32&64修改(修改数值,类型,冻结,偏移量,特征码基址表 用XAGA函数获取)
 local function xmodfiy(num,types,freezes,offset,table)
   xpcall(function()
     for i=1,#table do
