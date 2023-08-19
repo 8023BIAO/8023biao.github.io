@@ -194,14 +194,6 @@ local function XSGA(...) -- 特征码获取地址 v2版(优化搜索速度)
   end
 end
 
-local function vis()
-  if gg.isVisible(true) then
-    gg.setVisible(false)
-   else
-    gg.setVisible(true)
-  end
-end
-
 local function bate_getAddress()--调试函数 获取特征码地址
   if config then
     for k,v in pairs(config)do
