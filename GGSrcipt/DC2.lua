@@ -44,7 +44,7 @@ local REGION={
 }
 
 -----------------------------------------
---函数封装与自定义
+--自定义函数封装
 -----------------------------------------
 
 --弹窗
@@ -57,7 +57,7 @@ local function copyText(str)
   gg.copyText(str)
 end
 
---10进制转16进制
+--10进制转16进制(gg支持10进制但是我想转16，好记)
 local function dec_to_hex(decimal_num)
   return string.format("%X", decimal_num)
 end
@@ -158,45 +158,43 @@ local function choice(...)
   return _m
 end
 
---xs写法获取特征码地址 v1版后续待改进
-local function XSGA(...)
-  local _tt={}
-  local _t={...}
-  setRanges(_t[1][3])
-  searchNumber(_t[1][1],_t[1][2])
+local function XSGA(...) -- 特征码获取地址 v2版(优化搜索速度)
+  local _tt = {}
+  local _t = {...}
+  gg.setRanges(_t[1][3])
+  gg.searchNumber(_t[1][1], _t[1][2])
   if gg.getResultCount() ~= 0 then
-    refineNumber(_t[1][1],_t[1][2])
-    local _n=gg.getResultCount()
-    local _r=gg.getResults(_n)
+    gg.refineNumber(_t[1][1], _t[1][2])
+    local _r = gg.getResults(gg.getResultCount())
     gg.clearResults()
-    if _n~= 0 then
-      for i=2,#_t do
-        for ii=1,_n do
-          if _r[ii] then
-            local _offset_address=_r[ii].address + _t[i][2]
-            local _offset_value=gg.getValues({[1]={address=_offset_address,flags=_t[i][3]}})[1].value
-            if _offset_value ~= _t[i][1] then
-              _r[ii]=nil
-             else
-              _tt[dec_to_hex(_r[ii].address)]=i-1
-            end
+    if #_r > 0 then
+      for i = 2, #_t do
+        local _offset_address = {}
+        local _offset_flags = {}
+        for j = 1, #_r do
+          _offset_address[j] = _r[j].address + _t[i][2]
+          _offset_flags[j] = {address = _offset_address[j], flags = _t[i][3]}
+        end
+        local _offset_values = gg.getValues(_offset_flags)
+        for j = #_r, 1, -1 do
+          if _offset_values[j].value ~= _t[i][1] then
+            table.remove(_r, j)
+           else
+            _tt[dec_to_hex(_r[j].address)] = i - 1
           end
         end
       end
     end
-
-    for k,v in pairs(_tt)do
-      if v==#_t-1 then
+    for k, v in pairs(_tt) do
+      if v == #_t - 1 then
         table.insert(_r,k)
       end
     end
-
-    if #_r>0 then
+    if #_r > 0 then
       return _r
      else
       return nil
     end
-
   end
 end
 
@@ -506,14 +504,6 @@ local function one_key_modfiy_panel()
           local num
           if i == 6 then -- 年龄16
             num = x64(18)
-           elseif i == 7 then --体力
-            num = x64(100)
-           elseif i == 8 then --体力上限
-            num = x64(100)
-           elseif i == 9 then --健康
-            num = x64(100)
-           elseif i == 10 then --快乐
-            num = x64(100)
            elseif i == 11 then -- 国库
             num = x64(999999999)
            elseif i == 12 then -- 皇威
