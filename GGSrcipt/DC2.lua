@@ -217,7 +217,7 @@ local function bate_getAddress()--调试函数 获取特征码地址
         local t={[1]={
             address = tostring("0x"..v),
             flags = TYPE.D,
-            value = x64(-2),
+            --value = x64(-2),
         }}
         gg.addListItems(t)
        else
@@ -354,7 +354,7 @@ local _data_name = {
   "密探经费",
   "调查经费",
   "炼药经费",
-  "回合",
+  "训练度",
 }
 
 local function getOffsetTabl()
@@ -448,7 +448,6 @@ local function list_modfiy()
                     address = tonumber("0x"..address_list[ii])+tonumber(getOffsetTabl()[i]),
                     flags = ty,
                     value = _l[1],
-                    --  freeze = _l[2],
                 }}
                 gg.setValues(_t)
               end
@@ -508,6 +507,56 @@ local function panel_modification()
   end
 end
 
+local function one_key_modfiy_panel()
+  if #_fun>0 and #_name>0 then
+    for i=1,14 do
+      for ii=1,#config do
+        if type(config[ii])~="table" then
+
+          local ty,num
+
+          if i == 6 then -- 年龄16
+            ty = TYPE.D
+            num = x64(18)
+           elseif i == 7 then --体力
+            ty = TYPE.D
+            num = x64(100)
+           elseif i == 8 then --体力上限
+            ty = TYPE.D
+            num = x64(100)
+           elseif i == 9 then --健康
+            ty = TYPE.D
+            num = x64(100)
+           elseif i == 10 then --快乐
+            ty = TYPE.D
+            num = x64(100)
+           elseif i == 11 then -- 国库
+            ty = TYPE.D
+            num = x64(999999999)
+           elseif i == 12 then -- 皇威
+            ty = TYPE.D
+            num = x64(1000)
+           else
+            ty = TYPE.D
+            num = x64(100)
+          end
+
+          local _t={[1]={
+              address = tonumber("0x"..config[ii])+tonumber(getOffsetTabl()[i]),
+              flags = ty,
+              value = num,
+              --freeze = true
+          }}
+          gg.setValues(_t)
+        end
+      end
+    end
+   else
+    list_modfiy()
+    one_key_modfiy_panel()
+  end
+end
+
 --修改文本
 local function Name_Modfiy()
   setRanges(REGION.A)
@@ -533,6 +582,17 @@ end
 
 function Pane_list()
   panel_modification()
+end
+
+function Pane_list2()
+  local _m=choice("一键修改",function()
+    one_key_modfiy_panel()
+    end,"自定义",function()
+    M("Pane_list")
+  end)
+  if not _m then
+    M("main")
+  end
 end
 
 function TimeModify()
@@ -562,7 +622,7 @@ end
 function main()
   choice(
   "面板修改",function()
-    M("Pane_list")
+    M("Pane_list2")
   end,
   "时间修改",function()
     M("TimeModify")
@@ -572,6 +632,11 @@ function main()
   end,
   "文本修改",function()
     Name_Modfiy()
+  end,
+  "调试选项",function()
+    choice("添加特征码地址",function()
+      bate_getAddress()
+    end)
   end,
   "关于脚本",function()
     Alert([[
