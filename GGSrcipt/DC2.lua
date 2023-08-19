@@ -62,11 +62,6 @@ local function dec_to_hex(decimal_num)
   return string.format("%X", decimal_num)
 end
 
---设置搜索内存
-local function setRanges(...)
-  gg.setRanges(...)
-end
-
 --修改写入
 local function modify(address,type,value,freeze,name)
   local tg={}
@@ -527,7 +522,7 @@ end
 
 --修改文本
 local function Name_Modfiy()
-  setRanges(REGION.A)
+  gg.setRanges(REGION.A)
   local _p=prompt({"文本:","修改为:"},{"",""},{"text","text"})
   if _p and not _p[1]:match("^%s*$") and not _p[2]:match("^%s*$") then
     local _s=searchNumber(";".._p[1],TYPE.W)
