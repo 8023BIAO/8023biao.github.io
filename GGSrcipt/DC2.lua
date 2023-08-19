@@ -503,9 +503,7 @@ local function one_key_modfiy_panel()
     for i=1,14 do
       for ii=1,#config do
         if type(config[ii])~="table" then
-
           local num
-
           if i == 6 then -- 年龄16
             num = x64(18)
            elseif i == 7 then --体力
@@ -523,7 +521,6 @@ local function one_key_modfiy_panel()
            else
             num = x64(100)
           end
-
           local _t={[1]={
               address = tonumber("0x"..config[ii])+tonumber(getOffsetTabl()[i]),
               flags = TYPE.D,
