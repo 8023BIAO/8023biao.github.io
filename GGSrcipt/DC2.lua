@@ -80,14 +80,11 @@ local function choice(...)
   local _n = {...} -- 参数
   local _name = {} -- 名称
   local _fun = {} -- 函数
-
   for i = 1, #_n, 2 do
     table.insert(_name, _n[i])
     table.insert(_fun, _n[i + 1])
   end
-
   local _m = gg.choice(_name)
-
   local result = func(_m, _fun)
   if result then
     result()
@@ -432,7 +429,7 @@ local function one_key_modfiy_panel()
       for ii=1,#config do
         if type(config[ii])~="table" then
           local num
-          if i == 6 then -- 年龄16
+          if i == 6 then -- 年龄
             num = x64(18)
            elseif i == 11 then -- 国库
             num = x64(999999999)
@@ -461,7 +458,7 @@ local function Name_Modfiy()
   gg.setRanges(REGION.A)
   local _p=gg.prompt({"文本:","修改为:"},{"",""},{"text","text"})
   if _p and not _p[1]:match("^%s*$") and not _p[2]:match("^%s*$") then
-    local _s=searchNumber(";".._p[1],TYPE.W)
+    local _s=gg.searchNumber(";".._p[1],TYPE.W)
     if _s then
       gg.editAll(";".._p[2],TYPE.W)
       gg.clearResults()
