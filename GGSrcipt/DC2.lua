@@ -124,7 +124,7 @@ local function XSGA(...)
   end
 end
 
-local function bate_getAddress()
+local function bate_getAddress(config)
   if config then
     for k,v in pairs(config)do
       if type(v)~="table" then
@@ -345,10 +345,10 @@ local function list_modfiy()
         if _l and not tostring(_l[1]):match("^%s*$") then
           xpcall(function()
             _l[1]=x64(_l[1])
-            for ii=1,#address_list do
-              if type(address_list[ii])~="table" then
+            for j=1,#address_list do
+              if type(address_list[j])~="table" then
                 local _t={[1]={
-                    address = tonumber("0x"..address_list[ii])+tonumber(GFT[i]),
+                    address = tonumber("0x"..address_list[j])+tonumber(GFT[i]),
                     flags = TYPE.D,
                     value = _l[1],
                 }}
@@ -414,8 +414,8 @@ local function one_key_modfiy_panel()
     local _t={}
     local GFT=getOffsetTabl()
     for i=1,14 do
-      for ii=1,#config do
-        if type(config[ii])~="table" then
+      for j=1,#config do
+        if type(config[j])~="table" then
           local num
           if i == 6 then
             num = x64(18)
@@ -427,7 +427,7 @@ local function one_key_modfiy_panel()
             num = x64(100)
           end
           table.insert(_t,{
-            address = tonumber("0x"..config[ii])+tonumber(GFT[i]),
+            address = tonumber("0x"..config[j])+tonumber(GFT[i]),
             flags = TYPE.D,
             value = num,
           })
@@ -518,7 +518,7 @@ function main()
   end,
   "调试选项",function()
     choice("添加特征码地址",function()
-      bate_getAddress()
+      bate_getAddress(config)
     end)
   end,
   "关于脚本",function()
