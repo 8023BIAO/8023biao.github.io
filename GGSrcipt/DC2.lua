@@ -1,10 +1,6 @@
 
---Android Game GG Script
+--AndroidGame DC2[x32&x64] GGScript
 --Game:皇帝成长计划2(DC2)
-
------------------------------------------
---global variable
------------------------------------------
 
 local gg=_G["gg"]
 local _fun={}
