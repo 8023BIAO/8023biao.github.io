@@ -124,6 +124,22 @@ local function XSGA(...)
   end
 end
 
+local function bate_getAddress()
+  if config then
+    for k,v in pairs(config)do
+      if type(v)~="table" then
+        local t={[1]={
+            address = tostring("0x"..v),
+            flags = TYPE.D,
+        }}
+        gg.addListItems(t)
+       else
+        gg.addListItems({v})
+      end
+    end
+  end
+end
+
 -----------------------------------------
 --Compatible function
 -----------------------------------------
@@ -319,6 +335,7 @@ local function getOffsetTabl()
 end
 
 local function list_modfiy()
+  local GFT=getOffsetTabl()
   local address_list=config
   if address_list and #address_list >=1 then
     for i=1,#_data_name do
@@ -331,7 +348,7 @@ local function list_modfiy()
             for ii=1,#address_list do
               if type(address_list[ii])~="table" then
                 local _t={[1]={
-                    address = tonumber("0x"..address_list[ii])+tonumber(getOffsetTabl()[i]),
+                    address = tonumber("0x"..address_list[ii])+tonumber(GFT[i]),
                     flags = TYPE.D,
                     value = _l[1],
                 }}
@@ -394,6 +411,7 @@ end
 
 local function one_key_modfiy_panel()
   if #_fun>0 and #_name>0 then
+    local GFT=getOffsetTabl()
     for i=1,14 do
       for ii=1,#config do
         if type(config[ii])~="table" then
@@ -408,7 +426,7 @@ local function one_key_modfiy_panel()
             num = x64(100)
           end
           local _t={[1]={
-              address = tonumber("0x"..config[ii])+tonumber(getOffsetTabl()[i]),
+              address = tonumber("0x"..config[ii])+tonumber(GFT[i]),
               flags = TYPE.D,
               value = num,
           }}
@@ -496,6 +514,11 @@ function main()
   end,
   "文本修改",function()
     Name_Modfiy()
+  end,
+  "调试选项",function()
+    choice("添加特征码地址",function()
+      bate_getAddress()
+    end)
   end,
   "关于脚本",function()
     gg.alert([[
