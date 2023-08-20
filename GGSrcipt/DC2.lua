@@ -1,16 +1,18 @@
 
+--Android Game GG Script
+--
+
 -----------------------------------------
---全局变量
+--global variable
 -----------------------------------------
 
-local gg=_G["gg"]--个人习惯
-local _fun={}----修改项列表事件存放
-local _name={}--修改项列表名字存放
-local config--特征码地址表存放
-local Menu --储存现在菜单
-local Xmod--存放x32&64位变量
+local gg=_G["gg"]
+local _fun={}
+local _name={}
+local config
+local Menu
+local Xmod
 
---简写类型
 local TYPE={
   B=gg.TYPE_BYTE,--1
   W=gg.TYPE_WORD,--2
@@ -22,35 +24,32 @@ local TYPE={
   A=gg.TYPE_AUTO,--127
 }
 
---简写内存
 local REGION={
-  JH=gg.REGION_JAVA_HEAP, --Jh内存 2
-  CH=gg.REGION_C_HEAP, --Ch内存 1
-  CA=gg.REGION_C_ALLOC, --Ca内存 4
-  CD=gg.REGION_C_DATA, --Cd内存 8
-  CB=gg.REGION_C_BSS, --Cb内存 16
-  PS=gg.REGION_PPSSPP, --PS内存 262144
-  A=gg.REGION_ANONYMOUS, --A内存 32
-  J=gg.REGION_JAVA, --J内存  65536
-  S=gg.REGION_STACK, --S内存 64
-  AS=gg.REGION_ASHMEM, --AS内存 524288
-  V=gg.REGION_VIDEO, --V内存 1048576
-  O=gg.REGION_OTHER, --O内存 -2080896
-  B=gg.REGION_BAD, --B内存 131072
-  XA=gg.REGION_CODE_APP, --Xa内存 16384
-  XS=gg.REGION_CODE_SYS, --Xs内存 32768
+  JH=gg.REGION_JAVA_HEAP, -- 2
+  CH=gg.REGION_C_HEAP, -- 1
+  CA=gg.REGION_C_ALLOC, -- 4
+  CD=gg.REGION_C_DATA, -- 8
+  CB=gg.REGION_C_BSS, -- 16
+  PS=gg.REGION_PPSSPP, -- 262144
+  A=gg.REGION_ANONYMOUS, -- 32
+  J=gg.REGION_JAVA, --  65536
+  S=gg.REGION_STACK, -- 64
+  AS=gg.REGION_ASHMEM, -- 524288
+  V=gg.REGION_VIDEO, -- 1048576
+  O=gg.REGION_OTHER, -- -2080896
+  B=gg.REGION_BAD, -- 131072
+  XA=gg.REGION_CODE_APP, -- 16384
+  XS=gg.REGION_CODE_SYS, -- 32768
 }
 
 -----------------------------------------
---自定义函数封装
+--Custom function encapsulation
 -----------------------------------------
 
---10进制转16进制
 local function dec_to_hex(decimal_num)
   return string.format("%X", decimal_num)
 end
 
---菜单导航
 function M(str)
   if not Menu and not str then
     Menu=_G["main"]
@@ -63,7 +62,6 @@ function M(str)
   end
 end
 
---自定义函数
 local function func(expression, table)
   for k, v in pairs(table) do
     if expression == k then
@@ -73,11 +71,10 @@ local function func(expression, table)
   return nil
 end
 
--- 自定义choice
 local function choice(...)
-  local _n = {...} 
-  local _name = {} 
-  local _fun = {} 
+  local _n = {...}
+  local _name = {}
+  local _fun = {}
   for i = 1, #_n, 2 do
     table.insert(_name, _n[i])
     table.insert(_fun, _n[i + 1])
@@ -90,7 +87,7 @@ local function choice(...)
   return _m
 end
 
-local function XSGA(...) --特征码获取地址 v2版(优化搜索速度)
+local function XSGA(...)
   local _tt = {}
   local _t = {...}
   gg.clearResults()
@@ -131,7 +128,7 @@ local function XSGA(...) --特征码获取地址 v2版(优化搜索速度)
   end
 end
 
-local function bate_getAddress()--调试函数 添加主特征码地址
+local function bate_getAddress()
   if config then
     for k,v in pairs(config)do
       if type(v)~="table" then
@@ -148,10 +145,9 @@ local function bate_getAddress()--调试函数 添加主特征码地址
 end
 
 -----------------------------------------
---x32&x64函数封装
+--Compatible function
 -----------------------------------------
 
---32&64数字自动转换
 local function x32(num)
   if Xmod==true then
     return num*2
@@ -160,7 +156,6 @@ local function x32(num)
   end
 end
 
---32&64数字自动转换
 local function x64(num)
   if Xmod==true then
     return num
@@ -169,7 +164,6 @@ local function x64(num)
   end
 end
 
---32&64修改(修改数值,类型,冻结,偏移量,特征码表 用XAGA函数获取)
 local function xmodfiy(num,types,freezes,offset,table)
   xpcall(function()
     for i=1,#table do
@@ -189,10 +183,9 @@ local function xmodfiy(num,types,freezes,offset,table)
 end
 
 -----------------------------------------
---修改功能封装
+--Mod Function
 -----------------------------------------
 
---初始获取特征码表地址
 local function IFCA()
   local address_list=XSGA(
   {-x64(2), 4, 32},
@@ -211,7 +204,6 @@ local function IFCA()
   end
 end
 
---坤坤提供代码
 local _data_name = {
   "文学",
   "武术",
@@ -426,11 +418,11 @@ local function one_key_modfiy_panel()
       for ii=1,#config do
         if type(config[ii])~="table" then
           local num
-          if i == 6 then -- 年龄
+          if i == 6 then
             num = x64(18)
-           elseif i == 11 then -- 国库
+           elseif i == 11 then
             num = x64(999999999)
-           elseif i == 12 then -- 皇威
+           elseif i == 12 then
             num = x64(1000)
            else
             num = x64(100)
@@ -450,7 +442,6 @@ local function one_key_modfiy_panel()
   end
 end
 
---修改文本
 local function Name_Modfiy()
   gg.setRanges(REGION.A)
   local _p=gg.prompt({"文本:","修改为:"},{"",""},{"text","text"})
@@ -466,7 +457,7 @@ local function Name_Modfiy()
 end
 
 -----------------------------------------
---菜单
+--Menu function
 -----------------------------------------
 
 function Modify_list()
@@ -550,11 +541,11 @@ function main()
 end
 
 -----------------------------------------
---启动
+--Start Code
 -----------------------------------------
 
-Xmod=gg.getTargetInfo()["x64"]--判断位数
-config=IFCA()--初始化获取特征码地址
+Xmod=gg.getTargetInfo()["x64"]
+config=IFCA()
 
 if config then
   gg.showUiButton()
