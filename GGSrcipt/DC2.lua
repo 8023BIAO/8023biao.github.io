@@ -1,6 +1,6 @@
 
 --Android Game GG Script
---
+--Game:皇帝成长计划2
 
 -----------------------------------------
 --global variable
