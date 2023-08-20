@@ -1,4 +1,7 @@
 
+local gg=_G["gg"]
+local Menu
+
 --简写类型
 local TYPE={
   --字母赋值 gg类型 数字对应
@@ -121,9 +124,9 @@ local function searchNumber(...)
 end
 
 --改善数值
-local function refineNumber(...)
+local function refineAddress(...)
   --搜索数值
-  gg.refineNumber(...)
+  gg.refineAddress(...)
   --获取搜索结果数量
   local n=gg.getResultsCount()
   if n >0 then
@@ -163,18 +166,15 @@ local function offset(so,...)
   return addr
 end
 
------------------------------------------
---函数封装结束
------------------------------------------
-
-
-
---清除搜索数据
-gg.clearResults()
---显示按钮
-gg.showUiButton()
-
-local Menu --储存现在菜单
+-- 自定义函数
+local function func(expression, table)
+  for k, v in pairs(table) do
+    if expression == k then
+      return v
+    end
+  end
+  return nil
+end
 
 --菜单导航
 function M(str)
@@ -189,8 +189,126 @@ function M(str)
   end
 end
 
+-- 自定义 choice
+local function choice(...)
+  local _n = {...} -- 参数
+  local _name = {} -- 名称
+  local _fun = {} -- 函数
+
+  for i = 1, #_n, 2 do
+    table.insert(_name, _n[i])
+    table.insert(_fun, _n[i + 1])
+  end
+
+  local _m = gg.choice(_name)
+
+  local result = func(_m, _fun)
+  if result then
+    result()
+  end
+  return _m
+end
+
+local function XSGA(...) -- 特征码获取地址 v2版(优化搜索速度)
+  local _tt = {}
+  local _t = {...}
+  gg.clearResults()
+  gg.setRanges(_t[1][3])
+  gg.searchNumber(_t[1][1], _t[1][2])
+  if gg.getResultCount() ~= 0 then
+    gg.refineNumber(_t[1][1], _t[1][2])
+    local _r = gg.getResults(gg.getResultCount())
+    gg.clearResults()
+    if #_r > 0 then
+      for i = 2, #_t do
+        local _offset_address = {}
+        local _offset_flags = {}
+        for j = 1, #_r do
+          _offset_address[j] = _r[j].address + _t[i][2]
+          _offset_flags[j] = {address = _offset_address[j], flags = _t[i][3]}
+        end
+        local _offset_values = gg.getValues(_offset_flags)
+        for j = #_r, 1, -1 do
+          if _offset_values[j].value ~= _t[i][1] then
+            table.remove(_r, j)
+           else
+            _tt[dec_to_hex(_r[j].address)] = i - 1
+          end
+        end
+      end
+    end
+    for k, v in pairs(_tt) do
+      if v == #_t - 1 then
+        table.insert(_r,k)
+      end
+    end
+    if #_r > 0 then
+      return _r
+     else
+      return nil
+    end
+  end
+end
+
+local function XAM(...)--xs特征码或地址修改数据
+  local _t={...}
+  local _m={}
+  if type(_t[1])=="table" then
+    for i=1,#_t[1] do
+      if type(_t[1][i])~="table" then
+        for ii=2,#_t do
+          _m[ii-1]={
+            address = tonumber(_t[1][i])+tonumber(_t[ii][2]),
+            flags = _t[ii][3],
+            value = _t[ii][1],
+            freeze = _t[ii][4]
+          }
+        end
+      end
+      gg.setValues(_m)
+    end
+   elseif type(_t[1])=="string" or type(_t[1])=="number" then
+    for ii=2,#_t do
+      _m[ii-1]={
+        address = tonumber(_t[1])+tonumber(_t[ii][2]),
+        flags = _t[ii][3],
+        value = _t[ii][1],
+        freeze = _t[ii][4]
+      }
+    end
+    gg.setValues(_m)
+   else
+    return nil
+  end
+end
+
+local function bate_getAddress(config)--调试函数 添加主特征码地址
+  if config then
+    for k,v in pairs(config)do
+      if type(v)~="table" then
+        local t={[1]={
+            address = tostring("0x"..v),
+            flags = TYPE.D,
+        }}
+        gg.addListItems(t)
+       else
+        gg.addListItems({v})
+      end
+    end
+  end
+end
+
+
+-----------------------------------------
+--函数封装结束
+-----------------------------------------
+
+--清除搜索数据
+gg.clearResults()
+--显示按钮
+gg.showUiButton()
+
 function main()
-  --菜单显示(GG单选择列表)
   local main_menu= gg.choice({
     "菜单2",
     "Exit",
@@ -203,25 +321,20 @@ function main()
 end
 
 function main2()
-  --菜单显示(GG单选择列表)
-  local main_menu= gg.choice({
-    "这个是第二个菜单",
-    "返回",
-  })
-  if main_menu== 1 then
-    Alert("点击了第一个按钮")
-   elseif main_menu==2 then
+  local _m=choice("这个是第二个菜单",function()
+    Toast("没有设置事件")
+    end,"返回",function()
     M("main")
-  end
+  end)
+  --[[
+if not _m then
+M("main")
+end
+]]
 end
 
 while true do
-  --判断按钮点击和包名
   if gg.isClickedUiButton() then
-    if gg.getTargetPackage()=="包名" then
-      M()
-     else
-      Alert("没有选择进程")
-    end
+    M()
   end
 end
