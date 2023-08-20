@@ -426,11 +426,11 @@ local function one_key_modfiy_panel()
            else
             num = x64(100)
           end
-          _t[i]={
+          table.insert(_t,{
             address = tonumber("0x"..config[ii])+tonumber(GFT[i]),
             flags = TYPE.D,
             value = num,
-          }
+          })
         end
       end
     end
