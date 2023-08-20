@@ -124,22 +124,6 @@ local function XSGA(...)
   end
 end
 
-local function bate_getAddress()
-  if config then
-    for k,v in pairs(config)do
-      if type(v)~="table" then
-        local t={[1]={
-            address = tostring("0x"..v),
-            flags = TYPE.D,
-        }}
-        gg.addListItems(t)
-       else
-        gg.addListItems({v})
-      end
-    end
-  end
-end
-
 -----------------------------------------
 --Compatible function
 -----------------------------------------
@@ -512,11 +496,6 @@ function main()
   end,
   "文本修改",function()
     Name_Modfiy()
-  end,
-  "调试选项",function()
-    choice("添加特征码地址",function()
-      bate_getAddress()
-    end)
   end,
   "关于脚本",function()
     gg.alert([[
