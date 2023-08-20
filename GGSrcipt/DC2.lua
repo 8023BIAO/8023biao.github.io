@@ -89,7 +89,7 @@ local function XSGA(...)
   gg.clearResults()
   gg.setRanges(_t[1][3])
   gg.searchNumber(_t[1][1], _t[1][2])
-  if gg.getResultCount() ~= 0 then
+  if gg.getResultCount() >0 then
     gg.refineNumber(_t[1][1], _t[1][2])
     local _r = gg.getResults(gg.getResultCount())
     gg.clearResults()
@@ -411,6 +411,7 @@ end
 
 local function one_key_modfiy_panel()
   if #_fun>0 and #_name>0 then
+    local _t={}
     local GFT=getOffsetTabl()
     for i=1,14 do
       for ii=1,#config do
@@ -425,15 +426,15 @@ local function one_key_modfiy_panel()
            else
             num = x64(100)
           end
-          local _t={[1]={
-              address = tonumber("0x"..config[ii])+tonumber(GFT[i]),
-              flags = TYPE.D,
-              value = num,
-          }}
-          gg.setValues(_t)
+          _t[i]={
+            address = tonumber("0x"..config[ii])+tonumber(GFT[i]),
+            flags = TYPE.D,
+            value = num,
+          }
         end
       end
     end
+    gg.setValues(_t)
    else
     list_modfiy()
     one_key_modfiy_panel()
