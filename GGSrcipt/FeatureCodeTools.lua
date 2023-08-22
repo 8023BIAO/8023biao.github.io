@@ -250,7 +250,6 @@ local function Feature_code_comparison(t)
   for l in string.gmatch(code,".-\n") do
     j=j+1
     local o=tonumber(l:match("^(.-)%s"))
-
     local d,f=l:match("D:%-?(%d+)"),l:match("F:(.-)\n")
 
     if d and f then
@@ -266,13 +265,14 @@ local function Feature_code_comparison(t)
      elseif f then
       _offset_address[j] = address+o
       _offset_flags[j] = {address = _offset_address[j], flags = 16}
-      _offset_value[j] = d
+      _offset_value[j] = f
       _offset_offset[j] = o
     end
 
   end
 
   local _offset_values = gg.getValues(_offset_flags)
+
   local result=""
   local data_type
 
@@ -298,10 +298,10 @@ local function Feature_code_comparison(t)
   end,
   "查看",function()
     local _m=gg.alert(result,"复制","导出","取消")
-    if _m[1] then
+    if _m and _m[1] then
       gg.copyText(result)
       gg.alert("已复制")
-     elseif _m[2] then
+     elseif _m and _m[2] then
       output(result)
     end
   end,
