@@ -1,3 +1,6 @@
+
+--Feature Code Tools GG Script
+
 local gg=_G["gg"]
 
 local function output(str)
@@ -99,21 +102,21 @@ local function Option_offset_search(t)
 
   for i=0,range,4 do
     if _p[4] then
-      pyt["D"][i//4] = {
+      pyt["D"][i/4] = {
         address=t.address + i,
         flags=4
       }
-      pyt["up"]["D"][i//4] = {
+      pyt["up"]["D"][i/4] = {
         address=t.address - i,
         flags=4
       }
     end
     if _p[5] then
-      pyt["F"][i//4] = {
+      pyt["F"][i/4] = {
         address=t.address + i,
         flags=16
       }
-      pyt["up"]["F"][i//4] = {
+      pyt["up"]["F"][i/4] = {
         address=t.address - i,
         flags=16
       }
@@ -203,21 +206,21 @@ local function Feature_code_comparison(t)
 
   for i=0,math.abs(range),4 do
     if iD then
-      pyt["D"][i//4] = {
+      pyt["D"][i/4] = {
         address=address + i,
         flags=4
       }
-      pyt["up"]["D"][i//4] = {
+      pyt["up"]["D"][i/4] = {
         address=address - i,
         flags=4
       }
     end
     if iF then
-      pyt["F"][i//4] = {
+      pyt["F"][i/4] = {
         address=address + i,
         flags=16
       }
-      pyt["up"]["F"][i//4] = {
+      pyt["up"]["F"][i/4] = {
         address=address - i,
         flags=16
       }
@@ -250,7 +253,6 @@ local function Feature_code_comparison(t)
     j=j+1
     local o=tonumber(l:match("^(.-)%s"))
     local d,f=l:match("D:%-?(%d+)"),l:match("F:(.-)\n")
-
     if d and f then
       _offset_address[j] = address+o
       _offset_flags[j] = {address = _offset_address[j], flags = 16}
@@ -267,11 +269,9 @@ local function Feature_code_comparison(t)
       _offset_value[j] = f
       _offset_offset[j] = o
     end
-
   end
 
   local _offset_values = gg.getValues(_offset_flags)
-
   local result=""
   local data_type
 
@@ -289,39 +289,46 @@ local function Feature_code_comparison(t)
     end
   end
 
-  local _m=gg.alert(result,"复制","导出","取消")
+  local _m=gg.alert(result,"copy","output","cancel")
   if _m==1 then
     gg.copyText(result)
-    gg.toast("已复制")
+    gg.toast("copy")
    elseif _m==2 then
     output(result)
   end
 end
 
 local function main()
-  choice(
-  "选项",function()
-    choice("输出",function()
-      Option_offset_search(Select_list_item(Get_search_list()))
-      end,"对比",function()
-      Feature_code_comparison(Select_list_item(Get_search_list()))
-    end)
-  end,
-  "地址",function()
+  xpcall(function()
     choice(
-    "输出",function()
-      Option_offset_search({address=tonumber("0x8023")})
+    "option",function()
+      choice("output",function()
+        Option_offset_search(Select_list_item(Get_search_list()))
+        end,"contrast",function()
+        Feature_code_comparison(Select_list_item(Get_search_list()))
+      end)
     end,
-    "对比",function()
-      local _p=gg.prompt({"address:"},{"0x8023"},{"text"})
-      if not _p then
-        return
-      end
-      Feature_code_comparison({address=tonumber(_p[1])})
+    "address",function()
+      choice(
+      "output",function()
+        Option_offset_search({address=tonumber("0x8023")})
+      end,
+      "contrast",function()
+        local _p=gg.prompt({"address:"},{"0x8023"},{"text"})
+        if not _p then
+          return
+        end
+        Feature_code_comparison({address=tonumber(_p[1])})
+      end)
+    end,
+    "exit",function()
+      os.exit()
     end)
-  end,
-  "结束",function()
-    os.exit()
+    end,function(e)
+    local _e=gg.alert(e,"copy","cancel")
+    if _e==1 then
+      gg.copyText(tostring(e))
+    end
   end)
 end
 
