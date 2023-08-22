@@ -289,25 +289,13 @@ local function Feature_code_comparison(t)
     end
   end
 
-  gg.alert(result)
-
-  choice(
-  "导出",function()
-    output(result)
-  end,
-  "查看",function()
-    local _m=gg.alert(result,"复制","导出","取消")
-    if _m and _m[1] then
-      gg.copyText(result)
-      gg.alert("已复制")
-     elseif _m and _m[2] then
-      output(result)
-    end
-  end,
-  "复制",function()
+  local _m=gg.alert(result,"复制","导出","取消")
+  if _m==1 then
     gg.copyText(result)
-    gg.alert("已复制")
-  end)
+    gg.toast("已复制")
+   elseif _m==2 then
+    output(result)
+  end
 end
 
 local function main()
