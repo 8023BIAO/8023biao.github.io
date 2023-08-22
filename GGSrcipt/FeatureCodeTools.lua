@@ -320,9 +320,6 @@ local function main()
         end
         Feature_code_comparison({address=tonumber(_p[1])})
       end)
-    end,
-    "exit",function()
-      os.exit()
     end)
     end,function(e)
     local _e=gg.alert(e,"copy","cancel")
