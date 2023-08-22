@@ -157,7 +157,6 @@ local function Option_offset_search(t)
   end
 
   output(str)
-
 end
 
 local function Feature_code_comparison(t)
