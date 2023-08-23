@@ -1390,6 +1390,28 @@ function 系统下载监听(链接,目录名,文件名,下载完成事件)
   downloadManager.enqueue(request)
 end
 
+function getFunctionCode(func)
+  if not type(func)=="function" then
+    return func
+  end
+  local info = debug.getinfo(func, "S")
+  if not info.what=="Lua" then
+    return nil
+  end
+  local source = io.open(info.source:sub(2), "r")
+  local lines = {}
+  for line in source:lines() do
+    lines[#lines + 1] = line
+  end
+  source:close()
+  local code=""
+  for i=info.linedefined,info.lastlinedefined do
+    code = code..lines[i].."\n"--" "
+  end
+  --code=code:gsub("%s+"," ")
+  return code:sub(1,-2)
+end
+
 function Mod(path)
   local url="https://8023biao.github.io/Androlua/mod.lua"
   local 储存路径=tostring(activity.getLuaDir().. tostring(path))
