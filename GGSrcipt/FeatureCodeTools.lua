@@ -338,7 +338,7 @@ local function main()
         end
         Feature_code_comparison({address=tonumber(_p[1])})
       end)
-    end,"output template",function()output(Template_code,"Template.lua")end)
+    end,"template",function()output(Template_code,"Template.lua")end)
     end,function(e)
     local _e=gg.alert(e,"copy","cancel")
     if _e==1 then
