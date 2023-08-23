@@ -1,11 +1,29 @@
 
 --Feature Code Tools GG Script
 
+local Template_code=[[local function FindFeatureCodeAddress(_t) local _tt = {} gg.clearResults() gg.setRanges(_t[1][3]) gg.searchNumber(_t[1][1], _t[1][2]) if gg.getResultCount() >0 then gg.refineNumber(_t[1][1], _t[1][2]) local _r = gg.getResults(gg.getResultCount()) gg.clearResults() if #_r > 0 then for i = 2, #_t do local _offset_address = {} local _offset_flags = {} for j = 1, #_r do _offset_address[j] = _r[j].address + _t[i][2] _offset_flags[j] = {address = _offset_address[j], flags = _t[i][3]} end local _offset_values = gg.getValues(_offset_flags) for j = #_r, 1, -1 do if _offset_values[j].value ~= _t[i][1] then table.remove(_r, j) else _tt[string.format("%X",(_r[j].address))] = i - 1 end end end end for k, v in pairs(_tt) do if v == #_t - 1 then table.insert(_r,k) end end if #_r > 0 then return _r else return nil end end end local function Modify(...) local _t={...} local _m={} if type(_t[1])=="table" then for i=1,#_t[1] do if type(_t[1][i])~="table" then for ii=2,#_t do _m[ii-1]={ address = tonumber(_t[1][i])+tonumber(_t[ii][2]), flags = _t[ii][3], value = _t[ii][1], freeze = _t[ii][4] } end end gg.setValues(_m) end elseif type(_t[1])=="string" or type(_t[1])=="number" then for ii=2,#_t do _m[ii-1]={ address = tonumber(_t[1])+tonumber(_t[ii][2]), flags = _t[ii][3], value = _t[ii][1], freeze = _t[ii][4] } end gg.setValues(_m) else return nil end end local function m(t,...) return Modify(FindFeatureCodeAddress(t),...) end
+--m(FindFeatureCodeAddressTable,modifyTable,modifyTable....)
+m(
+{
+  {8023,4,32},--MainFeatureCode value datatype Memorytype
+  {1,-4,16}, --SecondaryFeatureCode value offset datatype
+  {2,4,4},--Adding multiple sub-signatures helps to find the main signature, but it may slow down the running speed
+  {3,-8,4}
+ },--The first table is to find the signature address
+
+{1,-32,4,true},-- ModifiedValueMainSignatureOffset DataType freeze  N table can be added later to modify data.
+{0,12,16,false})
+--Please change your own code for other methods
+]]
+
 local gg=_G["gg"]
 
-local function output(str)
+local function output(str,name)
+  if not name then
+    name=gg.getTargetInfo()["label"].."_Feature_code.txt"
+  end
   str=tostring(str)
-  local _p=gg.prompt({"output path:"},{"/sdcard/"..gg.getTargetInfo()["label"].."_Feature_code.txt"},{"file"})
+  local _p=gg.prompt({"output path:"},{"/sdcard/"..name},{"file"})
   if not _p then
     return
   end
@@ -320,7 +338,7 @@ local function main()
         end
         Feature_code_comparison({address=tonumber(_p[1])})
       end)
-    end)
+    end,"output template",function()output(Template_code,"Template.lua")end)
     end,function(e)
     local _e=gg.alert(e,"copy","cancel")
     if _e==1 then
