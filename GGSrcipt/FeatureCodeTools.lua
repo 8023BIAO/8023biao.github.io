@@ -1,20 +1,20 @@
 
---Feature Code Tools GG Script
+--GG Feature Code Tool Script
 
-local Template_code=[[local function FindFeatureCodeAddress(_t) if type(_t)~="table" then return _t end local _tt = {} gg.clearResults() gg.setRanges(_t[1][3]) gg.searchNumber(_t[1][1], _t[1][2]) if gg.getResultCount() >0 then gg.refineNumber(_t[1][1], _t[1][2]) local _r = gg.getResults(gg.getResultCount()) gg.clearResults() if #_r > 0 then for i = 2, #_t do local _offset_address = {} local _offset_flags = {} for j = 1, #_r do _offset_address[j] = _r[j].address + tonumber(_t[i][2]) _offset_flags[j] = {address = _offset_address[j], flags = _t[i][3]} end local _offset_values = gg.getValues(_offset_flags) for j = #_r, 1, -1 do if _offset_values[j].value ~= _t[i][1] then table.remove(_r, j) else _tt[string.format("%X",(_r[j].address))] = i - 1 end end end end for k, v in pairs(_tt) do if v == #_t - 1 then table.insert(_r,k) end end if #_r > 0 then return _r else return nil end end end local function Modify(...)  end local function Modify(...) local _t={...} if not _t[1] then return end local _m={} if type(_t[1])=="table" then for i=1,#_t[1] do if type(_t[1][i])=="table" then for ii=2,#_t do _m[ii-1]={ address = _t[1][i].address+tonumber(_t[ii][2]), flags = _t[ii][3], value = _t[ii][1], freeze = _t[ii][4] } end end gg.setValues(_m) end elseif type(_t[1])=="number" then _t[1]=string.format("%X",_t[1]) for ii=2,#_t do _m[ii-1]={ address = _t[1]+tonumber(_t[ii][2]), flags = _t[ii][3], value = _t[ii][1], freeze = _t[ii][4] } end gg.setValues(_m) elseif type(_t[1]) == "string" then _t[1]=string.upper(_t[1]) if string.match(_t[1], "^0?x?X?[0-9A-Fa-f]+$") then if not _t[1]:sub(1,2)~="0X" then _t[1]="0x".._t[1] end end _t[1]=string.format("%X",tonumber(_t[1])) if not _t[1] then return gg.alert("address error:Invalid format") end for ii=2,#_t do _m[ii-1]={ address = _t[1]+tonumber(_t[ii][2]), flags = _t[ii][3], value = _t[ii][1], freeze = _t[ii][4] } end gg.setValues(_m) else return nil end end local function m(t,...)  end local function m(t,...) return xpcall(function(t,...) Modify(FindFeatureCodeAddress(t),...) end,function(e) gg.alert(e) end,t,...) end
+local Template_code=[=[local function FindFeatureCodeAddress(_t) if type(_t)~="table" then return _t end local _tt = {} gg.clearResults() gg.setRanges(_t[1][3]) gg.searchNumber(_t[1][1], _t[1][2]) if gg.getResultCount() >0 then local _r = gg.getResults(gg.getResultCount()) gg.clearResults() if #_r > 0 then local blockSize = 1024 local numBlocks = math.ceil(#_r / blockSize) for i = 2, #_t do local _offset_address = {} local _offset_flags = {} for blockIndex = 1, numBlocks do local startIdx = (blockIndex - 1) * blockSize + 1 local endIdx = math.min(blockIndex * blockSize, #_r) for j = startIdx, endIdx do _offset_address[j] = _r[j].address + tonumber(_t[i][2]) _offset_flags[j] = {address = _offset_address[j], flags = _t[i][3]} end local _offset_values = {} local cachedValues = {} for j = startIdx, endIdx do if cachedValues[_offset_address[j]] ~= nil then _offset_values[j] = cachedValues[_offset_address[j]] else _offset_values[j] = gg.getValues(_offset_flags[j]) cachedValues[_offset_address[j]] = _offset_values[j] end end for j = endIdx, startIdx, -1 do if _offset_values[j].value ~= _t[i][1] then table.remove(_r, j) else _tt[string.format("%X", _r[j].address)] = i - 1 end end end if #_r == 0 then break end end end for k, v in pairs(_tt) do if v == #_t - 1 then table.insert(_r,k) end end if #_r > 0 then return _r else return nil end end end local function Modify(...) local _t={...} if not _t[1] then return end local _m={} if type(_t[1])=="table" then for i=1,#_t[1] do if type(_t[1][i])=="table" then for ii=2,#_t do _m[ii-1]={ address = _t[1][i].address+tonumber(_t[ii][2]), flags = _t[ii][3], value = _t[ii][1], freeze = _t[ii][4] } end end gg.setValues(_m) end elseif type(_t[1])=="number" then _t[1]=string.format("%X",_t[1]) for ii=2,#_t do _m[ii-1]={ address = _t[1]+tonumber(_t[ii][2]), flags = _t[ii][3], value = _t[ii][1], freeze = _t[ii][4] } end gg.setValues(_m) elseif type(_t[1]) == "string" then _t[1]=string.upper(_t[1]) if string.match(_t[1], "^0?x?X?[0-9A-Fa-f]+$") then if not _t[1]:sub(1,2)~="0X" then _t[1]="0x".._t[1] end end _t[1]=string.format("%X",tonumber(_t[1])) if not _t[1] then return gg.alert("address error:Invalid format") end for ii=2,#_t do _m[ii-1]={ address = _t[1]+tonumber(_t[ii][2]), flags = _t[ii][3], value = _t[ii][1], freeze = _t[ii][4] } end gg.setValues(_m) else return nil end end local function m(t,...) return xpcall(function(t,...) Modify(FindFeatureCodeAddress(t),...) end,function(e) gg.alert(e) end,t,...) end
 --m(FindFeatureCodeAddressTable,modifyTable,modifyTable....)
 m(
 {
-  {8023,4,32},--MainFeatureCode value datatype Memorytype
-  {1,-4,16}, --SecondaryFeatureCode value offset datatype
+  {8023,4,32},--Main Feature Code,value,datatype,Memorytype
+  {1,-4,16}, --Secondary FeatureCode,value,offset,datatype
   {2,4,4},--Adding multiple sub-signatures helps to find the main signature, but it may slow down the running speed
   {3,-8,4}
  },--The first table is to find the signature address
 
-{1,-32,4,true},-- ModifiedValueMainSignatureOffset DataType freeze  N table can be added later to modify data.
+{1,-32,4,true},-- ModifiedValue,Main Signature Offset,DataType,freeze,N table can be added later to modify data.
 {0,12,16,false})
---Please change your own code for other methods
-]]
+--There are other methods, please check and change the configuration code.
+]=]
 
 local gg=_G["gg"]
 
@@ -304,7 +304,7 @@ local function Feature_code_comparison(t)
     gg.copyText(result)
     gg.toast("copy")
    elseif _m==2 then
-    local p=gg.prompt({"output path:"},{"/sdcard/"..gg.getTargetInfo()["label"].."_Feature_code.txt"},{"file"})
+    local p=gg.prompt({"output path:"},{_p[1]},{"file"})
     if not p then
       return
     end
