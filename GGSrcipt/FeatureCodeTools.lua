@@ -18,20 +18,12 @@ m(
 
 local gg=_G["gg"]
 
-local function output(str,name)
-  if not name then
-    name=gg.getTargetInfo()["label"].."_Feature_code.txt"
-  end
-  str=tostring(str)
-  local _p=gg.prompt({"output path:"},{"/sdcard/"..name},{"file"})
-  if not _p then
-    return
-  end
-  local file = io.open(_p[1], "w+")
+local function output(path,str)
+  local file = io.open(path, "w+")
   if file then
     file:write(str)
     file:close()
-    gg.alert("Output:".. string.len(str).."bytes")
+    gg.alert("path:"..path.."\nOutput:".. string.len(str).."bytes")
   end
 end
 
@@ -177,7 +169,7 @@ local function Option_offset_search(t)
     str=str2.."0".." F:"..F[0].value.. "\n" .. str3
   end
 
-  output(str)
+  output(_p[3],str)
 end
 
 local function Feature_code_comparison(t)
@@ -312,7 +304,11 @@ local function Feature_code_comparison(t)
     gg.copyText(result)
     gg.toast("copy")
    elseif _m==2 then
-    output(result)
+    local p=gg.prompt({"output path:"},{"/sdcard/"..gg.getTargetInfo()["label"].."_Feature_code.txt"},{"file"})
+    if not p then
+      return
+    end
+    output(p[1],result)
   end
 end
 
@@ -338,7 +334,7 @@ local function main()
         end
         Feature_code_comparison({address=tonumber(_p[1])})
       end)
-    end,"template",function()output(Template_code,"Template.lua")end)
+    end,"template",function()output("/sdcard/Template.lua",Template_code)end)
     end,function(e)
     local _e=gg.alert(e,"copy","cancel")
     if _e==1 then
