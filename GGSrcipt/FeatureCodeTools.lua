@@ -23,7 +23,7 @@ local function output(path,str)
   if file then
     file:write(str)
     file:close()
-    gg.alert("path:"..path.."\nOutput:".. string.len(str).."bytes")
+    gg.alert("output path:"..path.."\nOutput:".. string.len(str).."bytes")
   end
 end
 
