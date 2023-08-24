@@ -22,7 +22,7 @@ local function output(path,str)
   if file then
     file:write(str)
     file:close()
-    gg.alert("output path:"..path.."\nOutput:".. string.len(str).."bytes")
+    gg.alert("output path:"..path.."\n\noutput:".. string.len(str).."bytes")
   end
 end
 
@@ -291,9 +291,7 @@ local function Feature_code_comparison(t)
   end
 
   for i = #_offset_address, 1, -1 do
-    if _offset_values[i].value ~= _offset_value[i] then
-      table.remove(_offset_address, i)
-     else
+    if _offset_values[i].value == _offset_value[i] then
       result=result.._offset_offset[i].." "..data_type..":".. _offset_values[i].value.."\n"
     end
   end
