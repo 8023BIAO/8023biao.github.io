@@ -1,20 +1,19 @@
 
 --GG Feature Code Tool Script
 
-local Template_code=[=[local function m(...) local c={...} local parameter=c[1] if type(parameter)~="table" then return end local data = {} gg.clearResults() gg.setRanges(parameter[1][3]) gg.searchNumber(parameter[1][1], parameter[1][2]) local result = gg.getResults(gg.getResultCount()) gg.clearResults() if #result > 0 then for i, v in ipairs(result) do v.isUseful = true end for i = 2, #parameter do local offset_table = {} local num=parameter[i][1] local offset=tonumber(parameter[i][2]) local flag= parameter[i][3] for i, v in ipairs(result) do offset_table[#offset_table+1]={ address = result[i].address + offset, flags = flag } end local tmp = gg.getValues(offset_table) for i, v in ipairs(tmp) do if v.value ~= num then result[i].isUseful = false end end end end for i, v in ipairs(result) do if (v.isUseful) then data[#data+1] = v.address end end if (#data > 0) then local t = {} for i=1, #data do for ii=2,#c do t[#t+1]={ address = data[i]+(c[ii][2]), flags = c[ii][3], value = c[ii][1], } if c[ii][4] then t[#t].freeze = c[ii][4] end end end gg.setValues(t) return true else return nil end end
---m(FindFeatureCodeAddressTable,modifyTable,modifyTable....)
-m(
-{
-  {8023,4,32},--Main Feature Code,value,datatype,Memorytype
-  {1,-4,16}, --Secondary FeatureCode,value,offset,datatype
-  {2,4,4},--Adding multiple sub-signatures helps to find the main signature, but it may slow down the running speed
-  {3,-8,4}
- },--The first table is to find the signature address
+local Template_code=[[local function m(...) local c={...} local parameter=c[1] if type(parameter)~="table" then return end gg.clearResults() gg.setRanges(parameter[1][3]) gg.searchNumber(parameter[1][1], parameter[1][2]) local result = gg.getResults(gg.getResultCount()) gg.clearResults() local data = {} if #result > 0 then for i, v in ipairs(result) do v.isUseful = true end for i = 2, #parameter do local offset_table = {} local num=parameter[i][1] local offset=tonumber(parameter[i][2]) local flag= parameter[i][3] for i, v in ipairs(result) do offset_table[#offset_table+1]={ address = result[i].address + offset, flags = flag } end local tmp = gg.getValues(offset_table) for i, v in ipairs(tmp) do if v.value ~= num then result[i].isUseful = false end end end end for i, v in ipairs(result) do if (v.isUseful) then data[#data+1] = v.address end end if (#data > 0) then local t = {} for i=1, #data do for ii=2,#c do t[#t+1]={} t[#t].address = data[i]+(c[ii][2]) t[#t].flags = c[ii][3] t[#t].value = c[ii][1] local n=c[ii][5] if n then t[#t].name = n end if c[ii][4] then local item = {} item[#item+1] = t[#t] item[#item].freeze = true gg.addListItems(item) end end end gg.setValues(t) return true else return nil end end--by:云云
 
-{1,-32,4,true},-- ModifiedValue,Main Signature Offset,DataType,freeze,N table can be added later to modify data.
-{0,12,16,false})
---There are other methods, please check and change the configuration code.
-]=]
+m({
+  {8023,4,32},--主特征码,类型，内存
+  {1,-4,16}, --副特征码,偏移，类型
+  {2,4,4},--可以无限添加
+  {3,-8,4}
+},
+
+{1,-32,4,true,"name"},--修改 修改值 主特征码偏移 类型 冻结(布尔值) 名字(字符串)
+{0,12,16})--可以无限添加
+--第一个表寻找特征码地址，后面的都是修改表 {{}},{},{}...
+]]
 
 local gg=_G["gg"]
 
@@ -30,7 +29,7 @@ end
 local function func(expression, table)
   for k, v in pairs(table) do
     if expression == k then
-      return v    
+      return v
     end
   end
   return nil
@@ -72,7 +71,7 @@ local function Select_list_item(t)
   end
   local name={}
   for i=1,#t do
-    table.insert(name,tostring(dec_to_hex(t[i].address).." : "..t[i].value))
+    table.insert(name,tostring(dec_to_hex(t[i].address)..":"..t[i].value))
   end
   local _m= gg.choice(name)
   if _m then
