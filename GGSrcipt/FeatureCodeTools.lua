@@ -57,9 +57,12 @@ end
 
 local function Get_search_list()
   local t= gg.getResults(gg.getResultsCount())
+  local t2=gg.getListItems()
   if #t>0 then
     return t
-   else
+   elseif #t2>0 then
+    return t2
+   elseif #t==0 and #t2==0 then
     gg.alert("Search list has no options")
     return nil
   end
