@@ -209,46 +209,49 @@ local function choice(...)
   return _m
 end
 
-local function XSGA(...) -- 特征码获取地址 v2版(优化搜索速度)
-  local _tt = {}
-  local _t = {...}
+local function getaddress(...)
+  local t={...}
   gg.clearResults()
-  gg.setRanges(_t[1][3])
-  gg.searchNumber(_t[1][1], _t[1][2])
-  if gg.getResultCount() ~= 0 then
-    gg.refineNumber(_t[1][1], _t[1][2])
-    local _r = gg.getResults(gg.getResultCount())
-    gg.clearResults()
-    if #_r > 0 then
-      for i = 2, #_t do
-        local _offset_address = {}
-        local _offset_flags = {}
-        for j = 1, #_r do
-          _offset_address[j] = _r[j].address + _t[i][2]
-          _offset_flags[j] = {address = _offset_address[j], flags = _t[i][3]}
-        end
-        local _offset_values = gg.getValues(_offset_flags)
-        for j = #_r, 1, -1 do
-          if _offset_values[j].value ~= _t[i][1] then
-            table.remove(_r, j)
-           else
-            _tt[dec_to_hex(_r[j].address)] = i - 1
-          end
+  gg.setRanges(t[1][3])
+  gg.searchNumber(t[1][1], t[1][2])
+  local count = gg.getResultCount()
+  local result = gg.getResults(count)
+  gg.clearResults()
+  local data = {}
+  if (count > 0) then
+    for i, v in ipairs(result) do
+      v.isUseful = true
+    end
+    for k=2, #t do
+      local tmp = {}
+      local offset = t[k][2]
+      local num = t[k][1]
+      local flag=t[k][3]
+      for i, v in ipairs(result) do
+        tmp[#tmp+1] = {}
+        tmp[#tmp].address = v.address + offset
+        tmp[#tmp].flags = flag
+      end
+      tmp = gg.getValues(tmp)
+      for i, v in ipairs(tmp) do
+        if (v.value) ~= (num) then
+          result[i].isUseful = false
         end
       end
     end
-    for k, v in pairs(_tt) do
-      if v == #_t - 1 then
-        table.insert(_r,k)
+    for i, v in ipairs(result) do
+      if (v.isUseful) then
+        data[#data+1] = dec_to_hex(v.address)
       end
     end
-    if #_r > 0 then
-      return _r
+    if #data>0 then
+      return data
      else
       return nil
     end
   end
-end
+end--by:云云
+
 
 local function XAM(...)--xs特征码或地址修改数据
   local _t={...}
