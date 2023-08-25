@@ -252,7 +252,6 @@ local function getaddress(...)
   end
 end--by:云云
 
-
 local function XAM(...)--xs特征码或地址修改数据
   local _t={...}
   local _m={}
