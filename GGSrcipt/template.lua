@@ -361,7 +361,7 @@ local function m(t,...)
   return xpcall(function(t,...) modfiy(getaddress(t),...) end,function(e) gg.alert(e) end,t,...)
 end
 
-local function bate_getAddress(config)--调试函数 添加主特征码地址
+local function bate_getAddress(config)
   if config then
     for k,v in pairs(config)do
       if type(v)~="table" then
