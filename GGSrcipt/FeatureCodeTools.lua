@@ -8,7 +8,7 @@ m({
   {1,-4,16}, --副特征码,偏移，类型
   {2,4,4},--可以无限添加
   {3,-8,4}
-},
+},第一个参数为table就是定位主特征码地址，也可以是地址(字符串，数字)
 
 {1,-32,4,true,"name"},--修改 修改值 主特征码偏移 类型 冻结(布尔值) 名字(字符串)
 {0,12,16})--可以无限添加
@@ -22,7 +22,7 @@ local function output(path,str)
   if file then
     file:write(str)
     file:close()
-    gg.alert("output path:"..path.."\n\noutput:".. string.len(str).."bytes")
+    gg.alert("output path:\n"..path.."\n\noutput:\n".. string.len(str).."bytes")
   end
 end
 
@@ -60,7 +60,7 @@ local function Get_search_list()
   if #t>0 then
     return t
    else
-    gg.alert("Search list has no options.")
+    gg.alert("Search list has no options")
     return nil
   end
 end
@@ -94,123 +94,114 @@ local function Option_offset_search(t)
     return
   end
 
-  local range=tonumber(_p[2])
-  local pyt={
-    D={},
-    F={},
-    up={
-      D={},
-      F={}
+  local range = tonumber(_p[2])
+
+  io.open(_p[3], "w+"):close()
+  local file = io.open(_p[3], "a")
+
+  local pyt = {
+    D = {},
+    F = {},
+    up = {
+      D = {},
+      F = {}
     }
   }
 
-  local str
-  local str2=""
-  local str3=""
-  local D,F,_D,_F
+  local D, F, _D, _F
 
-  for i=0,range,4 do
+  for i = 0, range, 4 do
     if _p[4] then
-      pyt["D"][i/4] = {
-        address=t.address + i,
-        flags=4
+      pyt.D[i/4] = {
+        address = t.address + i,
+        flags = 4
       }
-      pyt["up"]["D"][i/4] = {
-        address=t.address - i,
-        flags=4
+      pyt.up.D[i/4] = {
+        address = t.address - i,
+        flags = 4
       }
     end
     if _p[5] then
-      pyt["F"][i/4] = {
-        address=t.address + i,
-        flags=16
+      pyt.F[i/4] = {
+        address = t.address + i,
+        flags = 16
       }
-      pyt["up"]["F"][i/4] = {
-        address=t.address - i,
-        flags=16
+      pyt.up.F[i/4] = {
+        address = t.address - i,
+        flags = 16
       }
     end
   end
 
   if _p[4] then
-    D=gg.getValues(pyt["D"])
-    _D=gg.getValues(pyt["up"]["D"])
+    D = gg.getValues(pyt.D)
+    _D = gg.getValues(pyt.up.D)
   end
 
   if _p[5] then
-    _F=gg.getValues(pyt["up"]["F"])
-    F=gg.getValues(pyt["F"])
+    _F = gg.getValues(pyt.up.F)
+    F = gg.getValues(pyt.F)
   end
 
   if _p[4] and _p[5] then
-    for i=#D,1,-1 do
-      local _d,_f=_D[i].value,_F[i].value
-      if not _p[6] then
-        str2=str2 .. -i*4 .. " D:" .. _d .. " F:" .. _f .."\n"
-       else
-        if _d~=0  or _f~=0 then
-          str2=str2 .. -i*4 .. " D:" .. _d .. " F:" .. _f .."\n"
-        end
+    for i = #D, 1, -1 do
+      local _d, _f = _D[i].value, _F[i].value
+      if _p[6] and _d ~= 0 and _f ~= 0 then
+        file:write(string.format("%-4d D:%d F:%s\n", -i * 4, _d, _f))
+       elseif not _p[6] then
+        file:write(string.format("%-4d D:%d F:%s\n", -i * 4, _d, _f))
       end
     end
-    for i=1,#D do
-      local _d,_f=D[i].value,F[i].value
-      if not _p[6] then
-        str3=str3 .. i*4 .. " D:" .. _d .. " F:" .. _f .."\n"
-       else
-        if _d~=0 or _f~=0 then
-          str3=str3 .. i*4 .. " D:" .. _d .. " F:" .. _f .."\n"
-        end
+    file:write( "0 D:" .. D[0].value .. " F:" .. F[0].value .. "\n")
+    for i = 1, #D do
+      local _d, _f = D[i].value, F[i].value
+      if _p[6] and _d ~= 0 and _f ~= 0 then
+        file:write(string.format("%d D:%d F:%s\n", i * 4, _d, _f))
+       elseif not _p[6] then
+        file:write(string.format("%d D:%d F:%s\n", i * 4, _d, _f))
       end
     end
-    str=str2.."0".." D:"..D[0].value.." F:"..F[0].value.."\n"..str3
    elseif _p[4] then
-    for i=#D,1,-1 do
-      local _d=_D[i].value
-      if not _p[6] then
-        str2=str2 .. -i*4 .. " D:" .. _d .. "\n"
-       else
-        if _d~=0 then
-          str2=str2 .. -i*4 .. " D:" .. _d .. "\n"
-        end
+    for i = #D, 1, -1 do
+      local _d = _D[i].value
+      if _p[6] and _d ~= 0 then
+        file:write(string.format("%-4d D:%d\n", -i * 4, _d))
+       elseif not _p[6] then
+        file:write(string.format("%-4d D:%d\n", -i * 4, _d))
       end
     end
-    for i=1,#D do
-      local _d=D[i].value
-      if not _p[6] then
-        str3=str3 .. i*4 .. " D:" .. _d .. "\n"
-       else
-        if _d~=0 then
-          str3=str3 .. i*4 .. " D:" .. _d .. "\n"
-        end
+    file:write( "0 D:" .. D[0].value .. "\n")
+    for i = 1, #D do
+      local _d = D[i].value
+      if _p[6] and _d ~= 0 then
+        file:write(string.format("%d D:%d\n", i * 4, _d))
+       elseif not _p[6] then
+        file:write(string.format("%d D:%d\n", i * 4, _d))
       end
     end
-    str=str2.."0".." D:"..D[0].value.. "\n" .. str3
    elseif _p[5] then
-    for i=#F,1,-1 do
-      local _f=_F[i].value
-      if not _p[6] then
-        str2=str2 .. -i*4 .. " F:" .. _f .. "\n"
-       else
-        if _f~=0 then
-          str2=str2 .. -i*4 .. " F:" .. _f .. "\n"
-        end
+    for i = #F, 1, -1 do
+      local _f = _F[i].value
+      if _p[6] and _f ~= 0 then
+        file:write(string.format("%-4d F:%s\n", -i * 4, _f))
+       elseif not _p[6] then
+        file:write(string.format("%-4d F:%s\n", -i * 4, _f))
       end
     end
-    for i=1,#F do
-      local _f=F[i].value
-      if not _p[6] then
-        str3=str3 .. i*4 .. " F:" .. _f .. "\n"
-       else
-        if _f~=0 then
-          str3=str3 .. i*4 .. " F:" .. _f .. "\n"
-        end
+    file:write( "0 F:" .. F[0].value .. "\n")
+    for i = 1, #F do
+      local _f = F[i].value
+      if _p[6] and _f ~= 0 then
+        file:write(string.format("%d F:%s\n", i * 4, _f))
+       elseif not _p[6] then
+        file:write(string.format("%d F:%s\n", i * 4, _f))
       end
     end
-    str=str2.."0".." F:"..F[0].value.. "\n" .. str3
   end
-  output(_p[3],str)
+  file:close()
+  gg.alert("Output complete")
 end
+
 
 local function Feature_code_comparison(t)
   if not t then
@@ -218,7 +209,7 @@ local function Feature_code_comparison(t)
   end
 
   local _p=gg.prompt({"loadflie:"},{"/sdcard/"},{"file"})
-  if not _p then
+  if not _p or not (io.open(_p[1],"r")) then
     return
   end
 
@@ -227,7 +218,6 @@ local function Feature_code_comparison(t)
   local range,iD,iF
   local address=t.address
   local line=0
-  local code=""
   local pyt={
     D={},
     F={},
@@ -251,7 +241,9 @@ local function Feature_code_comparison(t)
         iF=true
       end
     end
-    code=code..c.."\n"
+    if line ==2 then
+      break
+    end
   end
 
   for i=0,math.abs(range),4 do
@@ -299,10 +291,10 @@ local function Feature_code_comparison(t)
   local _offset_offset={}
   local j=0
 
-  for l in string.gmatch(code,".-\n") do
+  for l in io.lines(_p[1]) do
     j=j+1
     local o=tonumber(l:match("^(.-)%s"))
-    local d,f=l:match("D:%-?(%d+)"),l:match("F:(.-)\n")
+    local d,f=l:match("D:%-?(%d+)"),l:match("F:(.*)")
     if d and f then
       _offset_address[j] = address+o
       _offset_flags[j] = {address = _offset_address[j], flags = 16}
@@ -322,32 +314,22 @@ local function Feature_code_comparison(t)
   end
 
   local _offset_values = gg.getValues(_offset_flags)
-  local result=""
   local data_type
-
   if _offset_values[1].flags== 16 then
     data_type="F"
    elseif _offset_values[1].flags== 4 then
     data_type="D"
   end
 
+  io.open(_p[1], "w+"):close()
+  local file = io.open(_p[1], "a")
   for i = #_offset_address, 1, -1 do
     if _offset_values[i].value == _offset_value[i] then
-      result=result.._offset_offset[i].." "..data_type..":".. _offset_values[i].value.."\n"
+      file:write(_offset_offset[i].." "..data_type..":".. _offset_values[i].value.."\n")
     end
   end
-
-  local _m=gg.alert(result,"copy","output","cancel")
-  if _m==1 then
-    gg.copyText(result)
-    gg.toast("copy")
-   elseif _m==2 then
-    local p=gg.prompt({"output path:"},{_p[1]},{"file"})
-    if not p then
-      return
-    end
-    output(p[1],result)
-  end
+  file:close()
+  gg.alert("file Updated complete")
 end
 
 local function main()
@@ -372,7 +354,9 @@ local function main()
         end
         Feature_code_comparison({address=tonumber(_p[1])})
       end)
-    end,"template",function()output("/sdcard/Template.lua",Template_code)end)
+      end,"template",function()
+      output("/sdcard/Template.lua",Template_code)
+    end)
     end,function(e)
     local _e=gg.alert(e,"copy","cancel")
     if _e==1 then
