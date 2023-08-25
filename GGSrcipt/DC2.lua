@@ -131,7 +131,7 @@ local function bate_getAddress(config)
     for k,v in pairs(config)do
       if type(v)~="table" then
         local t={[1]={
-            address = tostring("0x"..v),
+            address = tonumber("0x"..v),
             flags = TYPE.D,
             name = "特征码地址"
         }}
