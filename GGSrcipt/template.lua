@@ -209,79 +209,156 @@ local function choice(...)
   return _m
 end
 
-local function getaddress(...)
-  local t={...}
-  gg.clearResults()
-  gg.setRanges(t[1][3])
-  gg.searchNumber(t[1][1], t[1][2])
-  local count = gg.getResultCount()
-  local result = gg.getResults(count)
-  gg.clearResults()
-  local data = {}
-  if (count > 0) then
-    for i, v in ipairs(result) do
-      v.isUseful = true
-    end
-    for k=2, #t do
-      local tmp = {}
-      local offset = t[k][2]
-      local num = t[k][1]
-      local flag=t[k][3]
-      for i, v in ipairs(result) do
-        tmp[#tmp+1] = {}
-        tmp[#tmp].address = v.address + offset
-        tmp[#tmp].flags = flag
-      end
-      tmp = gg.getValues(tmp)
-      for i, v in ipairs(tmp) do
-        if (v.value) ~= (num) then
-          result[i].isUseful = false
-        end
-      end
-    end
-    for i, v in ipairs(result) do
-      if (v.isUseful) then
-        data[#data+1] = dec_to_hex(v.address)
-      end
-    end
-    if #data>0 then
-      return data
-     else
-      return nil
-    end
-  end
-end--by:云云
+local function loadResults(skip,loadNum,parameter,data)
 
-local function XAM(...)--xs特征码或地址修改数据
-  local _t={...}
-  local _m={}
-  if type(_t[1])=="table" then
-    for i=1,#_t[1] do
-      if type(_t[1][i])~="table" then
-        for ii=2,#_t do
-          _m[ii-1]={
-            address = tonumber(_t[1][i])+tonumber(_t[ii][2]),
-            flags = _t[ii][3],
-            value = _t[ii][1],
-            freeze = _t[ii][4]
-          }
-        end
-      end
-      gg.setValues(_m)
-    end
-   elseif type(_t[1])=="string" or type(_t[1])=="number" then
-    for ii=2,#_t do
-      _m[ii-1]={
-        address = tonumber(_t[1])+tonumber(_t[ii][2]),
-        flags = _t[ii][3],
-        value = _t[ii][1],
-        freeze = _t[ii][4]
+  local result
+
+  if skip==0 then
+    result = gg.getResults(loadNum)
+   else
+    result = gg.getResults(skip,loadNum)
+  end
+
+  for i, v in ipairs(result) do
+    v.isUseful = true
+  end
+
+  for i = 2, #parameter do
+    local offset_table = {}
+    local num=parameter[i][1]
+    local offset=tonumber(parameter[i][2])
+    local flag= parameter[i][3]
+    for i, v in ipairs(result) do
+      offset_table[#offset_table+1]={
+        address = result[i].address + offset,
+        flags = flag
       }
     end
-    gg.setValues(_m)
+
+    local tmp = gg.getValues(offset_table)
+
+    for i, v in ipairs(tmp) do
+      if (v.value ~= num)then
+        result[i].isUseful = false
+      end
+    end
+
+  end
+
+  for i, v in ipairs(result) do
+    if (v.isUseful) then
+      data[#data+1] = v.address
+    end
+  end
+
+end
+
+local function getaddress(...)--优化:biao,改至:云云
+
+  local c={...}
+  local parameter=c[1]
+
+  if type(parameter)~="table" then
+    return
+  end
+
+  gg.clearResults()
+  gg.setVisible(false)
+  gg.setRanges(parameter[1][3])
+  gg.searchNumber(parameter[1][1], parameter[1][2])
+
+  local data = {}
+  local quantity=gg.getResultCount()
+
+  if quantity== 0 then
+    return nil
+  end
+
+  local blockSize=9999
+  local numBlocks
+
+  if quantity>blockSize then
+    numBlocks=math.ceil(quantity/blockSize)
+  end
+
+  if numBlocks then
+    for blockIndex = 1, numBlocks do
+      local startIdx=(blockIndex-1)*blockSize
+      local endIdx=math.min(startIdx+blockSize,quantity)
+      if blockIndex==numBlocks then
+        blockSize=endIdx-startIdx
+      end
+      loadResults(startIdx,blockSize,parameter,data)
+    end
+   else
+    loadResults(0,blockSize,parameter,data)
+  end
+
+  gg.clearResults()
+
+  if (#data > 0) then
+    return data
    else
     return nil
   end
+end
+
+local function modfiy(address,...)
+  if not address or not ... then
+    return
+  end
+
+  local c,t={...},{}
+
+  if type(address)=="table" then
+    if (#address > 0) then
+      for i=1, #address do
+        for ii=1,#c do
+          t[#t+1]={}
+          t[#t].address = address[i]+(c[ii][2])
+          t[#t].flags = c[ii][3]
+          t[#t].value = c[ii][1]
+          local n=c[ii][5]
+          if n then
+            t[#t].name = n
+          end
+          if c[ii][4] then
+            local item = {}
+            item[#item+1] = t[#t]
+            item[#item].freeze = true
+            gg.addListItems(item)
+          end
+        end
+      end
+      gg.setValues(t)
+      return true
+    end
+
+   elseif type(address)=="string" or type(address)=="number" then
+
+    for ii=1,#c do
+      t[#t+1]={}
+      t[#t].address = tonumber(address)+(c[ii][2])
+      t[#t].flags = c[ii][3]
+      t[#t].value = c[ii][1]
+      local n=c[ii][5]
+      if n then
+        t[#t].name = n
+      end
+      if c[ii][4] then
+        local item = {}
+        item[#item+1] = t[#t]
+        item[#item].freeze = true
+        gg.addListItems(item)
+      end
+    end
+    gg.setValues(t)
+    return true
+  end
+end
+
+local function m(t,...)
+  return xpcall(function(t,...) modfiy(getaddress(t),...) end,function(e) gg.alert(e) end,t,...)
 end
 
 local function bate_getAddress(config)--调试函数 添加主特征码地址
