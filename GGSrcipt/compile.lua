@@ -1,15 +1,15 @@
+--GG Simple obfuscate script
 
---弹窗
+local gg=_G["gg"]
+
 local function Alert(...)
   return gg.alert(...)
 end
 
---路径改后缀
 local function PathMatch(path,l)
   return path:match("(.*)%.?l?u?a?").."_"..l..".lua"
 end
 
---写出文件
 local function Writer(path,data)
   if path and data then
     local file = io.open(path,"w+b")
@@ -19,7 +19,6 @@ local function Writer(path,data)
   end
 end
 
---读取文件
 local function Reader(path)
   if path then
     local file = io.open(path, "r")
@@ -30,7 +29,6 @@ local function Reader(path)
   end
 end
 
---字符替换
 local func_env = function(code, cok)
   local new_code = code
   local env = _ENV
@@ -55,7 +53,7 @@ local function stringToChars(inputString)
   return data
 end
 
-local function ASCLL(code)
+local function ASCII(code)
   code=string.gsub(code,"\39(.-)\39",stringToChars)
   code=string.gsub(code,"\34(.-)\34",stringToChars)
   return code
@@ -67,14 +65,13 @@ local reserved = {
   ["function"]=true, ["if"]=true,["in"]=true,["local"]=true,
   ["nil"]=true,["not"]=true, ["or"]=true,["repeat"]=true,
   ["return"]=true, ["then"]=true, ["true"]=true, ["until"]=true,
-  ["while"]=true, --其他关键字
+  ["while"]=true,
 
   ["_G"]=true, ["type"]=true, ["pairs"]=true, ["ipairs"]=true,
-  ["tostring"]=true, ["tonumber"]=true, ["print"]=true, --系统全局变量
+  ["tostring"]=true, ["tonumber"]=true, ["print"]=true,
 
 }
 
---不需要的匹配结果
 local exclude={
   "^(%d+)$",
 }
@@ -82,7 +79,6 @@ local exclude={
 local function getInt(code)
   local varList = {}
 
-  --变量
   for k in code:gmatch("([%w_]+)%s*[,=]") do
     if not reserved[k] then
       for c,v in pairs(exclude) do
@@ -93,7 +89,6 @@ local function getInt(code)
     end
   end
 
-  --goto 标签
   for k in code:gmatch("::%s*([%w_]+)%s*::") do
     if not reserved[k] then
       for c,v in pairs(exclude) do
@@ -104,7 +99,6 @@ local function getInt(code)
     end
   end
 
-  --函数
   for k in code:gmatch("function%s+([%w_]+)%s*%(.-%)") do
     if not reserved[k] then
       for c,v in pairs(exclude) do
@@ -121,8 +115,8 @@ end
 math.randomseed(os.time())
 math.random(1)
 
-local function Rand(num)--生成混淆码
-  local tab={"O","o","0"}
+local function Rand(num)
+  local tab={"o","O","0"}
   local str=tab[math.random(1,#tab-1)]
   for i=1,num-1 do
     str = str..tab[math.random(1,#tab)]
@@ -150,7 +144,6 @@ local function obfuscateCode(code)
   return code
 end
 
---一次性简易加密(Chatgpt3.5)
 local One_time_encryption={}
 
 One_time_encryption.to_hex=function(str)
@@ -174,43 +167,32 @@ One_time_encryption.encode=function(password, code)
   return hex_code
 end
 
---要写入解密函数
-One_time_encryption.code_config=[=[local function from_hex(hex)
-  return (string.gsub(hex,'..', function(cc)
-    return string.char(tonumber(cc, 16))
-  end))
-end
+One_time_encryption.code_config=[=[local function from_hex(hex) return (string.gsub(hex,'..', function(cc) return string.char(tonumber(cc, 16)) end)) end local function unmix_string(mixed, password) local unmixed = {} for i = 1, #mixed do local c = string.char((string.byte(mixed, i) - string.byte(password, (i - 1) % #password + 1)) % 256) table.insert(unmixed, c) end return table.concat(unmixed) end local function decode(hex_code, input_password) local mixed_code = from_hex(hex_code) local decrypted_code = unmix_string(mixed_code, input_password) return decrypted_code end]=]
 
-local function unmix_string(mixed, password)
-  local unmixed = {}
-  for i = 1, #mixed do
-    local c = string.char((string.byte(mixed, i) - string.byte(password, (i - 1) % #password + 1)) % 256)
-    table.insert(unmixed, c)
-  end
-  return table.concat(unmixed)
-end
-
-local function decode(hex_code, input_password)
-  local mixed_code = from_hex(hex_code)
-  local decrypted_code = unmix_string(mixed_code, input_password)
-  return decrypted_code
-end]=]
-
---直接加密
 One_time_encryption.Direct_encryption=function(password,code)
   local encode=(One_time_encryption.encode(password,code))
-  local uncode=One_time_encryption.code_config.."\n"..[[local xcode="]].. encode .. [[" return pcall(load(decode(xcode,"这里输入密码"))) ]]
-  return uncode--返回加密后的字符串
+  local uncode=One_time_encryption.code_config..[[ local xcode="]].. encode .. "\"\nreturn pcall(load(decode(xcode,\"这里输入密码\")))"
+  return uncode
+end
+
+local function toascii(b)
+  b = tostring(b)
+  local e = ""
+  for n = 1, string.len(b) do
+    e = e .. "'\\" .. string.byte(b, n) .. "',"
+  end
+  local x = "e={"..e.. "}".. " load(table.concat(e))()"
+  return x
 end
 
 local function Automatic_encryption()
   local list=gg.prompt({"源文件:","套壳层数:[0;10]","密码:"},{"/sdcard/","3","这里输入密码"},{"file","number","text"})
   if list and list[1] then
     local path=tostring(list[1])
-    if loadfile(path) then
+    if loadfile(path) and io.open(path,"r") then
       local code="\n"..Reader(path).." "
       if load(code) then
-        local NewFilePath=PathMatch(path,"encryption")
+        local NewFilePath=PathMatch(path,"obfuscate")
         local new_code=code
         local fail=""
 
@@ -249,14 +231,14 @@ local function Automatic_encryption()
           fail=fail.."_ENV[表]失败\n"
         end
 
-        new_code=ASCLL(new_code)
+        new_code=ASCII(new_code)
 
         if load(new_code) then
           new_code=new_code
           code=new_code
          else
           new_code=code
-          fail=fail.."字符转Ascll失败\n"
+          fail=fail.."字符转Ascii失败\n"
         end
 
         new_code=obfuscateCode(new_code)
@@ -274,13 +256,19 @@ local function Automatic_encryption()
         local str=loadfile(NewFilePath)
         if str then
           local uncode=string.dump(str,false)
+
+          new_code=toascii(uncode)
+
+          if load(new_code) then
+            uncode=new_code
+          end
+
           Writer(NewFilePath,uncode)
 
-          --重复刷16进制代码并执行
-          if tonumber(list[2])>=1 then
+          if tonumber(list[2])>0 then
             for i=0,tonumber(list[2]) do
               local unc=Reader(NewFilePath)
-              local xuncode="local Biao=\"".. One_time_encryption.to_hex(unc) .."\"\nfunction from_hex(hex)\nreturn (string.gsub(hex,'..', function(cc)\nreturn string.char(tonumber(cc, 16))\nend))\nend\nreturn pcall(load(from_hex(Biao))())"
+              local xuncode="local Biao=\"".. One_time_encryption.to_hex(unc) .."\" function from_hex(hex) return (string.gsub(hex,'..', function(cc) return string.char(tonumber(cc, 16)) end)) end return pcall(load(from_hex(Biao))())"
               Writer(NewFilePath,xuncode)
             end
           end
@@ -311,6 +299,7 @@ local function Automatic_encryption()
 end
 
 gg.showUiButton()
+Automatic_encryption()
 
 while true do
   if gg.isClickedUiButton() then
