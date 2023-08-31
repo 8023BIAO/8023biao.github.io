@@ -74,6 +74,20 @@ local function dec_to_hex(decimal_num)
   return string.format("%X", decimal_num)
 end
 
+local function num_to_hex(num)
+  num=tostring(num)
+  num=string.upper(num)
+  if not num:match("^[A-F 0-9 X]+$") then
+    return nil
+  end
+  if not num:match("^%d+$") then
+    if not num:find("0X") then
+      num="0x"..num
+    end
+  end
+  return "0x"..string.format("%X",tonumber(num))
+end
+
 --获取地址头
 local function SoAddr(str)
   return gg.getRangesList(str)[1].start
