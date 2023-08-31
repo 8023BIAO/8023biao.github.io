@@ -74,6 +74,7 @@ local function dec_to_hex(decimal_num)
   return string.format("%X", decimal_num)
 end
 
+--10&16字符串或数字转16进制
 local function num_to_hex(num)
   num=tostring(num)
   num=string.upper(num)
