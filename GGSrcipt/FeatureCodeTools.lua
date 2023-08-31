@@ -22,7 +22,7 @@ local function output(path,str)
   if file then
     file:write(str)
     file:close()
-    gg.alert("output path:\n"..path.."\n\noutput:\n".. string.len(str).."bytes")
+    gg.alert("输出路径:\n"..path)
   end
 end
 
@@ -63,7 +63,7 @@ local function Get_search_list()
    elseif #t2>0 then
     return t2
    elseif #t==0 and #t2==0 then
-    gg.alert("Search list has no options")
+    gg.alert("列表没有选项")
     return nil
   end
 end
@@ -89,7 +89,7 @@ local function Option_offset_search(t)
 
   local file_name="/sdcard/"..gg.getTargetInfo()["label"].."_Feature_code.txt"
   local _p=gg.prompt(
-  {"address:","range:","output path:","D","F","filter 0"},
+  {"地址:","范围:","输出路径:","D类","F类","过滤0"},
   {dec_to_hex(tonumber(t.address)),"0xFFF",file_name,true,true,true},
   {"text","text","text","checkbox","checkbox","checkbox"})
 
@@ -149,7 +149,7 @@ local function Option_offset_search(t)
   if _p[4] and _p[5] then
     for i = #D, 1, -1 do
       local _d, _f = _D[i].value, _F[i].value
-      if _p[6] and _d ~= 0 and _f ~= 0 then
+      if _p[6] and _d ~= 0 and _f ~= 0 and _f~="nan" then
         file:write(string.format("%-4d D:%d F:%s\n", -i * 4, _d, _f))
        elseif not _p[6] then
         file:write(string.format("%-4d D:%d F:%s\n", -i * 4, _d, _f))
@@ -158,7 +158,7 @@ local function Option_offset_search(t)
     file:write( "0 D:" .. D[0].value .. " F:" .. F[0].value .. "\n")
     for i = 1, #D do
       local _d, _f = D[i].value, F[i].value
-      if _p[6] and _d ~= 0 and _f ~= 0 then
+      if _p[6] and _d ~= 0 and _f ~= 0 and _f~="nan" then
         file:write(string.format("%d D:%d F:%s\n", i * 4, _d, _f))
        elseif not _p[6] then
         file:write(string.format("%d D:%d F:%s\n", i * 4, _d, _f))
@@ -202,7 +202,7 @@ local function Option_offset_search(t)
     end
   end
   file:close()
-  gg.alert("Output complete")
+  gg.alert("输出完成")
 end
 
 
@@ -332,36 +332,36 @@ local function Feature_code_comparison(t)
     end
   end
   file:close()
-  gg.alert("file Updated complete")
+  gg.alert("文件更新完成")
 end
 
 local function main()
   xpcall(function()
     choice(
-    "option",function()
-      choice("output",function()
+    "列表",function()
+      choice("输出",function()
         Option_offset_search(Select_list_item(Get_search_list()))
-        end,"contrast",function()
+        end,"对比",function()
         Feature_code_comparison(Select_list_item(Get_search_list()))
       end)
     end,
-    "address",function()
+    "地址",function()
       choice(
-      "output",function()
+      "输出",function()
         Option_offset_search({address=tonumber("0x8023")})
       end,
-      "contrast",function()
+      "对比",function()
         local _p=gg.prompt({"address:"},{"0x8023"},{"text"})
         if not _p then
           return
         end
         Feature_code_comparison({address=tonumber(_p[1])})
       end)
-      end,"template",function()
-      output("/sdcard/Template.lua",Template_code)
+      end,"模板",function()
+      output(gg.EXT_STORAGE.."/特征码使用模板.lua",Template_code)
     end)
     end,function(e)
-    local _e=gg.alert(e,"copy","cancel")
+    local _e=gg.alert(e,"复制","取消")
     if _e==1 then
       gg.copyText(tostring(e))
     end
@@ -373,4 +373,5 @@ while true do
   if gg.isClickedUiButton() then
     main()
   end
+  gg.sleep(100)
 end
