@@ -1,5 +1,5 @@
 
---GG Feature Code Tool Script
+--GG特征码脚本工具
 
 local Template_code=[[local function loadResults(skip,loadNum,parameter,data) local result if skip==0 then result = gg.getResults(loadNum) else result = gg.getResults(skip,loadNum) end for i, v in ipairs(result) do v.isUseful = true end for i = 2, #parameter do local offset_table = {} local num=parameter[i][1] local offset=tonumber(parameter[i][2]) local flag= parameter[i][3] for i, v in ipairs(result) do offset_table[#offset_table+1]={ address = result[i].address + offset, flags = flag } end local tmp = gg.getValues(offset_table) for i, v in ipairs(tmp) do if (v.value ~= num)then result[i].isUseful = false end end end for i, v in ipairs(result) do if (v.isUseful) then data[#data+1] = v.address end end end local function getaddress(...) local c={...} local parameter=c[1] if type(parameter)~="table" then return end gg.clearResults() gg.setVisible(false) gg.setRanges(parameter[1][3]) gg.searchNumber(parameter[1][1], parameter[1][2]) local data = {} local quantity=gg.getResultCount() if quantity== 0 then return nil end local blockSize=9999 local numBlocks if quantity>blockSize then numBlocks=math.ceil(quantity/blockSize) end if numBlocks then for blockIndex = 1, numBlocks do local startIdx=(blockIndex-1)*blockSize local endIdx=math.min(startIdx+blockSize,quantity) if blockIndex==numBlocks then blockSize=endIdx-startIdx end loadResults(startIdx,blockSize,parameter,data) end else loadResults(0,blockSize,parameter,data) end gg.clearResults() if (#data > 0) then return data else return nil end end local function modfiy(address,...) if not address or not ... then return end local c,t={...},{} if type(address)=="table" then if (#address > 0) then for i=1, #address do for ii=1,#c do t[#t+1]={} t[#t].address = address[i]+(c[ii][2]) t[#t].flags = c[ii][3] t[#t].value = c[ii][1] local n=c[ii][5] if n then t[#t].name = n end if c[ii][4] then local item = {} item[#item+1] = t[#t] item[#item].freeze = true gg.addListItems(item) end end end gg.setValues(t) return true end elseif type(address)=="string" or type(address)=="number" then for ii=1,#c do t[#t+1]={} t[#t].address = tonumber(address)+(c[ii][2]) t[#t].flags = c[ii][3] t[#t].value = c[ii][1] local n=c[ii][5] if n then t[#t].name = n end if c[ii][4] then local item = {} item[#item+1] = t[#t] item[#item].freeze = true gg.addListItems(item) end end gg.setValues(t) return true end end local function m(t,...) return xpcall(function(t,...) modfiy(getaddress(t),...) end,function(e) gg.alert(e) end,t,...) end--优化:biao,改至:云云
 
@@ -16,6 +16,7 @@ m({
 ]]
 
 local gg=_G["gg"]
+local path=gg.EXT_STORAGE.."/"
 
 local function output(path,str)
   local file = io.open(path, "w+")
@@ -51,8 +52,18 @@ local function choice(...)
   return _m
 end
 
-local function dec_to_hex(decimal_num)
-  return string.format("%X", decimal_num)
+local function num_to_hex(num)
+  num=tostring(num)
+  num=string.upper(num)
+  if not num:match("^[A-F 0-9 X]+$") then
+    return nil
+  end
+  if not num:match("^%d+$") then
+    if not num:find("0X") then
+      num="0x"..num
+    end
+  end
+  return "0x"..string.format("%X",tonumber(num))
 end
 
 local function Get_search_list()
@@ -74,30 +85,41 @@ local function Select_list_item(t)
   end
   local name={}
   for i=1,#t do
-    table.insert(name,tostring(dec_to_hex(t[i].address)..":"..t[i].value))
+    table.insert(name,tostring(num_to_hex(t[i].address)..":"..t[i].value))
   end
   local _m= gg.choice(name)
   if _m then
-    return t[_m]
+    return num_to_hex(t[_m].address)
   end
 end
 
-local function Option_offset_search(t)
-  if not t then
+local function Option_offset_search(address)
+  if not address then
     return
   end
 
-  local file_name="/sdcard/"..gg.getTargetInfo()["label"].."_Feature_code.txt"
+  local file_name=path..gg.getTargetInfo()["label"].."_特征码.txt"
   local _p=gg.prompt(
   {"地址:","范围:","输出路径:","D类","F类","过滤0"},
-  {dec_to_hex(tonumber(t.address)),"0xFFF",file_name,true,true,true},
+  {address,"0xFFF",file_name,true,true,true},
   {"text","text","text","checkbox","checkbox","checkbox"})
+
+  address=num_to_hex(_p[1])
+
+  if not address then
+    return
+  end
 
   if not _p or not _p[4] and not _p[5] then
     return
   end
 
-  local range = tonumber(_p[2])
+  local time=os.clock()
+  local range = num_to_hex(_p[2])
+
+  if not range then
+    return
+  end
 
   io.open(_p[3], "w+"):close()
   local file = io.open(_p[3], "a")
@@ -116,21 +138,21 @@ local function Option_offset_search(t)
   for i = 0, range, 4 do
     if _p[4] then
       pyt.D[i/4] = {
-        address = t.address + i,
+        address = address + i,
         flags = 4
       }
       pyt.up.D[i/4] = {
-        address = t.address - i,
+        address = address - i,
         flags = 4
       }
     end
     if _p[5] then
       pyt.F[i/4] = {
-        address = t.address + i,
+        address = address + i,
         flags = 16
       }
       pyt.up.F[i/4] = {
-        address = t.address - i,
+        address = address - i,
         flags = 16
       }
     end
@@ -155,6 +177,7 @@ local function Option_offset_search(t)
         file:write(string.format("%-4d D:%d F:%s\n", -i * 4, _d, _f))
       end
     end
+
     file:write( "0 D:" .. D[0].value .. " F:" .. F[0].value .. "\n")
     for i = 1, #D do
       local _d, _f = D[i].value, F[i].value
@@ -164,7 +187,9 @@ local function Option_offset_search(t)
         file:write(string.format("%d D:%d F:%s\n", i * 4, _d, _f))
       end
     end
+
    elseif _p[4] then
+
     for i = #D, 1, -1 do
       local _d = _D[i].value
       if _p[6] and _d ~= 0 then
@@ -173,6 +198,7 @@ local function Option_offset_search(t)
         file:write(string.format("%-4d D:%d\n", -i * 4, _d))
       end
     end
+
     file:write( "0 D:" .. D[0].value .. "\n")
     for i = 1, #D do
       local _d = D[i].value
@@ -182,7 +208,9 @@ local function Option_offset_search(t)
         file:write(string.format("%d D:%d\n", i * 4, _d))
       end
     end
+
    elseif _p[5] then
+
     for i = #F, 1, -1 do
       local _f = _F[i].value
       if _p[6] and _f ~= 0 then
@@ -191,6 +219,7 @@ local function Option_offset_search(t)
         file:write(string.format("%-4d F:%s\n", -i * 4, _f))
       end
     end
+
     file:write( "0 F:" .. F[0].value .. "\n")
     for i = 1, #F do
       local _f = F[i].value
@@ -200,26 +229,35 @@ local function Option_offset_search(t)
         file:write(string.format("%d F:%s\n", i * 4, _f))
       end
     end
+
   end
+
   file:close()
-  gg.alert("输出完成")
+  time=os.clock()-time
+  gg.alert("输出完成\n耗时:"..time)
 end
 
-
-local function Feature_code_comparison(t)
-  if not t then
+local function Feature_code_comparison(address)
+  if not address then
     return
   end
 
-  local _p=gg.prompt({"loadflie:"},{"/sdcard/"},{"file"})
+  address=num_to_hex(address)
+
+  if not address then
+    return
+  end
+
+  local _p=gg.prompt({"加载配置文件:"},{path},{"file"})
   if not _p or not (io.open(_p[1],"r")) then
     return
   end
 
+  local num=0
+  local time=os.clock()
   local correlation_table={}
   local D,F,_D,_F
   local range,iD,iF
-  local address=t.address
   local line=0
   local pyt={
     D={},
@@ -230,13 +268,15 @@ local function Feature_code_comparison(t)
     }
   }
 
-  for c in io.lines(_p[1]) do
-    if c:match("^%s*$") then
+  local config_file=io.lines(_p[1])
+
+  for c in config_file do
+    if c:match("^%s*$")then
       break
     end
     line=line+1
     if line==1 then
-      range=tonumber(c:match("^(%p?%d+)"))
+      range=math.abs(tonumber(c:match("^(%p?%d+)")))
       if c:match("%sD:") then
         iD=true
       end
@@ -249,7 +289,11 @@ local function Feature_code_comparison(t)
     end
   end
 
-  for i=0,math.abs(range),4 do
+  if not range then
+    return gg.alert("文件配置错误 必须是此脚本输出的文件")
+  end
+
+  for i=0,range,4 do
     if iD then
       pyt["D"][i/4] = {
         address=address + i,
@@ -294,9 +338,9 @@ local function Feature_code_comparison(t)
   local _offset_offset={}
   local j=0
 
-  for l in io.lines(_p[1]) do
+  for l in config_file do
     j=j+1
-    local o=tonumber(l:match("^(.-)%s"))
+    local o=l:match("^(.-)%s")
     local d,f=l:match("D:%-?(%d+)"),l:match("F:(.*)")
     if d and f then
       _offset_address[j] = address+o
@@ -317,6 +361,7 @@ local function Feature_code_comparison(t)
   end
 
   local _offset_values = gg.getValues(_offset_flags)
+
   local data_type
   if _offset_values[1].flags== 16 then
     data_type="F"
@@ -328,11 +373,14 @@ local function Feature_code_comparison(t)
   local file = io.open(_p[1], "a")
   for i = #_offset_address, 1, -1 do
     if _offset_values[i].value == _offset_value[i] then
+      num=num+1
       file:write(_offset_offset[i].." "..data_type..":".. _offset_values[i].value.."\n")
     end
   end
+
   file:close()
-  gg.alert("文件更新完成")
+  time=os.clock()-time
+  gg.alert("对比完成\n已保留"..num.."条数据\n耗时:"..time)
 end
 
 local function main()
@@ -348,17 +396,21 @@ local function main()
     "地址",function()
       choice(
       "输出",function()
-        Option_offset_search({address=tonumber("0x8023")})
+        Option_offset_search("0x8023")
       end,
       "对比",function()
-        local _p=gg.prompt({"address:"},{"0x8023"},{"text"})
+        local _p=gg.prompt({"地址:"},{"0x8023"},{"text"})
         if not _p then
           return
         end
-        Feature_code_comparison({address=tonumber(_p[1])})
+        Feature_code_comparison(_p[1])
       end)
-      end,"模板",function()
-      output(gg.EXT_STORAGE.."/特征码使用模板.lua",Template_code)
+    end,
+    "模板",function()
+      output(path.."特征码使用模板.lua",Template_code)
+    end,
+    "帮助",function()
+      gg.alert("特征码工具 by:biao\n\n支持10&16进制数字\n\n对比文件存在D,F类时默认F类输出")
     end)
     end,function(e)
     local _e=gg.alert(e,"复制","取消")
