@@ -416,4 +416,5 @@ while true do
   if gg.isClickedUiButton() then
     M()
   end
+  gg.sleep(100)
 end
