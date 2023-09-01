@@ -83,7 +83,7 @@ local function Custom_image_quality()
   end
 end
 
-local warn=gg.alert("脚本只修改画质\n无影响其他玩家游戏体验\n因为要修改内存达到效果\n修改后果需自行承担\n由于智商不够，脚本为半自动化","同意","不同意")
+local warn=gg.alert("请先对游戏隐藏2,3\n脚本只修改画质\n无影响其他玩家游戏体验\n因为要修改内存达到效果\n修改后果需自行承担\n由于智商不够，脚本为半自动化","同意","不同意")
 if warn and warn==1 then
   Custom_image_quality()
 end
