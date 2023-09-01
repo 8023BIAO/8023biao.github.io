@@ -86,7 +86,7 @@ local function num_to_hex(num)
       num="0x"..num
     end
   end
-  return "0x"..string.format("%X",tonumber(num))
+  return string.format("0x%X",tonumber(num))
 end
 
 --获取地址头
