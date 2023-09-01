@@ -62,7 +62,6 @@ local function Custom_image_quality()
   gg.setVisible(false)
   gg.clearResults()
   gg.setRanges(-2080896)
-  gg.setConfig(2131427463,102)
   local Search_value=quality[list].l ..";".. quality[list].w .."::9"
   local t=searchNumber(Search_value,16)
   if t then
