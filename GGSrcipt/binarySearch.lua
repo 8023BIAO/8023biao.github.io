@@ -1,4 +1,4 @@
---gg modifyBinarySearch by:biao
+--gg BinarySearch by:biao
 
 local gg = _G["gg"]
 
