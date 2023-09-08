@@ -3,8 +3,7 @@
 local gg = _G["gg"]
 
 local function showChoiceDialog(t,s)
-  local name = {}
-  local fun = {}
+  local name,fun = {},{}
   for i = 1, #t, 2 do
     name[#name+1] = t[i]
     fun[#fun+1] = t[i + 1]
