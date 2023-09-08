@@ -4,7 +4,6 @@ local r = gg.getResults(gg.getResultCount())
 if #r > 0 then
   local blockSize = 1024*10
   local numBlocks = math.ceil(#r / blockSize)
-  numBlocks=0 and 1
   for blockIndex = 1, numBlocks do
     local startIdx = (blockIndex - 1) * blockSize + 1
     local endIdx = math.min(blockIndex * blockSize, #r)
