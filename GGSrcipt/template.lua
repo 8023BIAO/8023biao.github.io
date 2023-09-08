@@ -181,15 +181,6 @@ local function offset(so,...)
   return addr
 end
 
--- 自定义函数
-local function func(expression, table)
-  for k, v in pairs(table) do
-    if expression == k then
-      return v
-    end
-  end
-  return nil
-end
 
 --菜单导航
 function M(str)
@@ -204,24 +195,19 @@ function M(str)
   end
 end
 
--- 自定义 choice
-local function choice(...)
-  local _n = {...} -- 参数
-  local _name = {} -- 名称
-  local _fun = {} -- 函数
-
-  for i = 1, #_n, 2 do
-    table.insert(_name, _n[i])
-    table.insert(_fun, _n[i + 1])
+local function choice(t,s)
+  local name = {}
+  local fun = {}
+  for i = 1, #t, 2 do
+    name[#name+1] = t[i]
+    fun[#fun+1] = t[i + 1]
   end
-
-  local _m = gg.choice(_name)
-
-  local result = func(_m, _fun)
-  if result then
-    result()
+  local m = gg.choice(name,nil,s)
+  for k, v in pairs(fun) do
+    if m == k then
+      v()
+    end
   end
-  return _m
 end
 
 local function loadResults(skip,loadNum,parameter,data)
