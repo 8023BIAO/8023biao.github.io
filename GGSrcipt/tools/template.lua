@@ -195,14 +195,14 @@ function M(str)
   end
 end
 
-local function choice(t,s)
+local function choice(t)
   local name = {}
   local fun = {}
   for i = 1, #t, 2 do
     name[#name+1] = t[i]
     fun[#fun+1] = t[i + 1]
   end
-  local m = gg.choice(name,nil,s)
+  local m = gg.choice(name)
   for k, v in pairs(fun) do
     if m == k then
       v()
@@ -401,11 +401,11 @@ function main()
 end
 
 function main2()
-  local _m=choice("这个是第二个菜单",function()
-    Toast("没有设置事件")
-    end,"返回",function()
-    M("main")
-  end)
+  local _m=choice({"这个是第二个菜单",function()
+      Toast("没有设置事件")
+      end,"返回",function()
+      M("main")
+  end})
   --[[
 if not _m then
 M("main")
