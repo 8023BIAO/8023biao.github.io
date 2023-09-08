@@ -37,8 +37,7 @@ local function binarySearch()
     if is then
       mid = math.floor((low + high) / 2)
       get = gg.getResults(high,mid)
-      backup = {}
-      set = {}
+      backup,set = {},{}
       for c,v in ipairs(get) do
         backup[#backup+1] = v
         set[#set+1] = {
