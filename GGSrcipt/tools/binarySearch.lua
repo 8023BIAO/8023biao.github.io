@@ -36,7 +36,6 @@ local function binarySearch()
         local save = {gg.getResults(rlc)[high]}
         save[1].name="only"
         gg.addListItems(save)
-        break
       end
      else
       gg.sleep(100)
