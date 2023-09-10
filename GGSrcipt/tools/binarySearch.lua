@@ -49,7 +49,7 @@ local function binarySearch()
       gg.setValues(set)
       is=false
     end
-    if gg.isVisible() and high-mid >= 3 then
+    if gg.isVisible() and high-mid >1 then
       gg.setVisible(false)
       showChoiceDialog({
         "select",function()
