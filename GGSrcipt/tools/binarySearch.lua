@@ -1,4 +1,4 @@
---gg BinarySearch by:biao
+--GG二分搜索法 by:biao
 
 local gg = _G["gg"]
 
@@ -21,7 +21,7 @@ local function binarySearch()
   if rlc <2 then
     return
   end
-  local promptValues = gg.prompt({"type(B1,W2,D4,X8,F16,Q32,E64):","modify:","freeze"},{"","",false},{"number","number","checkbox"})
+  local promptValues = gg.prompt({"类型(B1,W2,D4,X8,F16,Q32,E64):","改为:","冻结"},{"","",false},{"number","number","checkbox"})
   if promptValues then
     gg.setVisible(false)
     promptValues[1],promptValues[2] = tonumber(promptValues[1]),tonumber(promptValues[2])
@@ -34,6 +34,7 @@ local function binarySearch()
   local mid,backup,set,get,select
   while low < high do
     if is then
+      is=false
       mid = math.floor((low + high) / 2)
       get = gg.getResults(high,mid)
       backup,set = {},{}
@@ -47,41 +48,29 @@ local function binarySearch()
         }
       end
       gg.setValues(set)
-      is=false
     end
-    if gg.isVisible() and high-mid >1 then
+    if gg.isVisible() then
+      local select_range = high - mid
+      is=true
       gg.setVisible(false)
       showChoiceDialog({
-        "select",function()
+        "选择",function()
           select=true
           low = mid + 1
         end,
-        "filter",function()
+        "过滤",function()
           high = mid
         end,
-        "serve",function()
-          local set2 = {}
-          for i = mid-1,high do
-            local value = gg.getResults(rlc)[i]
-            value.freeze = promptValues[3]
-            value.value = promptValues[2]
-            set2[#set2+1] = value
-          end
-          gg.addListItems(set2)
-        end
-      },mid .. "~" .. high .. ":" .. high - mid)
+      },mid .. "~" .. high .. ":" .. select_range)
       gg.setValues(backup)
-      is=true
-     elseif high-mid == 1 then
-      if select then
-        local set2 = {gg.getResults(rlc)[mid-1]}
-        set2[1].name="only"
+      if low == high and select_range == 1 and select then
+        local set2 = {gg.getResults(rlc)[high]}
+        set2[1].name="过滤地址"
         gg.addListItems(set2)
+        break
       end
-      gg.setValues(backup)
-      break
      else
-      gg.sleep(200)
+      gg.sleep(100)
     end
   end
 end
