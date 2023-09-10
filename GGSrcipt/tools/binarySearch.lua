@@ -49,7 +49,7 @@ local function binarySearch()
       gg.setValues(set)
       is=false
     end
-    if gg.isVisible() and high-mid > 1 then
+    if gg.isVisible() and high-mid >= 3 then
       gg.setVisible(false)
       showChoiceDialog({
         "select",function()
@@ -74,7 +74,7 @@ local function binarySearch()
       is=true
      elseif high-mid == 1 then
       if select then
-        local set2 = {gg.getResults(rlc)[mid]}
+        local set2 = {gg.getResults(rlc)[mid-1]}
         set2[1].name="only"
         gg.addListItems(set2)
       end
