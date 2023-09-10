@@ -1,16 +1,12 @@
---GG二分搜索法 by:biao
+--GG二分修改筛选 by:biao
 local gg = _G["gg"]
 local function binarySearch()
-  local rlc = gg.getResultsCount()
-  if rlc <2 then return end
+  local rlc = gg.getResultsCount() if rlc <2 then return end
   local promptValues = gg.prompt({"类型(B1,W2,D4,X8,F16,Q32,E64):","改为:","冻结"},{"","",false},{"number","number","checkbox"})
-  if not promptValues then return end
-  gg.setVisible(false)
-  promptValues[1],promptValues[2] = tonumber(promptValues[1]),tonumber(promptValues[2])
+  if not promptValues then return end gg.setVisible(false) promptValues[1],promptValues[2] = tonumber(promptValues[1]),tonumber(promptValues[2])
   local is,low,high,mid,backup,set,get,select = true,0,rlc
   while (low < high) do
-    if is then
-      is=false
+    if is then is=false
       mid = math.floor((low + high) / 2)
       get = gg.getResults(high,mid)
       backup,set = {},{}
@@ -20,10 +16,8 @@ local function binarySearch()
       end
       gg.setValues(set)
     end
-    if gg.isVisible() then
-      gg.setVisible(false)
+    if gg.isVisible() then is=true gg.setVisible(false)
       local select_range = high - mid
-      is=true
       local choice=gg.choice({"选择","过滤"},nil,mid .. "~" .. high .. ":" .. select_range)
       if choice == 1 then
         select = true
