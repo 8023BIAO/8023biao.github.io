@@ -1,9 +1,8 @@
---GG二分修改筛选 by:biao
+--GG修改二分筛选 by:biao
 local gg = _G["gg"]
 local function binarySearch()
   local rlc = gg.getResultsCount() if rlc <2 then return end
-  local promptValues = gg.prompt({"类型(B1,W2,D4,X8,F16,Q32,E64):","改为:","冻结"},{"","",false},{"number","number","checkbox"})
-  if not promptValues then return end gg.setVisible(false) promptValues[1],promptValues[2] = tonumber(promptValues[1]),tonumber(promptValues[2])
+  local promptValues = gg.prompt({"类型(B1,W2,D4,X8,F16,Q32,E64):","改为:","冻结"},{"","",false},{"number","number","checkbox"}) if not promptValues then return end gg.setVisible(false) promptValues[1],promptValues[2] = tonumber(promptValues[1]),tonumber(promptValues[2])
   local is,low,high,mid,backup,set,get,select = true,0,rlc
   while (low < high) do
     if is then is=false
