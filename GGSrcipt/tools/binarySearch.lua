@@ -61,7 +61,7 @@ local function binarySearch()
         end,
         "serve",function()
           local set2 = {}
-          for i = mid,high-1 do
+          for i = mid-1,high do
             local value = gg.getResults(rlc)[i]
             value.freeze = promptValues[3]
             value.value = promptValues[2]
