@@ -22,11 +22,12 @@ local function binarySearch()
         select = true
         low = mid + 1
        elseif choice == 2 then
-        high = mid
+        high = mid -1
       end
       gg.setValues(backup)
-      if high == low and select_range == 1 and select then
-        local save = {gg.getResults(rlc)[high]}
+      if select_range == 1 and select then
+        local key = choice == 1 and mid + 1 or mid
+        local save = {gg.getResults(rlc)[key]}
         save[1].name="only"
         gg.addListItems(save)
       end
