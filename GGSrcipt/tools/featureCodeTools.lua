@@ -92,7 +92,7 @@ local function Option_offset_search(address)
 
   local file_name=path..gg.getTargetInfo()["label"].."_特征码.txt"
   local _p=gg.prompt(
-  {"地址:","范围:","输出路径:","D类","F类","过滤0"},
+  {"目标地址:","上下获取范围:","输出路径:","D类","F类","过滤0"},
   {address,"0xFFF",file_name,true,true,true},
   {"text","text","text","checkbox","checkbox","checkbox"})
 
@@ -285,9 +285,4 @@ local function main()
   end})
 end
 
-gg.showUiButton()
-while true do
-  if gg.isClickedUiButton() then
-    main()
-  end
-end
+xpcall(main,print)
