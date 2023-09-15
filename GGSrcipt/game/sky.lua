@@ -12,8 +12,6 @@ local function choice(t)
   m = m and f[m]()
 end
 
-
-
 local function memory_menu(str)
   if not menu_selection and not str then
     menu_selection=_G["main_menu"]
