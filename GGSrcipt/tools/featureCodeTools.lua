@@ -83,7 +83,7 @@ end
 local function file_output(address)
   if not address then return end
   local file_name = path .. gg.getTargetInfo()["label"] .. "_特征码.txt"
-  local _p=gg.prompt({"地址:", "获取:", "类型(B1,W2,D4,X8,F16,Q32,E64,A127)", "输出路径:", "过滤0"}, {address, "5000", "", file_name, true}, {"number", "number", "number", "text", "checkbox",})
+  local _p=gg.prompt({"地址:", "获取:", "类型(B1,W2,D4,X8,F16,Q32,E64,A127)", "输出路径:", "过滤0"}, {address, "5000", "127", file_name, true}, {"number", "number", "number", "text", "checkbox",})
   if not _p or _p[1]:match("^%s*$") or _p[2]:match("^%s*$") or _p[3]:match("^%s*$") or _p[4]:match("^%s*$") then return end
   address = num_to_hex(_p[1])
   local time, range, numType, offsetTable, up, un, getUp, getUn, memory_type_distance = os.clock(), num_to_hex(_p[2]), tonumber(_p[3]), { up = {}, un ={} }, {}, {}
