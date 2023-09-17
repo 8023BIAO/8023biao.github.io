@@ -82,7 +82,7 @@ end
 local function file_output(address)
   if not address then return end
   local file_name = path .. gg.getTargetInfo()["label"] .. "_特征码_" .. os.date("%Y.%m.%d.%H.%M.%S") .. ".txt"
-  local _p=gg.prompt({"地址:", "获取:", "类型(B1,W2,D4,X8,F16,Q32,E64,A127)", "输出路径:", "过滤0"}, {address, "5000", "", file_name, true}, {"number", "number", "number", "text", "checkbox",})
+  local _p=gg.prompt({"地址:", "获取:", "类型(B1,W2,D4,X8,F16,Q32,E64,A127)", "输出:", "过滤0"}, {address, "5000", "", file_name, true}, {"number", "number", "number", "text", "checkbox",})
   if not _p or _p[1]:match("^%s*$") or _p[2]:match("^%s*$") or _p[3]:match("^%s*$") or _p[4]:match("^%s*$") then return end
   address = num_to_hex(_p[1])
   local time, range, numType, offsetTable, up, un, getUp, getUn, memory_type_distance = os.clock(), num_to_hex(_p[2]), tonumber(_p[3]), { up = {}, un ={} }, {}, {}
@@ -113,11 +113,11 @@ local function file_output(address)
     end
   end
   file:close()
-  gg.alert("输出完成\n耗时:" .. os.clock() - time)
+  print("输出完成\n耗时:" .. os.clock() - time)
 end
 
 local function file_comparison()
-  local _p = gg.prompt({ "文件1:", "文件2:", "输出路径:", "对比不同"}, { path, path, path .."对比结果_" .. os.date("%Y.%m.%d.%H.%M.%S") .. ".txt", false}, { "file", "file", "file", "checkbox"})
+  local _p = gg.prompt({ "文件1:", "文件2:", "输出:", "对比不同"}, { path, path, path .."对比结果_" .. os.date("%Y.%m.%d.%H.%M.%S") .. ".txt", false}, { "file", "file", "file", "checkbox"})
   if not _p or not io.open(_p[1], "r") or not io.open(_p[2], "r") then return end
   local time, data, file1, file2, newFile = os.clock(), {}, read(_p[1]), read(_p[2]), _p[3]
   for v in file1:gmatch("(.-)\n") do
@@ -134,7 +134,7 @@ local function file_comparison()
     end
   end
   new_file:close()
-  gg.alert("对比完成\n耗时:" .. os.clock() - time)
+  print("对比完成\n耗时:" .. os.clock() - time)
 end
 
 local function main()
@@ -150,7 +150,7 @@ local function main()
       local file = io.open(p, "w+")
       file:write(Template_code)
       file:close()
-      gg.alert("输出路径:\n" .. p .. "")
+      print("输出路径:\n" .. p .. "")
   end})
 end
 
