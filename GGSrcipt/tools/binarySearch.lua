@@ -22,7 +22,7 @@ local function binarySearch()
         select = true
         low = mid + 1
        elseif choice == 2 then
-        high = mid -1
+        high = mid
       end
       gg.setValues(backup)
       if select_range == 1 and select then
