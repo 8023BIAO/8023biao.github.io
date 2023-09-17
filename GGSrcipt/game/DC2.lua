@@ -1,6 +1,7 @@
 
 --AndroidGame DC2[x32&x64] GGScript
 --Game:皇帝成长计划2(DC2)
+--弃坑已不再维护
 
 local gg=_G["gg"]
 local _fun={}
