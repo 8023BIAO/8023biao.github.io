@@ -63,7 +63,7 @@ local function get_search_list()
    elseif #t2 > 0 then
     return t2
    elseif #t == 0 and #t2 == 0 then
-    gg.alert("两个列表都没有选项")
+    print("两个列表都没有选项")
   end
 end
 
