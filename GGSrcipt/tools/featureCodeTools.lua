@@ -17,7 +17,7 @@ m({
 
 {1,-32,4,true,"name"},--修改 修改值 主特征码偏移 类型 冻结(布尔值) 名字(字符串)
 {0,12,16})--可以无限添加
---第一个表寻找特征码地址，后面的都是修改表 {{}},{},{}...
+
 ]]
 
 local gg = _G["gg"]
@@ -94,13 +94,13 @@ local function file_output(address)
   getUp, getUn = gg.getValues(offsetTable.up), gg.getValues(offsetTable.un)
   io.open(_p[4], "w+"):close()
   local file = io.open(_p[4], "a")
-  file:write(string.format("偏移 数值 数据类型:%d \n",_p[3]))
+  file:write(string.format("类型:%d \n",_p[3]))
   for i = #getUp, 1, -1 do
     local value = getUp[i].value
     if _p[5] and value ~= 0 then
-      file:write(string.format("%-"..memory_type_distance.."d %s\n", -i * memory_type_distance, value))
+      file:write(string.format("-%d %s\n", i * memory_type_distance, value))
      elseif not _p[5] then
-      file:write(string.format("%-"..memory_type_distance.."d %s\n", -i * memory_type_distance, value))
+      file:write(string.format("-%d %s\n", i * memory_type_distance, value))
     end
   end
   file:write("0 " .. getUp[0].value .. "\n")
@@ -117,22 +117,20 @@ local function file_output(address)
 end
 
 local function file_comparison()
-  local _p = gg.prompt({ "对比文件1:", "对比文件2:", "输出路径:", "对比不同"}, { path, path, path .."对比结果_" .. os.date("%Y.%m.%d.%H.%M.%S") .. ".txt", false}, { "file", "file", "file", "checkbox"})
+  local _p = gg.prompt({ "文件1:", "文件2:", "输出路径:", "对比不同"}, { path, path, path .."对比结果_" .. os.date("%Y.%m.%d.%H.%M.%S") .. ".txt", false}, { "file", "file", "file", "checkbox"})
   if not _p or not io.open(_p[1], "r") or not io.open(_p[2], "r") then return end
   local time, data, file1, file2, newFile = os.clock(), {}, read(_p[1]), read(_p[2]), _p[3]
-  for v in file1:gmatch(".-\n") do
-    local line = v:match("(.-)\n$")
-    data[line] = true
+  for v in file1:gmatch("(.-)\n") do
+    data[v] = true
   end
   io.open(newFile, "w+"):close()
   local new_file = io.open(newFile, "a")
   new_file:write(string.format("对比%s\n", _p[4] and "不同" or "相同"))
-  for v in file2:gmatch(".-\n") do
-    local line = v:match("(.-)\n$")
-    if data[line] and not _p[4] then
-      new_file:write(v)
-     elseif not data[line] and _p[4] then
-      new_file:write(v)
+  for v in file2:gmatch("(.-)\n") do
+    if data[v] and not _p[4] then
+      new_file:write(v .. "\n")
+     elseif not data[v] and _p[4] then
+      new_file:write(v .. "\n")
     end
   end
   new_file:close()
