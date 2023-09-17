@@ -63,8 +63,7 @@ local function get_search_list()
    elseif #t2 > 0 then
     return t2
    elseif #t == 0 and #t2 == 0 then
-    gg.alert("列表没有选项")
-    return nil
+    gg.alert("两个列表都没有选项")
   end
 end
 
@@ -82,8 +81,8 @@ end
 
 local function file_output(address)
   if not address then return end
-  local file_name = path .. gg.getTargetInfo()["label"] .. "_特征码.txt"
-  local _p=gg.prompt({"地址:", "获取:", "类型(B1,W2,D4,X8,F16,Q32,E64,A127)", "输出路径:", "过滤0"}, {address, "5000", "127", file_name, true}, {"number", "number", "number", "text", "checkbox",})
+  local file_name = path .. gg.getTargetInfo()["label"] .. "_特征码_" .. os.date("%Y.%m.%d.%H.%M.%S") .. ".txt"
+  local _p=gg.prompt({"地址:", "获取:", "类型(B1,W2,D4,X8,F16,Q32,E64,A127)", "输出路径:", "过滤0"}, {address, "5000", "", file_name, true}, {"number", "number", "number", "text", "checkbox",})
   if not _p or _p[1]:match("^%s*$") or _p[2]:match("^%s*$") or _p[3]:match("^%s*$") or _p[4]:match("^%s*$") then return end
   address = num_to_hex(_p[1])
   local time, range, numType, offsetTable, up, un, getUp, getUn, memory_type_distance = os.clock(), num_to_hex(_p[2]), tonumber(_p[3]), { up = {}, un ={} }, {}, {}
@@ -118,7 +117,7 @@ local function file_output(address)
 end
 
 local function file_comparison()
-  local _p = gg.prompt({ "对比文件1:", "对比文件2:", "输出路径:", "对比不同"}, { path, path, path .."对比结果.txt", false}, { "file", "file", "file", "checkbox"})
+  local _p = gg.prompt({ "对比文件1:", "对比文件2:", "输出路径:", "对比不同"}, { path, path, path .."对比结果_" .. os.date("%Y.%m.%d.%H.%M.%S") .. ".txt", false}, { "file", "file", "file", "checkbox"})
   if not _p or not io.open(_p[1], "r") or not io.open(_p[2], "r") then return end
   local time, data, file1, file2, newFile = os.clock(), {}, read(_p[1]), read(_p[2]), _p[3]
   for v in file1:gmatch(".-\n") do
@@ -127,6 +126,7 @@ local function file_comparison()
   end
   io.open(newFile, "w+"):close()
   local new_file = io.open(newFile, "a")
+  new_file:write(string.format("对比%s\n", _p[4] and "不同" or "相同"))
   for v in file2:gmatch(".-\n") do
     local line = v:match("(.-)\n$")
     if data[line] and not _p[4] then
