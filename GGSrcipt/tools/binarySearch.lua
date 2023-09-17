@@ -25,7 +25,7 @@ local function binarySearch()
         high = mid
       end
       gg.setValues(backup)
-      if select_range == 1 and select then
+      if (high - low == 0) and select_range == 1 and select then
         local key = choice == 1 and mid + 1 or mid
         local save = {gg.getResults(rlc)[key]}
         save[1].name="only"
