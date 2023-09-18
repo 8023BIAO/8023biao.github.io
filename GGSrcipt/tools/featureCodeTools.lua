@@ -1,4 +1,4 @@
-
+--GG特征码对比&获取工具 by:biao
 local path = gg.EXT_STORAGE .. "/"
 
 local function read(path)
