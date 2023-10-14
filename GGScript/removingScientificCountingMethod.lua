@@ -1,4 +1,4 @@
-local gg=_G["gg"]
+
 local delTable={}
 local r = gg.getResults(gg.getResultCount())
 if #r > 0 then
