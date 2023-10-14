@@ -17,4 +17,5 @@ if #r > 0 then
     end
   end
 end
+
 gg.removeResults(delTable)
