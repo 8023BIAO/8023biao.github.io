@@ -135,35 +135,35 @@ local function searchEdit(searchLocation,modifyData)
   gg.setVisible(false)
   gg.setRanges(searchLocation[1][3])
   gg.searchNumber(searchLocation[1][1], searchLocation[1][2])
-  local data = {}
+  local data,getNum = {},100000
   local count = gg.getResultCount()
-  if count == 0 then
-    return
-  end
-  local result = gg.getResults(count)
-  gg.clearResults()
-  for _, v in ipairs(result) do
-    v.isUseful = true
-  end
-  for i = 2, #searchLocation do
-    local offsetTable = {}
-    local num = searchLocation[i][1]
-    local offset = tonumber(searchLocation[i][2])
-    local flag = searchLocation[i][3]
-    for i, v in ipairs(result) do
-      offsetTable[#offsetTable + 1] = { address = v.address + offset, flags = flag }
+  if count == 0 then return end
+  while (gg.getResultCount() ~= 0) do
+    local result = gg.getResults(getNum)
+    for _, v in ipairs(result) do
+      v.isUseful = true
     end
-    local tmp = gg.getValues(offsetTable)
-    for i, v in ipairs(tmp) do
-      if (v.value ~= num) then
-        result[i].isUseful = false
+    for i = 2, #searchLocation do
+      local offsetTable = {}
+      local num = searchLocation[i][1]
+      local offset = tonumber(searchLocation[i][2])
+      local flag = searchLocation[i][3]
+      for i, v in ipairs(result) do
+        offsetTable[#offsetTable + 1] = { address = v.address + offset, flags = flag }
+      end
+      local tmp = gg.getValues(offsetTable)
+      for i, v in ipairs(tmp) do
+        if (v.value ~= num) then
+          result[i].isUseful = false
+        end
       end
     end
-  end
-  for _, v in ipairs(result) do
-    if (v.isUseful) then
-      data[#data + 1] = v.address
+    for _, v in ipairs(result) do
+      if (v.isUseful) then
+        data[#data + 1] = v.address
+      end
     end
+    gg.removeResults(result)
   end
   if not modifyData and #data == 0 then
     return
@@ -205,7 +205,7 @@ local function getFunctionCode(func)
 end
 
 local function exportTemplate()
-  local path, code = path .. "FeatureCode.lua",getFunctionCode(searchEdit) .. instructions
+  local path, code = path .. "FeatureCodeTemplate.lua",getFunctionCode(searchEdit) .. instructions
   io.open(path,"w+"):write(code):close()
   print(path)
 end
