@@ -1,4 +1,3 @@
-
 import "android.webkit.WebSettings"
 
 local url = "https://www.jianfast.com/m"
@@ -27,6 +26,7 @@ wv.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW)
 wv.getSettings().setDomStorageEnabled(true)
 
 wv.requestFocusFromTouch()--设置支持获取手势焦点
+
 --支持JS(建议无论如何加上)
 local webSettings = wv.getSettings();
 wv.Settings.setJavaScriptEnabled(true);
@@ -40,6 +40,8 @@ wv.getSettings().setAppCacheEnabled(true);
 wv.getSettings().setDomStorageEnabled(true);
 wv.getSettings().setDatabaseEnabled(true);
 wv.getSettings().setTextZoom(125)--文字大小
+-- 设置缓存策略
+webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK)
 
 wv.setOnKeyListener(View.OnKeyListener{
   onKey=function (view,keyCode,event)
@@ -71,7 +73,6 @@ wv.setWebViewClient{
 
 }
 
-
 --全屏事件监听
 import "com.lua.*"
 wv.setWebChromeClient(LuaWebChrome(LuaWebChrome.IWebChrine{
@@ -84,4 +85,6 @@ wv.setWebChromeClient(LuaWebChrome(LuaWebChrome.IWebChrine{
 }))
 
 
+-- 优化内存使用(清除缓存)
+activity.getSystemService(Context.ACTIVITY_SERVICE).clearApplicationUserData()
 
