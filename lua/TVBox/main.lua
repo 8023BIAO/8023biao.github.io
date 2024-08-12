@@ -85,6 +85,3 @@ wv.setWebChromeClient(LuaWebChrome(LuaWebChrome.IWebChrine{
 }))
 
 
--- 优化内存使用(清除缓存)
-activity.getSystemService(Context.ACTIVITY_SERVICE).clearApplicationUserData()
-
