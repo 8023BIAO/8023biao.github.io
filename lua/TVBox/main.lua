@@ -33,7 +33,7 @@ wv.getSettings().setAllowFileAccess(true);
 wv.getSettings().setAppCacheEnabled(true);
 wv.getSettings().setDomStorageEnabled(true);
 wv.getSettings().setDatabaseEnabled(true);
-wv.getSettings().setTextZoom(100)--文字大小
+wv.getSettings().setTextZoom(130)--文字大小
 
 wv.setOnKeyListener(View.OnKeyListener{
   onKey=function (view,keyCode,event)
