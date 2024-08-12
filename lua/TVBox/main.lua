@@ -1,8 +1,8 @@
 import "android.webkit.WebSettings"
 
---local url = "https://www.jianfast.com/m"
+local url = "https://www.jianfast.com/m"
 --local url = "https://limestart.cn/"
-local url = "https://www.ijijian.com/"
+--local url = "https://www.ijijian.com/"
 
 local wv=LuaWebView(activity)
 wv.setBackgroundColor(0xff000000);
