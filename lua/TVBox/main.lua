@@ -46,9 +46,9 @@ wv.setOnKeyListener(View.OnKeyListener{
 })
 
 --无广告UA
-local APP_NAME_UA="netdisk;5.2.7;PC;PC-Windows;6.2.9200;WindowsBaiduYunGuanJia"
+--local APP_NAME_UA="netdisk;5.2.7;PC;PC-Windows;6.2.9200;WindowsBaiduYunGuanJia"
 
-wv.getSettings().setUserAgentString(APP_NAME_UA);
+--wv.getSettings().setUserAgentString(APP_NAME_UA);
 
 --[[状态监听
 wv.setWebViewClient{
