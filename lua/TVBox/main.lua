@@ -1,10 +1,13 @@
 import "android.webkit.WebSettings"
 
-local url = "https://cupfox.love/"
+--local url = "https://www.jianfast.com/m"
+local url = "https://limestart.cn/"
 
 local wv=LuaWebView(activity)
 wv.setBackgroundColor(0xff000000);
 activity.setContentView(wv)
+--删除加载
+wv.removeView(wv.getChildAt(0))
 
 --初始化,加载网页
 wv.loadUrl(url)
@@ -29,6 +32,7 @@ wv.getSettings().setAllowFileAccess(true);
 wv.getSettings().setAppCacheEnabled(true);
 wv.getSettings().setDomStorageEnabled(true);
 wv.getSettings().setDatabaseEnabled(true);
+wv.getSettings().setTextZoom(100)--文字大小
 
 wv.setOnKeyListener(View.OnKeyListener{
   onKey=function (view,keyCode,event)
@@ -45,7 +49,7 @@ local APP_NAME_UA="netdisk;5.2.7;PC;PC-Windows;6.2.9200;WindowsBaiduYunGuanJia"
 
 wv.getSettings().setUserAgentString(APP_NAME_UA);
 
---状态监听
+--[[状态监听
 wv.setWebViewClient{
   shouldOverrideUrlLoading=function(view,url)
     --Url即将跳转
@@ -56,6 +60,19 @@ wv.setWebViewClient{
   onPageFinished=function(view,url)
     --网页加载完成
 
-end}
---删除加载
-wv.removeView(wv.getChildAt(0))
+  end,
+
+}]]
+
+
+--全屏事件监听
+import "com.lua.*"
+wv.setWebChromeClient(LuaWebChrome(LuaWebChrome.IWebChrine{
+  onShowCustomView=function(view, callback)
+    activity.setContentView(view)
+  end,
+  onHideCustomView=function(view)
+    activity.setContentView(wv)
+  end,
+}))
+
