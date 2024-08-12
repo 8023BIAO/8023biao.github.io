@@ -1,4 +1,6 @@
 
+import "android.webkit.WebSettings"
+
 local url = "https://www.jianfast.com/m"
 --local url = "https://limestart.cn/"
 --local url = "https://www.ijijian.com/"
@@ -11,13 +13,18 @@ wv.removeView(wv.getChildAt(0))
 
 --初始化,加载网页
 wv.loadUrl(url)
---[[
 --设置出现缩放工具
 wv.getSettings().setSupportZoom(true);
 --设置出现缩放工具
 wv.getSettings().setBuiltInZoomControls(true);
 --扩大比例的缩放
 wv.getSettings().setUseWideViewPort(true);
+--硬件加速
+wv.setLayerType(View.LAYER_TYPE_HARDWARE, nil)
+--启用混合内容
+wv.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW)
+--DOM存储
+wv.getSettings().setDomStorageEnabled(true)
 
 wv.requestFocusFromTouch()--设置支持获取手势焦点
 --支持JS(建议无论如何加上)
@@ -31,7 +38,7 @@ wv.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 wv.getSettings().setAllowFileAccess(true);
 wv.getSettings().setAppCacheEnabled(true);
 wv.getSettings().setDomStorageEnabled(true);
-wv.getSettings().setDatabaseEnabled(true);]]
+wv.getSettings().setDatabaseEnabled(true);
 wv.getSettings().setTextZoom(125)--文字大小
 
 wv.setOnKeyListener(View.OnKeyListener{
