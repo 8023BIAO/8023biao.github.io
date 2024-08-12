@@ -1,4 +1,3 @@
-import "android.webkit.WebSettings"
 
 local url = "https://www.jianfast.com/m"
 --local url = "https://limestart.cn/"
@@ -12,7 +11,7 @@ wv.removeView(wv.getChildAt(0))
 
 --初始化,加载网页
 wv.loadUrl(url)
-
+--[[
 --设置出现缩放工具
 wv.getSettings().setSupportZoom(true);
 --设置出现缩放工具
@@ -32,8 +31,8 @@ wv.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 wv.getSettings().setAllowFileAccess(true);
 wv.getSettings().setAppCacheEnabled(true);
 wv.getSettings().setDomStorageEnabled(true);
-wv.getSettings().setDatabaseEnabled(true);
-wv.getSettings().setTextZoom(150)--文字大小
+wv.getSettings().setDatabaseEnabled(true);]]
+wv.getSettings().setTextZoom(125)--文字大小
 
 wv.setOnKeyListener(View.OnKeyListener{
   onKey=function (view,keyCode,event)
@@ -46,11 +45,11 @@ wv.setOnKeyListener(View.OnKeyListener{
 })
 
 --无广告UA
---local APP_NAME_UA="netdisk;5.2.7;PC;PC-Windows;6.2.9200;WindowsBaiduYunGuanJia"
+local APP_NAME_UA="netdisk;5.2.7;PC;PC-Windows;6.2.9200;WindowsBaiduYunGuanJia"
 
---wv.getSettings().setUserAgentString(APP_NAME_UA);
+wv.getSettings().setUserAgentString(APP_NAME_UA);
 
---[[状态监听
+--状态监听
 wv.setWebViewClient{
   shouldOverrideUrlLoading=function(view,url)
     --Url即将跳转
@@ -63,7 +62,7 @@ wv.setWebViewClient{
 
   end,
 
-}]]
+}
 
 
 --全屏事件监听
@@ -76,4 +75,6 @@ wv.setWebChromeClient(LuaWebChrome(LuaWebChrome.IWebChrine{
     activity.setContentView(wv)
   end,
 }))
+
+
 
