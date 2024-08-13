@@ -1,10 +1,15 @@
 import "android.webkit.WebSettings"
+import "android.webkit.WebChromeClient"
+import "android.webkit.WebView"
+import "android.view.View"
+import "android.view.ViewGroup"
+import "android.widget.FrameLayout"
 
-local url = "http://yhdm63.com/"
+local url = "https://limestart.cn/"
 
 local wv=LuaWebView(activity)
 wv.setBackgroundColor(0xff000000);
-activity.setContentView(wv)
+
 --删除加载
 wv.removeView(wv.getChildAt(0))
 
@@ -66,16 +71,35 @@ wv.setWebViewClient{
 
 }
 
+
 --全屏事件监听
-import "com.lua.*"
-wv.setWebChromeClient(LuaWebChrome(LuaWebChrome.IWebChrine{
-  onShowCustomView=function(view, callback)
-    activity.setContentView(view)
-  end,
-  onHideCustomView=function(view)
-    activity.setContentView(wv)
-  end,
-}))
+xpcall(function()
+  import "com.lua.*"
 
+  wv.setWebChromeClient(LuaWebChrome(LuaWebChrome.IWebChrine{
+    onShowCustomView=function(view, callback)
+      -- activity.setContentView(view)
+      -- 隐藏系统UI
+      local decorView = activity.getWindow().getDecorView()
+      local uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN
+      decorView.setSystemUiVisibility(uiOptions)
+      -- 设置自定义视图为全屏
+      local fullScreenContainer = FrameLayout(activity)
+      fullScreenContainer.addView(view, ViewGroup.LayoutParams.MATCH_PARENT)
+      activity.setContentView(fullScreenContainer)
 
+    end,
+    onHideCustomView=function(view)
+      -- activity.setContentView(wv)
+      -- 显示系统UI
+      local decorView = activity.getWindow().getDecorView()
+      decorView.setSystemUiVisibility(0)
 
+      -- 恢复原来的视图
+      activity.setContentView(wv)
+    end,
+  }))
+
+end,toast)
+
+activity.setContentView(wv)
