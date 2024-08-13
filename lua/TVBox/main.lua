@@ -6,8 +6,10 @@ import "android.view.View"
 import "android.view.ViewGroup"
 import "android.widget.FrameLayout"
 
-local url = "http://x4jdm.top/"
+--local url = "http://x4jdm.top/"
 --local url = "https://www.jianfast.com/?pc=1"
+local url = "https://m.youku.com/video/id_XMTMxNzE4MzY2OA==?source=https%3A%2F%2Flist.youku.com%2F&spm=a2h1n.8251843.playList.5~5~A&f=26015961&o=1"
+
 
 local wv=LuaWebView(activity)
 wv.setBackgroundColor(0xff000000);
