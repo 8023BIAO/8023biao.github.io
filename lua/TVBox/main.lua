@@ -2,7 +2,7 @@
 import "android.webkit.WebSettings"
 
 --local url = "http://x4jdm.top/"
-local url = "https://www.howdz.xyz/"
+local url = "https://hiluoli.cn/start"
 
 local wv=LuaWebView(activity)
 wv.setBackgroundColor(0xff000000);
