@@ -66,7 +66,7 @@ wv.setWebViewClient{
 
 }
 
---[[全屏事件监听
+--全屏事件监听
 import "com.lua.*"
 wv.setWebChromeClient(LuaWebChrome(LuaWebChrome.IWebChrine{
   onShowCustomView=function(view, callback)
@@ -76,6 +76,6 @@ wv.setWebChromeClient(LuaWebChrome(LuaWebChrome.IWebChrine{
     activity.setContentView(wv)
   end,
 }))
-]]
+
 
 
