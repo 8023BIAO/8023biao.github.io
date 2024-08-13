@@ -1,8 +1,6 @@
 import "android.webkit.WebSettings"
 
 local url = "http://yhdm63.com/"
---local url = "https://limestart.cn/"
---local url = "https://www.ijijian.com/"
 
 local wv=LuaWebView(activity)
 wv.setBackgroundColor(0xff000000);
@@ -28,7 +26,7 @@ wv.getSettings().setDomStorageEnabled(true)
 wv.requestFocusFromTouch()--设置支持获取手势焦点
 
 --支持JS(建议无论如何加上)
-local webSettings = wv.getSettings();
+--local webSettings = wv.getSettings();
 wv.Settings.setJavaScriptEnabled(true);
 wv.getSettings().setDisplayZoomControls(false);
 wv.getSettings().setUseWideViewPort(true);
@@ -39,9 +37,9 @@ wv.getSettings().setAllowFileAccess(true);
 wv.getSettings().setAppCacheEnabled(true);
 wv.getSettings().setDomStorageEnabled(true);
 wv.getSettings().setDatabaseEnabled(true);
-wv.getSettings().setTextZoom(125)--文字大小
--- 设置缓存策略
-webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK)
+wv.getSettings().setTextZoom(125)
+wv.getSettings().setUserAgentString("netdisk;5.2.7;PC;PC-Windows;6.2.9200;WindowsBaiduYunGuanJia");
+wv.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK)
 
 wv.setOnKeyListener(View.OnKeyListener{
   onKey=function (view,keyCode,event)
@@ -52,11 +50,6 @@ wv.setOnKeyListener(View.OnKeyListener{
     return false
   end
 })
-
---无广告UA
-local APP_NAME_UA="netdisk;5.2.7;PC;PC-Windows;6.2.9200;WindowsBaiduYunGuanJia"
-
-wv.getSettings().setUserAgentString(APP_NAME_UA);
 
 --状态监听
 wv.setWebViewClient{
@@ -73,7 +66,7 @@ wv.setWebViewClient{
 
 }
 
---全屏事件监听
+--[[全屏事件监听
 import "com.lua.*"
 wv.setWebChromeClient(LuaWebChrome(LuaWebChrome.IWebChrine{
   onShowCustomView=function(view, callback)
@@ -83,5 +76,6 @@ wv.setWebChromeClient(LuaWebChrome(LuaWebChrome.IWebChrine{
     activity.setContentView(wv)
   end,
 }))
+]]
 
 
