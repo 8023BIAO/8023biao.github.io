@@ -1,3 +1,4 @@
+
 import "android.webkit.WebSettings"
 import "android.webkit.WebChromeClient"
 import "android.webkit.WebView"
@@ -7,7 +8,8 @@ import "android.widget.FrameLayout"
 
 --local url = "https://limestart.cn/"
 --local url = "http://yhdm63.com/"
-local url = "https://start.thatwind.com/"
+--local url = "https://start.thatwind.com/"
+local url = "https://www.jianfast.com/m"
 
 local wv=LuaWebView(activity)
 wv.setBackgroundColor(0xff000000);
@@ -40,13 +42,13 @@ wv.getSettings().setUseWideViewPort(true);
 wv.getSettings().setLoadWithOverviewMode(true);
 wv.getSettings().setJavaScriptEnabled(true);
 wv.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+--wv.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK)
 wv.getSettings().setAllowFileAccess(true);
 wv.getSettings().setAppCacheEnabled(true);
 wv.getSettings().setDomStorageEnabled(true);
 wv.getSettings().setDatabaseEnabled(true);
 wv.getSettings().setTextZoom(130)
 wv.getSettings().setUserAgentString("netdisk;5.2.7;PC;PC-Windows;6.2.9200;WindowsBaiduYunGuanJia");
-wv.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK)
 
 wv.setOnKeyListener(View.OnKeyListener{
   onKey=function (view,keyCode,event)
@@ -105,3 +107,4 @@ xpcall(function()
 end,toast)
 
 activity.setContentView(wv)
+
