@@ -6,7 +6,7 @@ import "android.view.View"
 import "android.view.ViewGroup"
 import "android.widget.FrameLayout"
 
---local url = "http://yhdm63.com/"
+local url = "http://yhdm63.com/"
 --local url = "https://www.jianfast.com/?pc=1"
 
 local wv=LuaWebView(activity)
