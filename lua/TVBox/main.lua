@@ -37,7 +37,7 @@ wv.getSettings().setAllowFileAccess(true);
 wv.getSettings().setAppCacheEnabled(true);
 wv.getSettings().setDomStorageEnabled(true);
 wv.getSettings().setDatabaseEnabled(true);
-wv.getSettings().setTextZoom(125)
+wv.getSettings().setTextZoom(150)
 wv.getSettings().setUserAgentString("netdisk;5.2.7;PC;PC-Windows;6.2.9200;WindowsBaiduYunGuanJia");
 wv.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK)
 
