@@ -5,7 +5,7 @@ import "android.view.View"
 import "android.view.ViewGroup"
 import "android.widget.FrameLayout"
 
-local url = "https://limestart.cn/"
+local url = "https://zbkyyy.com/"
 
 local wv=LuaWebView(activity)
 wv.setBackgroundColor(0xff000000);
