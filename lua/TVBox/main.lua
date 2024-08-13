@@ -7,7 +7,7 @@ import "android.view.ViewGroup"
 import "android.widget.FrameLayout"
 
 --local url = "http://x4jdm.top/"
-local url = "https://www.jianfast.com/?pc=1"
+local url = "https://www.jianfast.com/m"
 
 local wv=LuaWebView(activity)
 wv.setBackgroundColor(0xff000000);
