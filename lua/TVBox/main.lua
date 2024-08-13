@@ -1,13 +1,8 @@
 
 import "android.webkit.WebSettings"
-import "android.webkit.WebChromeClient"
-import "android.webkit.WebView"
-import "android.view.View"
-import "android.view.ViewGroup"
-import "android.widget.FrameLayout"
 
 --local url = "http://x4jdm.top/"
-local url = "https://www.jianfast.com/m"
+local url = "https://www.jianfast.com/"
 
 local wv=LuaWebView(activity)
 wv.setBackgroundColor(0xff000000);
@@ -45,7 +40,7 @@ wv.getSettings().setAllowFileAccess(true);
 wv.getSettings().setAppCacheEnabled(true);
 wv.getSettings().setDomStorageEnabled(true);
 wv.getSettings().setDatabaseEnabled(true);
-wv.getSettings().setTextZoom(130)
+wv.getSettings().setTextZoom(125)
 wv.getSettings().setUserAgentString("netdisk;5.2.7;PC;PC-Windows;6.2.9200;WindowsBaiduYunGuanJia");
 
 wv.setOnKeyListener(View.OnKeyListener{
@@ -73,38 +68,24 @@ wv.setWebViewClient{
 
 }
 
-
 --全屏事件监听
-xpcall(function()
+pcall(function()
   import "com.lua.*"
-
   wv.setWebChromeClient(LuaWebChrome(LuaWebChrome.IWebChrine{
     onShowCustomView=function(view, callback)
-      toast("全屏")
-      -- activity.setContentView(view)
-      -- 隐藏系统UI
       local decorView = activity.getWindow().getDecorView()
       local uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN
       decorView.setSystemUiVisibility(uiOptions)
-      -- 设置自定义视图为全屏
       local fullScreenContainer = FrameLayout(activity)
       fullScreenContainer.addView(view, ViewGroup.LayoutParams.MATCH_PARENT)
       activity.setContentView(fullScreenContainer)
-
     end,
     onHideCustomView=function(view)
-      toast("隐藏")
-      -- activity.setContentView(wv)
-      -- 显示系统UI
       local decorView = activity.getWindow().getDecorView()
       decorView.setSystemUiVisibility(0)
-
-      -- 恢复原来的视图
       activity.setContentView(wv)
     end,
   }))
-
-end,toast)
+end)
 
 activity.setContentView(wv)
-
