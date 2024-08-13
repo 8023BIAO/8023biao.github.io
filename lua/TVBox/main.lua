@@ -1,8 +1,8 @@
 
 import "android.webkit.WebSettings"
 
-local url = "http://x4jdm.top/"
---local url = "https://bing.com/"
+--local url = "http://x4jdm.top/"
+local url = "https://bing.com/"
 
 local wv=LuaWebView(activity)
 wv.setBackgroundColor(0xff000000);
