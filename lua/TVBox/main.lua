@@ -6,7 +6,7 @@ import "android.view.View"
 import "android.view.ViewGroup"
 import "android.widget.FrameLayout"
 
-local url = "http://yhdm63.com/"
+local url = "http://x4jdm.top/"
 --local url = "https://www.jianfast.com/?pc=1"
 
 local wv=LuaWebView(activity)
@@ -80,6 +80,7 @@ xpcall(function()
 
   wv.setWebChromeClient(LuaWebChrome(LuaWebChrome.IWebChrine{
     onShowCustomView=function(view, callback)
+      toast("全屏")
       -- activity.setContentView(view)
       -- 隐藏系统UI
       local decorView = activity.getWindow().getDecorView()
@@ -92,6 +93,7 @@ xpcall(function()
 
     end,
     onHideCustomView=function(view)
+      toast("隐藏")
       -- activity.setContentView(wv)
       -- 显示系统UI
       local decorView = activity.getWindow().getDecorView()
